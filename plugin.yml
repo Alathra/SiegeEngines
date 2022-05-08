@@ -1,0 +1,9 @@
+name: CrunchSiegeWeapons
+main: siegeCore.CrunchSiegeCore
+version: 1.0
+api-version: 1.18
+commands:
+    siegetest:
+        description: show event details and progress
+        default: false
+        usage: siegetest
