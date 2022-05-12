@@ -5,11 +5,13 @@ import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
 
 public class SiegeEquipment {
 
 	public UUID EntityId;
+	public Entity Entity;
 	
 	public ItemStack ItemToPlace;
 	

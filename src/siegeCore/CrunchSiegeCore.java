@@ -3,6 +3,7 @@ package siegeCore;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -66,62 +67,14 @@ public class CrunchSiegeCore extends JavaPlugin {
 		public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 			if (sender instanceof Player) {
 				Player player = (Player) sender;
-				Location l = player.getLocation();
-				Entity entity2 = player.getWorld().spawnEntity(l, EntityType.ARMOR_STAND);
-				entity2.setInvulnerable(true);
-				SiegeEquipment equip = new SiegeEquipment(entity2.getUniqueId());
-				ItemStack item = new ItemStack(Material.CARVED_PUMPKIN);
-				equip.ReadyModelNumber = 122;
-				equip.ModelNumberToFireAt = 135;
-				equip.MillisecondsBetweenFiringStages = 2;
-				equip.MillisecondsBetweenReloadingStages = 50;
-				equip.FiringModelNumbers = new ArrayList<>(Arrays.asList(
-					123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139
-				));
-				ItemMeta meta = item.getItemMeta();
-				meta.setCustomModelData(equip.ReadyModelNumber);
-				item.setItemMeta(meta);
-				
-				LivingEntity ent = (LivingEntity) entity2;
-				ArmorStand stand = (ArmorStand) ent;
-				stand.setVisible(false);
-				ent.getEquipment().setHelmet(item);
-				TrackedStands.put(player.getUniqueId(), entity2.getUniqueId());
-				equipment.put(entity2.getUniqueId(), equip);
+		        CreateTrebuchet(player);
 				
 			}
 			return true;
 		}
 	}
 
-	public HashMap<UUID, UUID> TrackedStands = new HashMap<UUID, UUID>();
-
-	private double getPlayerFacingPI(Player p) {
-
-		double deg = 0;
-		double fin = 0;
-		double x = p.getLocation().getDirection().getX();
-		double z = p.getLocation().getDirection().getZ();
-
-		if(x > 0.0 && z >0.0) {
-			deg = x;
-			fin = (Math.PI/2)*deg;
-		}
-		if(x> 0.0 && z<0.0) {
-			deg = z*(-1);
-			fin = ((Math.PI/2)*deg)+(Math.PI/2);
-		}
-		if(x<0.0 && z<0.0) {
-			deg = x*(-1);
-			fin = (Math.PI/2)*deg+ Math.PI;
-		}
-		if(x<0.0 && z>0.0) {
-			System.out.println("SW");
-			deg = z;
-			fin = (Math.PI/2)*deg+(Math.PI/2 *3);
-		}
-		return fin;
-	}
+	public HashMap<UUID, Entity> TrackedStands = new HashMap<UUID, Entity>();
 
 	public HashMap<UUID, SiegeEquipment> equipment = new HashMap<UUID, SiegeEquipment>();
 
@@ -143,9 +96,33 @@ public class CrunchSiegeCore extends JavaPlugin {
 		return timeLeftFormatted;
 	}
 
-	public void UpdateEntityIdModel(UUID entityId, int modelNumber, String WorldName) {
-		for (Entity ent : Bukkit.getServer().getWorld(WorldName).getEntities()) {
-			if (ent.getUniqueId() == entityId) {
+	public void CreateTrebuchet(Player player) {
+		Location l = player.getLocation();
+		Entity entity2 = player.getWorld().spawnEntity(l, EntityType.ARMOR_STAND);
+		SiegeEquipment equip = new SiegeEquipment(entity2.getUniqueId());
+		ItemStack item = new ItemStack(Material.CARVED_PUMPKIN);
+		equip.ReadyModelNumber = 122;
+		equip.ModelNumberToFireAt = 135;
+		equip.MillisecondsBetweenFiringStages = 2;
+		equip.MillisecondsBetweenReloadingStages = 50;
+		equip.FiringModelNumbers = new ArrayList<>(Arrays.asList(
+			123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139
+		));
+		equip.Entity = entity2;
+		entity2.setCustomName("Trebuchet");
+		ItemMeta meta = item.getItemMeta();
+		meta.setCustomModelData(equip.ReadyModelNumber);
+		item.setItemMeta(meta);
+		
+		LivingEntity ent = (LivingEntity) entity2;
+		ArmorStand stand = (ArmorStand) ent;
+		stand.setVisible(false);
+		ent.getEquipment().setHelmet(item);
+		TrackedStands.put(player.getUniqueId(), entity2);
+		equipment.put(entity2.getUniqueId(), equip);
+	}
+	
+	public void UpdateEntityIdModel(Entity ent, int modelNumber, String WorldName) {
 				if (ent instanceof LivingEntity)
 				{
 					LivingEntity liv = (LivingEntity) ent;
@@ -159,8 +136,7 @@ public class CrunchSiegeCore extends JavaPlugin {
 					}
 				}
 			}
-		}
-	}
+	
 	
 
 	public class PlayerMoving implements Listener {
@@ -176,9 +152,9 @@ public class CrunchSiegeCore extends JavaPlugin {
 
 						return;
 					}
-					UUID trackedId = TrackedStands.get(player.getUniqueId());
-					for (Entity ent : player.getWorld().getEntities()) {
-						if (ent.getUniqueId() == trackedId) {
+					Entity ent= TrackedStands.get(player.getUniqueId());
+					if (ent != null) {
+						
 							//	player.sendMessage("got id");
 							LivingEntity living = (LivingEntity) ent;
 							Location loc = ent.getLocation();
@@ -188,12 +164,12 @@ public class CrunchSiegeCore extends JavaPlugin {
 							ArmorStand stand = (ArmorStand) living;
 
 							living.teleport(loc);
-						}
-					}
+					}						
+					
 				}
 			}
-
 		}
+		
 
 
 		@EventHandler
@@ -220,56 +196,103 @@ public class CrunchSiegeCore extends JavaPlugin {
 			if (ItemInHand == null) {
 				return;
 			}
-			UUID trackedId = TrackedStands.get(player.getUniqueId());
-			if (ItemInHand.getType() == Material.CLOCK) {
-				if (equipment.containsKey(trackedId)) {
-					SiegeEquipment siege = equipment.get(trackedId);
-					if (event.getAction() ==  Action.LEFT_CLICK_AIR) {
-						siege.FuseTime += 1;
-						player.sendMessage("§c Fuse Time set to " + siege.FuseTime);
-						return;
-					}
-					if (event.getAction() ==  Action.RIGHT_CLICK_AIR) {
-						siege.FuseTime -= 1;
-						if (siege.FuseTime < 10) {
-							siege.FuseTime = 10;
-						}
-						player.sendMessage("§cFuse Time set to " + siege.FuseTime);
+			Entity ent= TrackedStands.get(player.getUniqueId());
+			if (ent == null) {
+				if (ItemInHand.getType() == Material.PAPER) {
+					ItemMeta meta = ItemInHand.getItemMeta();
+					if (meta.hasCustomModelData() && meta.getCustomModelData() == 505050505) {
+					      CreateTrebuchet(player);
+					      ItemInHand.setAmount(ItemInHand.getAmount() - 1);
 						return;
 					}
 				}
+				if (ItemInHand.getType() == Material.CLOCK && player.isSneaking()) {
+					Collection<Entity> yeet = player.getLocation().getWorld().getNearbyEntities(player.getLocation(), 10, 10, 10);
+					for (Entity entity : yeet ) {
+						if (equipment.containsKey(entity.getUniqueId())){
+							player.sendMessage("§eNow controlling the equipment.");
+							return;
+						}
+					}
+					
+					for (Entity entity : yeet ) {
+						if (entity.getCustomName() == "Trebuchet" && entity.getType() == EntityType.ARMOR_STAND){
+							LivingEntity living = (LivingEntity) entity;
+							if (living.getEquipment().getHelmet() != null && living.getEquipment().getHelmet().getType() == Material.CARVED_PUMPKIN) {
+								
+								SiegeEquipment equip = new SiegeEquipment(entity.getUniqueId());
+								ItemStack item = new ItemStack(Material.CARVED_PUMPKIN);
+								equip.ReadyModelNumber = 122;
+								equip.ModelNumberToFireAt = 135;
+								equip.MillisecondsBetweenFiringStages = 2;
+								equip.MillisecondsBetweenReloadingStages = 50;
+								equip.FiringModelNumbers = new ArrayList<>(Arrays.asList(
+									123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139
+								));
+								equip.Entity = entity;
+								entity.setCustomName("Trebuchet");
+								ItemMeta meta = item.getItemMeta();
+								meta.setCustomModelData(equip.ReadyModelNumber);
+								item.setItemMeta(meta);
+								
+						
+								ArmorStand stand = (ArmorStand) ent;
+								stand.setVisible(false);
+								living.getEquipment().setHelmet(item);
+								TrackedStands.put(player.getUniqueId(), entity);
+								equipment.put(entity.getUniqueId(), equip);
+							}
+						
+							return;
+						}
+					}
+				}
+				else {
+					return;
+				}
+				
 			}
+		
 
 			if (ItemInHand.getType() == Material.BOOK) {
-				if (equipment.containsKey(trackedId)) {
-					SiegeEquipment siege = equipment.get(trackedId);
+				if (equipment.containsKey(ent.getUniqueId())) {
+					SiegeEquipment siege = equipment.get(ent.getUniqueId());
+					DecimalFormat df = new DecimalFormat("#.#");
+					
 					if (event.getAction() ==  Action.LEFT_CLICK_AIR) {
 						siege.Velocity += 0.1;
-						player.sendMessage("§eProjectile Speed set to " + siege.Velocity);
+						player.sendMessage("§eProjectile Speed set to " + df.format(siege.Velocity) );
 						return;
 					}
 					if (event.getAction() ==  Action.RIGHT_CLICK_AIR) {
 						siege.Velocity -= 0.1;
-						player.sendMessage("§eProjectile Speed set to " + siege.Velocity);
+						player.sendMessage("§eProjectile Speed set to " + df.format(siege.Velocity));
 						return;
 					}
 				}
 			}
 
 			if (event.getAction() == Action.LEFT_CLICK_AIR) {
-				if (ItemInHand.getType() != Material.BLAZE_ROD) {
+				if (ItemInHand.getType() != Material.STICK) {
 					return;
 				}
 
-				for (Entity ent : player.getWorld().getEntities()) {
-					if (ent.getUniqueId() == trackedId) {
-						SiegeEquipment siege = equipment.get(trackedId);
+				if (ent != null) {
+					
+						SiegeEquipment siege = equipment.get(ent.getUniqueId());
 
 						if (System.currentTimeMillis() < siege.NextShotTime) {
 							player.sendMessage("Cannot fire for another " + convertTime(siege.NextShotTime - System.currentTimeMillis()));
 							return;
 						}
-
+						
+						if (player.getInventory().containsAtLeast(new ItemStack(Material.COBBLESTONE), 10)) {
+							player.getInventory().remove(new ItemStack(Material.COBBLESTONE, 10));
+						}
+						else {
+							player.sendMessage("Cannot fire, missing cobblestone, requires 10 per shot");
+							return;
+						}
 						LivingEntity living = (LivingEntity) ent;
 						Location loc = living.getEyeLocation();
 						loc.setPitch(-30);
@@ -303,7 +326,7 @@ public class CrunchSiegeCore extends JavaPlugin {
 										if (siege.NextModelNumber - 1 <= siege.FiringModelNumbers.size() && siege.NextModelNumber - 1 >= 0) {
 											int modelData = siege.FiringModelNumbers.get(siege.NextModelNumber - 1);
 										//	player.sendMessage("" + modelData);
-											UpdateEntityIdModel(siege.EntityId, modelData, siege.WorldName);
+											UpdateEntityIdModel(siege.Entity, modelData, siege.WorldName);
 											siege.NextModelNumber -= 1;
 											
 										}else {
@@ -320,7 +343,7 @@ public class CrunchSiegeCore extends JavaPlugin {
 							
 									int modelData = siege.FiringModelNumbers.get(siege.NextModelNumber);
 								//	player.sendMessage("" + modelData);
-									UpdateEntityIdModel(siege.EntityId, modelData, siege.WorldName);
+									UpdateEntityIdModel(siege.Entity, modelData, siege.WorldName);
 									if (modelData == siege.ModelNumberToFireAt) {
 										Entity tnt = Bukkit.getServer().getWorld(siege.WorldName).spawnEntity(loc, EntityType.SNOWBALL);
 										
@@ -344,11 +367,6 @@ public class CrunchSiegeCore extends JavaPlugin {
 			}
 
 
-
-
-
-		}
-
 		@EventHandler
 		public void onEntityClick(PlayerInteractEntityEvent event) {
 
@@ -367,5 +385,7 @@ public class CrunchSiegeCore extends JavaPlugin {
 			}
 		}
 	}
-
 }
+
+	
+
