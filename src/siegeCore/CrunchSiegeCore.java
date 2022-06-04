@@ -21,6 +21,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.ArmorStand.LockType;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Horse;
@@ -33,13 +34,17 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import me.libraryaddict.disguise.DisguiseAPI;
@@ -67,7 +72,10 @@ public class CrunchSiegeCore extends JavaPlugin {
 		public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 			if (sender instanceof Player) {
 				Player player = (Player) sender;
-		        CreateTrebuchet(player);
+				if (player.isOp()) {
+				      CreateTrebuchet(player);
+				}
+		  
 				
 			}
 			return true;
@@ -109,6 +117,7 @@ public class CrunchSiegeCore extends JavaPlugin {
 			123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139
 		));
 		equip.Entity = entity2;
+		
 		entity2.setCustomName("Trebuchet");
 		ItemMeta meta = item.getItemMeta();
 		meta.setCustomModelData(equip.ReadyModelNumber);
@@ -116,7 +125,13 @@ public class CrunchSiegeCore extends JavaPlugin {
 		
 		LivingEntity ent = (LivingEntity) entity2;
 		ArmorStand stand = (ArmorStand) ent;
-		stand.setVisible(false);
+		stand.addEquipmentLock(EquipmentSlot.HEAD, LockType.REMOVING_OR_CHANGING);
+		stand.addEquipmentLock(EquipmentSlot.LEGS, LockType.REMOVING_OR_CHANGING);
+		stand.addEquipmentLock(EquipmentSlot.CHEST, LockType.REMOVING_OR_CHANGING);
+		stand.addEquipmentLock(EquipmentSlot.FEET, LockType.REMOVING_OR_CHANGING);
+		ent.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 2000000, 1));
+	//	stand.setSmall(true);
+		stand.setVisible(true);
 		ent.getEquipment().setHelmet(item);
 		TrackedStands.put(player.getUniqueId(), entity2);
 		equipment.put(entity2.getUniqueId(), equip);
@@ -154,7 +169,9 @@ public class CrunchSiegeCore extends JavaPlugin {
 					}
 					Entity ent= TrackedStands.get(player.getUniqueId());
 					if (ent != null) {
-						
+							
+						double distance = player.getLocation().distance(ent.getLocation());
+						if (distance <= 5) {
 							//	player.sendMessage("got id");
 							LivingEntity living = (LivingEntity) ent;
 							Location loc = ent.getLocation();
@@ -164,8 +181,8 @@ public class CrunchSiegeCore extends JavaPlugin {
 							ArmorStand stand = (ArmorStand) living;
 
 							living.teleport(loc);
-					}						
-					
+						}
+					}								
 				}
 			}
 		}
@@ -237,7 +254,8 @@ public class CrunchSiegeCore extends JavaPlugin {
 								
 						
 								ArmorStand stand = (ArmorStand) ent;
-								stand.setVisible(false);
+								stand.setSmall(true);
+								((LivingEntity) ent).addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 2000000, 1));
 								living.getEquipment().setHelmet(item);
 								TrackedStands.put(player.getUniqueId(), entity);
 								equipment.put(entity.getUniqueId(), equip);
@@ -253,7 +271,10 @@ public class CrunchSiegeCore extends JavaPlugin {
 				
 			}
 		
-
+			if (ent.isDead()) {
+				equipment.remove(ent.getUniqueId());
+				return;
+			}
 			if (ItemInHand.getType() == Material.BOOK) {
 				if (equipment.containsKey(ent.getUniqueId())) {
 					SiegeEquipment siege = equipment.get(ent.getUniqueId());
@@ -278,7 +299,11 @@ public class CrunchSiegeCore extends JavaPlugin {
 				}
 
 				if (ent != null) {
-					
+					double distance = player.getLocation().distance(ent.getLocation());
+					if (distance >= 5) {
+						player.sendMessage("Too far away to fire");
+						return;
+					}
 						SiegeEquipment siege = equipment.get(ent.getUniqueId());
 
 						if (System.currentTimeMillis() < siege.NextShotTime) {
