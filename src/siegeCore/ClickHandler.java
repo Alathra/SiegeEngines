@@ -108,7 +108,9 @@ public class ClickHandler implements Listener {
 	
 	public void Shoot(Player player) {
 		for (Entity ent : CrunchSiegeCore.TrackedStands.get(player.getUniqueId())){{
-
+			if (ent == null || ent.isDead()) {
+				continue;
+			}
 			double distance = player.getLocation().distance(ent.getLocation());
 			if (distance >= 250) {
 				player.sendMessage("Too far away to fire");
@@ -130,20 +132,20 @@ public class ClickHandler implements Listener {
 			}
 			LivingEntity living = (LivingEntity) ent;
 			Location loc = living.getEyeLocation();
-			loc.setPitch(-30);
-			loc.setY(loc.getY() + 2);
-			loc.getPitch();
-
+		
 			Random random = new Random();
 
 			float randomVar = random.nextFloat() * (7 - -7) + -7;
-			loc.setYaw(loc.getYaw() + randomVar);
+	
 			siege.NextModelNumber = 0;
 			siege.location = loc;
 			siege.NextShotTime = System.currentTimeMillis() + 6000;
 			player.sendMessage("Cannot fire for another " + CrunchSiegeCore.convertTime(siege.NextShotTime - System.currentTimeMillis()));
 			siege.WorldName = ent.getWorld().getName();
 			Bukkit.getServer().getWorld(siege.WorldName).playSound(siege.location, Sound.ENTITY_BAT_DEATH, 20, 2);
+			if (siege.CycleThroughModelsBeforeFiring) {
+				
+	
 			siege.TaskNumber = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(CrunchSiegeCore.plugin, () -> {
 				//player.sendMessage("task");
 				if (siege.HasFired) {
@@ -194,6 +196,13 @@ public class ClickHandler implements Listener {
 					}
 				}
 			}, 0, siege.MillisecondsBetweenFiringStages);
+			}
+			else {
+				Entity tnt = Bukkit.getServer().getWorld(siege.WorldName).spawnEntity(loc, EntityType.SNOWBALL);
+
+				projectiles.put(tnt.getUniqueId(), siege.projectile);
+				tnt.setVelocity(loc.getDirection().multiply(siege.Velocity));
+			}
 	}
 		
 		}

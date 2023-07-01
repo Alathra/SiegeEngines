@@ -101,6 +101,7 @@ public class CrunchSiegeCore extends JavaPlugin {
 
 	public static void CreateTrebuchet(Player player) {
 		Location l = player.getLocation();
+		l.setY(l.getY() - 1);
 		Entity entity2 = player.getWorld().spawnEntity(l, EntityType.ARMOR_STAND);
 		SiegeEquipment equip = new SiegeEquipment(entity2.getUniqueId());
 		ItemStack item = new ItemStack(Material.CARVED_PUMPKIN);
@@ -111,10 +112,12 @@ public class CrunchSiegeCore extends JavaPlugin {
 		equip.FiringModelNumbers = new ArrayList<>(Arrays.asList(
 				123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139
 				));
+		equip.CycleThroughModelsBeforeFiring = false;
 		equip.Entity = entity2;
 
 		entity2.setCustomName("Trebuchet");
 		ItemMeta meta = item.getItemMeta();
+		
 		meta.setCustomModelData(equip.ReadyModelNumber);
 		item.setItemMeta(meta);
 

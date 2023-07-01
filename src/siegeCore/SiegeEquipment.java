@@ -20,7 +20,7 @@ public class SiegeEquipment {
 	public String WorldName;
 	
 	public int FuseTime;
-	public double Velocity = 1;
+	public double Velocity = 3;
 	public long NextShotTime = System.currentTimeMillis();
 	
 	public int MillisecondsBetweenFiringStages;
@@ -29,7 +29,7 @@ public class SiegeEquipment {
 	public int MillisecondsToLoad;
 	public Location location;
 	public int ModelNumberToFireAt;
-	
+	public Boolean CycleThroughModelsBeforeFiring = false;
 	public Boolean RotateSideways = false;
     public Boolean RoateUpDown = true;
 	
