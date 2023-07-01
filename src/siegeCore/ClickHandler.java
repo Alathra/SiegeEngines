@@ -34,7 +34,7 @@ import org.bukkit.potion.PotionEffectType;
 public class ClickHandler implements Listener {
 	
 
-	public HashMap<UUID, SiegeProjectile> projectiles = new HashMap<UUID, SiegeProjectile>();
+	public static HashMap<UUID, SiegeProjectile> projectiles = new HashMap<UUID, SiegeProjectile>();
 	
 	@EventHandler
 	public void onHit(ProjectileHitEvent event) {
@@ -130,79 +130,7 @@ public class ClickHandler implements Listener {
 				player.sendMessage("Cannot fire, missing cobblestone, requires 10 per shot");
 				return;
 			}
-			LivingEntity living = (LivingEntity) ent;
-			Location loc = living.getEyeLocation();
-		
-			Random random = new Random();
-
-			float randomVar = random.nextFloat() * (7 - -7) + -7;
-	
-			siege.NextModelNumber = 0;
-			siege.location = loc;
-			siege.NextShotTime = System.currentTimeMillis() + 6000;
-			player.sendMessage("Cannot fire for another " + CrunchSiegeCore.convertTime(siege.NextShotTime - System.currentTimeMillis()));
-			siege.WorldName = ent.getWorld().getName();
-			Bukkit.getServer().getWorld(siege.WorldName).playSound(siege.location, Sound.ENTITY_BAT_DEATH, 20, 2);
-			if (siege.CycleThroughModelsBeforeFiring) {
-				
-	
-			siege.TaskNumber = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(CrunchSiegeCore.plugin, () -> {
-				//player.sendMessage("task");
-				if (siege.HasFired) {
-					Bukkit.getServer().getScheduler().cancelTask(siege.TaskNumber);
-					siege.TaskNumber = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(CrunchSiegeCore.plugin, () -> {
-						//	player.sendMessage("task");
-						if (siege.HasReloaded) {
-							Bukkit.getServer().getScheduler().cancelTask(siege.TaskNumber);
-							siege.HasReloaded = false;
-							siege.HasFired = false;
-							siege.NextModelNumber = 0;
-						}
-						else {
-							//firing stages
-							if (siege.NextModelNumber - 1 <= siege.FiringModelNumbers.size() && siege.NextModelNumber - 1 >= 0) {
-								int modelData = siege.FiringModelNumbers.get(siege.NextModelNumber - 1);
-								//	player.sendMessage("" + modelData);
-								CrunchSiegeCore.UpdateEntityIdModel(siege.Entity, modelData, siege.WorldName);
-								siege.NextModelNumber -= 1;
-
-							}else {
-								//	plugin.getLogger().log(Level.INFO, "its reloaded");
-								siege.HasReloaded = true;
-							}
-						}
-					}, 0, siege.MillisecondsBetweenReloadingStages);
-
-				}
-				else {
-					//firing stages
-					if (siege.NextModelNumber < siege.FiringModelNumbers.size()) {
-
-						int modelData = siege.FiringModelNumbers.get(siege.NextModelNumber);
-						//	player.sendMessage("" + modelData);
-						CrunchSiegeCore.UpdateEntityIdModel(siege.Entity, modelData, siege.WorldName);
-						if (modelData == siege.ModelNumberToFireAt) {
-							Entity tnt = Bukkit.getServer().getWorld(siege.WorldName).spawnEntity(loc, EntityType.SNOWBALL);
-
-							projectiles.put(tnt.getUniqueId(), siege.projectile);
-							tnt.setVelocity(loc.getDirection().multiply(siege.Velocity));
-
-						}
-						siege.NextModelNumber += 1;
-
-					}else {
-						siege.HasFired = true;
-
-					}
-				}
-			}, 0, siege.MillisecondsBetweenFiringStages);
-			}
-			else {
-				Entity tnt = Bukkit.getServer().getWorld(siege.WorldName).spawnEntity(loc, EntityType.SNOWBALL);
-
-				projectiles.put(tnt.getUniqueId(), siege.projectile);
-				tnt.setVelocity(loc.getDirection().multiply(siege.Velocity));
-			}
+			siege.Fire(player);
 	}
 		
 		}
