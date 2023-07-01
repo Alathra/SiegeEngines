@@ -28,23 +28,33 @@ public class RotationHandler implements Listener {
 				}
 				for (Entity ent : CrunchSiegeCore.TrackedStands.get(player.getUniqueId())) {
 					if (ent != null) {
-
+						SiegeEquipment equipment = CrunchSiegeCore.equipment.get(ent.getUniqueId());
+						
 						double distance = player.getLocation().distance(ent.getLocation());
 						if (distance <= 250) {
 							//	player.sendMessage("got id");
 							LivingEntity living = (LivingEntity) ent;
 							Location loc = ent.getLocation();
-
+							
+							if (equipment.RotateSideways) {
+								
+					
 							Location direction = player.getLocation().add(player.getLocation().getDirection().multiply(50));
 
 							Vector dirBetweenLocations = direction.toVector().subtract(loc.toVector());
 
 							loc.setDirection(dirBetweenLocations);
+							}
 						//	loc.setYaw(player.getLocation().getYaw());
 							//loc.setPitch(player.getLocation().getPitch());
+							
+							
 							ArmorStand stand = (ArmorStand) living;
 							
-							stand.setHeadPose(new EulerAngle(player.getLocation().getDirection().getY()*(-1),0,0));
+							if (equipment.RotateUpDown) {
+								stand.setHeadPose(new EulerAngle(player.getLocation().getDirection().getY()*(-1),0,0));
+							}
+						
 							
 							living.teleport(loc);
 						}

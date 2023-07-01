@@ -36,8 +36,8 @@ public class SiegeEquipment {
 	public Location location;
 	public int ModelNumberToFireAt;
 	public Boolean CycleThroughModelsBeforeFiring = false;
-	public Boolean RotateSideways = false;
-    public Boolean RoateUpDown = true;
+	public Boolean RotateSideways = true;
+    public Boolean RotateUpDown = true;
 	
 	public Boolean HasFired = false;
 	public Boolean HasReloaded = false;
