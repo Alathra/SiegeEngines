@@ -1,5 +1,8 @@
 package siegeCore;
 
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+
 public class SiegeProjectile {
 
 	public int Radius = 5;
@@ -10,4 +13,5 @@ public class SiegeProjectile {
 		DoFire = fire;
 	}
 	
+	public ItemStack AmmoItem = new ItemStack(Material.COBBLESTONE, 1);
 }
