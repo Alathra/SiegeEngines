@@ -7,12 +7,14 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
 
 public class SiegeEquipment implements Cloneable  {
 	
@@ -30,6 +32,9 @@ public class SiegeEquipment implements Cloneable  {
 	
 	public String WorldName;
 	
+	public int XOffset = 5;
+	public int YOffset = 0;
+	
 	public int FuseTime;
 	public double Velocity = 3;
 	public long NextShotTime = System.currentTimeMillis();
@@ -41,7 +46,7 @@ public class SiegeEquipment implements Cloneable  {
 	public Location location;
 	public int ModelNumberToFireAt;
 	public Boolean CycleThroughModelsBeforeFiring = false;
-	public Boolean RotateSideways = true;
+	public Boolean RotateSideways = false;
     public Boolean RotateUpDown = true;
 	
 	public Boolean HasFired = false;
@@ -61,9 +66,11 @@ public class SiegeEquipment implements Cloneable  {
 		EntityId = id;
 	}
 	
-	public void Fire(Player player) {
+	public void Fire(Player player, int delay) {
 		LivingEntity living = (LivingEntity) Entity;
 		Location loc = living.getEyeLocation();
+		Vector direction = Entity.getLocation().getDirection().multiply(XOffset);
+		loc.add(direction);
 		Random random = new Random();
 
 		float randomVar = random.nextFloat() * (7 - -7) + -7;
@@ -73,7 +80,7 @@ public class SiegeEquipment implements Cloneable  {
 		this.NextShotTime = System.currentTimeMillis() + 6000;
 		player.sendMessage("Cannot fire for another " + CrunchSiegeCore.convertTime(this.NextShotTime - System.currentTimeMillis()));
 		this.WorldName = Entity.getWorld().getName();
-		Bukkit.getServer().getWorld(this.WorldName).playSound(this.location, Sound.ENTITY_BAT_DEATH, 20, 2);
+
 		if (this.CycleThroughModelsBeforeFiring) {
 			
 
@@ -117,7 +124,7 @@ public class SiegeEquipment implements Cloneable  {
 
 						ClickHandler.projectiles.put(tnt.getUniqueId(), this.projectile);
 						tnt.setVelocity(loc.getDirection().multiply(this.Velocity));
-
+						Bukkit.getServer().getWorld(this.WorldName).playSound(this.location, Sound.ENTITY_BAT_DEATH, 20, 2);
 					}
 					this.NextModelNumber += 1;
 
@@ -129,10 +136,16 @@ public class SiegeEquipment implements Cloneable  {
 		}, 0, this.MillisecondsBetweenFiringStages);
 		}
 		else {
-			Entity tnt = Bukkit.getServer().getWorld(this.WorldName).spawnEntity(loc, EntityType.SNOWBALL);
-
-			ClickHandler.projectiles.put(tnt.getUniqueId(), this.projectile);
-			tnt.setVelocity(loc.getDirection().multiply(this.Velocity));
+			
+			this.TaskNumber = Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(CrunchSiegeCore.plugin, () -> {
+				//player.sendMessage("task");
+				Entity tnt = Bukkit.getServer().getWorld(this.WorldName).spawnEntity(loc, EntityType.SNOWBALL);
+				ClickHandler.projectiles.put(tnt.getUniqueId(), this.projectile);
+				tnt.setVelocity(loc.getDirection().multiply(this.Velocity));
+				Bukkit.getServer().getWorld(this.WorldName).playSound(this.location, Sound.ENTITY_GENERIC_EXPLODE, 20, 2);
+				Bukkit.getServer().getWorld(this.WorldName).spawnParticle(Particle.SMOKE_LARGE, loc.getX(), loc.getY(), loc.getZ(), 0);
+			}, delay);
+	
 		}
 	}
 	

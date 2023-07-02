@@ -53,6 +53,7 @@ public class RotationHandler implements Listener {
 							
 							if (equipment.RotateUpDown) {
 								stand.setHeadPose(new EulerAngle(player.getLocation().getDirection().getY()*(-1),0,0));
+								loc.setPitch(player.getLocation().getPitch());
 							}
 						
 							

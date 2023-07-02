@@ -156,8 +156,8 @@ public class CrunchSiegeCore extends JavaPlugin {
 		stand.addEquipmentLock(EquipmentSlot.CHEST, LockType.ADDING_OR_CHANGING);
 		stand.addEquipmentLock(EquipmentSlot.FEET, LockType.ADDING_OR_CHANGING);
 		ent.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 2000000, 1));
-		//	stand.setSmall(true);
-	//	stand.setVisible(true);
+			stand.setSmall(true);
+		stand.setVisible(true);
 		//stand.setSmall(true);
 		ent.getEquipment().setHelmet(item);
 		if (TrackedStands.containsKey(player.getUniqueId())) {

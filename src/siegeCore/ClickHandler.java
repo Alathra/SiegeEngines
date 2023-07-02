@@ -65,7 +65,9 @@ public class ClickHandler implements Listener {
 
 
 	public void Shoot(Player player) {
+		int delay = 6;
 		for (Entity ent : CrunchSiegeCore.TrackedStands.get(player.getUniqueId())){{
+			
 			if (ent == null || ent.isDead()) {
 				continue;
 			}
@@ -86,9 +88,10 @@ public class ClickHandler implements Listener {
 			}
 			else {
 				player.sendMessage("Cannot fire, missing cobblestone, requires 10 per shot");
-				return;
+				continue;
 			}
-			siege.Fire(player);
+			siege.Fire(player, delay);
+			delay += 6;
 		}
 
 		}
@@ -176,19 +179,16 @@ public class ClickHandler implements Listener {
 	public void onPlayerClickSign(PlayerInteractEvent event){
 		Player p = event.getPlayer();
 		if(event.getClickedBlock() != null && event.getClickedBlock().getType().toString().contains("SIGN")){
+			Sign sign = (Sign) event.getClickedBlock().getState();
+			if(sign.getLine(0).equalsIgnoreCase( "[Cannon]")){
 			if(event.getAction() == Action.RIGHT_CLICK_BLOCK){
-				Sign sign = (Sign) event.getClickedBlock().getState();
-				//^^ .getState(); really important
-				if(sign.getLine(0).equalsIgnoreCase( "[Cannon]")){
 					NamespacedKey key = new NamespacedKey(CrunchSiegeCore.plugin, "cannons");		
 					TileState state = (TileState)  sign.getBlock().getState();
-
+					CrunchSiegeCore.TrackedStands.remove(p.getUniqueId());
 					List<UUID> temp = new ArrayList<UUID>();
-					event.getPlayer().sendMessage("1");
 					if (!state.getPersistentDataContainer().has(key,  PersistentDataType.STRING)) {
 						return;
 					}
-					event.getPlayer().sendMessage("2");
 					String[] split = state.getPersistentDataContainer().get(key, PersistentDataType.STRING).replace("[", "").replace("]", "").split(",");
 					for (String s : split) {
 						p.sendMessage(s.trim());
@@ -202,6 +202,10 @@ public class ClickHandler implements Listener {
 						}
 					}
 				}
+			}
+			if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
+				CrunchSiegeCore.TrackedStands.remove(p.getUniqueId());
+				p.sendMessage("Releasing the cannons!");
 			}
 		}
 	}
