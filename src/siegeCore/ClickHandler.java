@@ -44,8 +44,8 @@ import org.bukkit.util.EulerAngle;
 
 public class ClickHandler implements Listener {
 
-public float MinDelay = 5;
-	
+	public float MinDelay = 5;
+
 	public static HashMap<UUID, SiegeProjectile> projectiles = new HashMap<UUID, SiegeProjectile>();
 
 	@EventHandler
@@ -69,7 +69,7 @@ public float MinDelay = 5;
 
 
 	public void Shoot(Player player, long delay) {
-		float actualDelay = 0;
+		float actualDelay = delay;
 		Boolean FirstShot = true;
 		for (Entity ent : CrunchSiegeCore.TrackedStands.get(player.getUniqueId())){{
 
@@ -83,10 +83,7 @@ public float MinDelay = 5;
 			}
 			SiegeEquipment siege = CrunchSiegeCore.equipment.get(ent.getUniqueId());
 
-			if (System.currentTimeMillis() < siege.NextShotTime) {
-				player.sendMessage("Cannot fire for another " + CrunchSiegeCore.convertTime(siege.NextShotTime - System.currentTimeMillis()));
-				continue;
-			}
+		
 
 			if (player.getInventory().containsAtLeast(new ItemStack(Material.COBBLESTONE), 10)) {
 				player.getInventory().remove(new ItemStack(Material.COBBLESTONE, 10));
@@ -95,9 +92,15 @@ public float MinDelay = 5;
 				player.sendMessage("Cannot fire, missing cobblestone, requires 10 per shot");
 				continue;
 			}
-				player.sendMessage(String.format("§e" +actualDelay));
+			if (siege.isLoaded()) {
 				siege.Fire(player, actualDelay);
-				actualDelay += delay;	
+				actualDelay += delay;
+			}
+			else {
+				player.sendMessage("Cannon is not loaded");
+			}
+			//	player.sendMessage(String.format("§e" +actualDelay));
+
 		}
 		}
 	}
@@ -131,7 +134,7 @@ public float MinDelay = 5;
 
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onSignChange(SignChangeEvent event){
 		String topline = event.getLine(0);
@@ -145,8 +148,8 @@ public float MinDelay = 5;
 		event.getPlayer().sendMessage("2");
 	}
 
-	
-	
+
+
 	public static void TakeControl(Player player, Entity entity) {
 		LivingEntity living = (LivingEntity) entity;
 		if (living.getEquipment().getHelmet() != null && living.getEquipment().getHelmet().getType() == Material.CARVED_PUMPKIN) {
@@ -190,33 +193,47 @@ public float MinDelay = 5;
 	}
 
 	public void AimUp(Player player, float amount) {
+
 		for (Entity ent : CrunchSiegeCore.TrackedStands.get(player.getUniqueId())) {
 			Location loc = ent.getLocation();
 			ArmorStand stand = (ArmorStand) ent;
-			
+			//	player.sendMessage(String.format("" + loc.getPitch()));
+			if (loc.getPitch() == -90 || loc.getPitch() - amount < -90) {
+				return;
+			}
 			loc.setPitch((float) (loc.getPitch() - amount));
 			stand.setHeadPose(new EulerAngle(loc.getDirection().getY()*(-1),0,0));
+
+
 			ent.teleport(loc);
 		}
 	}
-	
+
 	public void AimDown(Player player, float amount) {
+
 		for (Entity ent : CrunchSiegeCore.TrackedStands.get(player.getUniqueId())) {
 			Location loc = ent.getLocation();
 			ArmorStand stand = (ArmorStand) ent;
-			
+			//	player.sendMessage(String.format("" + loc.getPitch()));
+			if (loc.getPitch() == 90 || loc.getPitch() + amount > 90) {
+				return;
+			}
+
 			loc.setPitch((float) (loc.getPitch() + amount));
 			stand.setHeadPose(new EulerAngle(loc.getDirection().getY()*(-1),0,0));
 			ent.teleport(loc);
 		}
 	}
-	
+
 	@EventHandler
 	public void onPlayerClickSign(PlayerInteractEvent event){
 		Player player = event.getPlayer();
 		if(event.getClickedBlock() != null && event.getClickedBlock().getType().toString().contains("SIGN")){
 			Sign sign = (Sign) event.getClickedBlock().getState();
 			if(sign.getLine(0).equalsIgnoreCase( "[Fire]") && event.getAction() == Action.RIGHT_CLICK_BLOCK){
+				if (!CrunchSiegeCore.TrackedStands.containsKey(player.getUniqueId())) {
+					return;
+				}
 				try {
 					Long delay = Long.parseLong(sign.getLine(1));
 					if (delay < 6){
@@ -230,6 +247,9 @@ public float MinDelay = 5;
 			}
 
 			if(sign.getLine(0).equalsIgnoreCase( "[Aim]")){
+				if (!CrunchSiegeCore.TrackedStands.containsKey(player.getUniqueId())) {
+					return;
+				}
 				float amount;
 				try {
 					amount = Float.parseFloat(sign.getLine(1));
@@ -243,10 +263,10 @@ public float MinDelay = 5;
 					// TODO Auto-generated catch block
 					player.sendMessage("Could not parse number on second line.");
 				} 
-			
+
 				return;
 			}
-			
+
 			if(sign.getLine(0).equalsIgnoreCase( "[Cannon]")){
 				if(event.getAction() == Action.RIGHT_CLICK_BLOCK){
 					if (player.isSneaking()) {
@@ -279,7 +299,7 @@ public float MinDelay = 5;
 					}
 				}
 			}
-			
+
 		}
 	}
 
@@ -292,11 +312,28 @@ public float MinDelay = 5;
 		if (entity == null) {
 			return;
 		}
-		if (itemInHand.getType() == Material.CLOCK) {
-			if (entity.getType() == EntityType.ARMOR_STAND){
+		if (entity.getType() == EntityType.ARMOR_STAND){
+			if (itemInHand.getType() == Material.CLOCK) {
+
 				TakeControl(player, entity);
+				return;
 			}
-			return;
+		
+			if (CrunchSiegeCore.equipment.containsKey(entity.getUniqueId())) {
+				SiegeEquipment equipment = CrunchSiegeCore.equipment.get(entity.getUniqueId());
+				if (itemInHand.getType().equals(equipment.FuelMaterial)) {
+					if (equipment.LoadFuel(player)) {
+						player.sendMessage("Loaded " + equipment.AmmoHolder.LoadedFuel + "/" + equipment.MaxFuel);
+					}
+					else {
+						player.sendMessage("Could not load powder.");
+					}
+				}
+				if (itemInHand.getType().equals(Material.FLINT)) {
+					Shoot(player, 6);
+				}
+				return;
+			}
 		}
 	}
 }
