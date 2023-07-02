@@ -5,7 +5,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class SiegeProjectile {
 
-	public int Radius = 5;
+	public int Radius = 2;
 	public Boolean DoFire = false;
 	
 	public SiegeProjectile(int rad, boolean fire) {

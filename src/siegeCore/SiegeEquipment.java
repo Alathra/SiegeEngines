@@ -32,7 +32,7 @@ public class SiegeEquipment implements Cloneable  {
 	
 	public String WorldName;
 	
-	public int XOffset = 5;
+	public int XOffset = 7;
 	public int YOffset = 0;
 	
 	public int FuseTime;
@@ -60,7 +60,7 @@ public class SiegeEquipment implements Cloneable  {
 	
 	public List<Integer> FiringModelNumbers = new ArrayList<Integer>();
 	
-	public SiegeProjectile projectile = new SiegeProjectile(3, false);
+	public SiegeProjectile projectile = new SiegeProjectile(1, false);
 	
 	public SiegeEquipment(UUID id) {
 		EntityId = id;
@@ -143,7 +143,7 @@ public class SiegeEquipment implements Cloneable  {
 				ClickHandler.projectiles.put(tnt.getUniqueId(), this.projectile);
 				tnt.setVelocity(loc.getDirection().multiply(this.Velocity));
 				Bukkit.getServer().getWorld(this.WorldName).playSound(this.location, Sound.ENTITY_GENERIC_EXPLODE, 20, 2);
-				Bukkit.getServer().getWorld(this.WorldName).spawnParticle(Particle.EXPLOSION_NORMAL, loc.getX(), loc.getY(), loc.getZ(), 0);
+				Bukkit.getServer().getWorld(this.WorldName).spawnParticle(Particle.EXPLOSION_LARGE, loc.getX(), loc.getY(), loc.getZ(), 0);
 			}, delay);
 	
 		}

@@ -56,8 +56,10 @@ public class ClickHandler implements Listener {
 			//	world.createExplosion(loc, proj.Radius, proj.DoFire);
 			Entity tnt = event.getEntity().getWorld().spawnEntity(loc, EntityType.PRIMED_TNT);
 			TNTPrimed tntEnt = (TNTPrimed) tnt;
-			tntEnt.setFuseTicks(0);
 			tntEnt.setYield(proj.Radius);
+			tntEnt.setFuseTicks(0);
+
+
 
 			projectiles.remove(event.getEntity().getUniqueId());
 		}
