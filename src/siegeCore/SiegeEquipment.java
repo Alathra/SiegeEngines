@@ -143,7 +143,7 @@ public class SiegeEquipment implements Cloneable  {
 				ClickHandler.projectiles.put(tnt.getUniqueId(), this.projectile);
 				tnt.setVelocity(loc.getDirection().multiply(this.Velocity));
 				Bukkit.getServer().getWorld(this.WorldName).playSound(this.location, Sound.ENTITY_GENERIC_EXPLODE, 20, 2);
-				Bukkit.getServer().getWorld(this.WorldName).spawnParticle(Particle.SMOKE_LARGE, loc.getX(), loc.getY(), loc.getZ(), 0);
+				Bukkit.getServer().getWorld(this.WorldName).spawnParticle(Particle.EXPLOSION_NORMAL, loc.getX(), loc.getY(), loc.getZ(), 0);
 			}, delay);
 	
 		}

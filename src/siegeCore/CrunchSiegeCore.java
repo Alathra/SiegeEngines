@@ -130,7 +130,7 @@ public class CrunchSiegeCore extends JavaPlugin {
 	
 	public static void CreateTrebuchet(Player player) {
 		Location l = player.getLocation();
-		l.setY(l.getY() - 1);
+		//l.setY(l.getY() - 1);
 		Entity entity2 = player.getWorld().spawnEntity(l, EntityType.ARMOR_STAND);
 		SiegeEquipment equip = new SiegeEquipment(entity2.getUniqueId());
 		ItemStack item = new ItemStack(Material.CARVED_PUMPKIN);
