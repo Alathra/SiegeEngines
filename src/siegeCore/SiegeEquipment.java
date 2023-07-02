@@ -14,8 +14,13 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public class SiegeEquipment {
-
+public class SiegeEquipment implements Cloneable  {
+	
+	@Override
+	public SiegeEquipment clone() throws CloneNotSupportedException {
+	return (SiegeEquipment)super.clone();
+	}
+	
 	public UUID EntityId;
 	public Entity Entity;
 	

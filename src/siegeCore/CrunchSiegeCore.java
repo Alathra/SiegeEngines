@@ -60,6 +60,7 @@ public class CrunchSiegeCore extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(new RotationHandler(), this);
 		getServer().getPluginManager().registerEvents(new ClickHandler(), this);
 
+		AddDefined();
 	}
 	
 	public class SiegeCommand implements CommandExecutor {
@@ -78,6 +79,19 @@ public class CrunchSiegeCore extends JavaPlugin {
 		}
 	}
 
+	public static SiegeEquipment CreateClone(Integer ModelId) {
+		try {
+			return DefinedEquipment.get(ModelId).clone();
+		} catch (CloneNotSupportedException e) {
+			// TODO Auto-generated catch block
+		
+		}
+		
+		return null;
+	}
+	
+	public static HashMap<Integer, SiegeEquipment> DefinedEquipment = new HashMap<Integer, SiegeEquipment>();
+	
 	public static HashMap<UUID, List<Entity>> TrackedStands = new HashMap<UUID, List<Entity>>();
 
 	public static HashMap<UUID, SiegeEquipment> equipment = new HashMap<UUID, SiegeEquipment>();
@@ -99,6 +113,21 @@ public class CrunchSiegeCore extends JavaPlugin {
 		return timeLeftFormatted;
 	}
 
+	public static void AddDefined() {
+		SiegeEquipment equip = new SiegeEquipment(null);
+		ItemStack item = new ItemStack(Material.CARVED_PUMPKIN);
+		equip.ReadyModelNumber = 122;
+		equip.ModelNumberToFireAt = 135;
+		equip.MillisecondsBetweenFiringStages = 2;
+		equip.MillisecondsBetweenReloadingStages = 30;
+		equip.FiringModelNumbers = new ArrayList<>(Arrays.asList(
+				123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139
+				));
+		equip.CycleThroughModelsBeforeFiring = false;
+		
+		DefinedEquipment.put(equip.ReadyModelNumber, equip);
+	}
+	
 	public static void CreateTrebuchet(Player player) {
 		Location l = player.getLocation();
 		l.setY(l.getY() - 1);
@@ -114,8 +143,7 @@ public class CrunchSiegeCore extends JavaPlugin {
 				));
 		equip.CycleThroughModelsBeforeFiring = false;
 		equip.Entity = entity2;
-
-		entity2.setCustomName("Trebuchet");
+		entity2.setCustomName("Weapon");
 		ItemMeta meta = item.getItemMeta();
 		
 		meta.setCustomModelData(equip.ReadyModelNumber);
@@ -142,7 +170,6 @@ public class CrunchSiegeCore extends JavaPlugin {
 			newList.add(entity2);
 			TrackedStands.put(player.getUniqueId(), newList);
 		}
-
 		equipment.put(entity2.getUniqueId(), equip);
 	}
 
