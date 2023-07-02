@@ -40,10 +40,12 @@ import org.bukkit.metadata.MetadataValue;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.util.EulerAngle;
 
 public class ClickHandler implements Listener {
 
-
+public float MinDelay = 5;
+	
 	public static HashMap<UUID, SiegeProjectile> projectiles = new HashMap<UUID, SiegeProjectile>();
 
 	@EventHandler
@@ -66,10 +68,11 @@ public class ClickHandler implements Listener {
 	}
 
 
-	public void Shoot(Player player) {
-		int delay = 6;
+	public void Shoot(Player player, long delay) {
+		float actualDelay = 0;
+		Boolean FirstShot = true;
 		for (Entity ent : CrunchSiegeCore.TrackedStands.get(player.getUniqueId())){{
-			
+
 			if (ent == null || ent.isDead()) {
 				continue;
 			}
@@ -82,7 +85,7 @@ public class ClickHandler implements Listener {
 
 			if (System.currentTimeMillis() < siege.NextShotTime) {
 				player.sendMessage("Cannot fire for another " + CrunchSiegeCore.convertTime(siege.NextShotTime - System.currentTimeMillis()));
-				return;
+				continue;
 			}
 
 			if (player.getInventory().containsAtLeast(new ItemStack(Material.COBBLESTONE), 10)) {
@@ -92,10 +95,10 @@ public class ClickHandler implements Listener {
 				player.sendMessage("Cannot fire, missing cobblestone, requires 10 per shot");
 				continue;
 			}
-			siege.Fire(player, delay);
-			delay += 6;
+				player.sendMessage(String.format("§e" +actualDelay));
+				siege.Fire(player, actualDelay);
+				actualDelay += delay;	
 		}
-
 		}
 	}
 
@@ -124,33 +127,26 @@ public class ClickHandler implements Listener {
 				return;
 			}
 
-			Shoot(player);
+			Shoot(player, 6);
 
 		}
 	}
+	
 	@EventHandler(priority = EventPriority.NORMAL)
-	public void onManualLock(SignChangeEvent event){
+	public void onSignChange(SignChangeEvent event){
 		String topline = event.getLine(0);
 		if (topline == null) topline = "";
 		Player player = event.getPlayer();
 		String toplinetrimmed = topline.trim();
 		event.getPlayer().sendMessage("1");
 		if (toplinetrimmed.equals("[Cannon]")) {
-			Block block = event.getBlock();
-			List<String> Ids = new ArrayList<String>();
-			for (Entity ent : CrunchSiegeCore.TrackedStands.get(player.getUniqueId())) {
-
-				Ids.add(ent.getUniqueId().toString());
-			}
-			TileState state = (TileState) block.getState();
-			NamespacedKey key = new NamespacedKey(CrunchSiegeCore.plugin, "cannons");		
-			state.getPersistentDataContainer().set(key, PersistentDataType.STRING, String.join(",", Ids));
-			state.update();
-			event.getPlayer().sendMessage("Saving cannons!");
+			SaveCannons(player, event.getBlock());
 		}
 		event.getPlayer().sendMessage("2");
 	}
 
+	
+	
 	public static void TakeControl(Player player, Entity entity) {
 		LivingEntity living = (LivingEntity) entity;
 		if (living.getEquipment().getHelmet() != null && living.getEquipment().getHelmet().getType() == Material.CARVED_PUMPKIN) {
@@ -177,38 +173,113 @@ public class ClickHandler implements Listener {
 		}
 	}
 
+	public void SaveCannons(Player player, Block block) {
+		List<String> Ids = new ArrayList<String>();
+		if (!CrunchSiegeCore.TrackedStands.containsKey(player.getUniqueId())) {
+			return;
+		}
+		for (Entity ent : CrunchSiegeCore.TrackedStands.get(player.getUniqueId())) {
+
+			Ids.add(ent.getUniqueId().toString());
+		}
+		TileState state = (TileState) block.getState();
+		NamespacedKey key = new NamespacedKey(CrunchSiegeCore.plugin, "cannons");		
+		state.getPersistentDataContainer().set(key, PersistentDataType.STRING, String.join(",", Ids));
+		state.update();
+		player.sendMessage("Saving cannons!");
+	}
+
+	public void AimUp(Player player, float amount) {
+		for (Entity ent : CrunchSiegeCore.TrackedStands.get(player.getUniqueId())) {
+			Location loc = ent.getLocation();
+			ArmorStand stand = (ArmorStand) ent;
+			
+			loc.setPitch((float) (loc.getPitch() - amount));
+			stand.setHeadPose(new EulerAngle(loc.getDirection().getY()*(-1),0,0));
+			ent.teleport(loc);
+		}
+	}
+	
+	public void AimDown(Player player, float amount) {
+		for (Entity ent : CrunchSiegeCore.TrackedStands.get(player.getUniqueId())) {
+			Location loc = ent.getLocation();
+			ArmorStand stand = (ArmorStand) ent;
+			
+			loc.setPitch((float) (loc.getPitch() + amount));
+			stand.setHeadPose(new EulerAngle(loc.getDirection().getY()*(-1),0,0));
+			ent.teleport(loc);
+		}
+	}
+	
 	@EventHandler
 	public void onPlayerClickSign(PlayerInteractEvent event){
-		Player p = event.getPlayer();
+		Player player = event.getPlayer();
 		if(event.getClickedBlock() != null && event.getClickedBlock().getType().toString().contains("SIGN")){
 			Sign sign = (Sign) event.getClickedBlock().getState();
+			if(sign.getLine(0).equalsIgnoreCase( "[Fire]") && event.getAction() == Action.RIGHT_CLICK_BLOCK){
+				try {
+					Long delay = Long.parseLong(sign.getLine(1));
+					if (delay < 6){
+						delay = 6l;
+					}
+					Shoot(player, delay);
+				} catch (Exception e) {
+					Shoot(player, 6);
+				}
+				return;
+			}
+
+			if(sign.getLine(0).equalsIgnoreCase( "[Aim]")){
+				float amount;
+				try {
+					amount = Float.parseFloat(sign.getLine(1));
+					if (player.isSneaking()) {
+						AimDown(player, amount);
+					}
+					else {
+						AimUp(player, amount);
+					}
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					player.sendMessage("Could not parse number on second line.");
+				} 
+			
+				return;
+			}
+			
 			if(sign.getLine(0).equalsIgnoreCase( "[Cannon]")){
-			if(event.getAction() == Action.RIGHT_CLICK_BLOCK){
+				if(event.getAction() == Action.RIGHT_CLICK_BLOCK){
+					if (player.isSneaking()) {
+						SaveCannons(player, event.getClickedBlock());
+						return;
+					}
+					if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
+						CrunchSiegeCore.TrackedStands.remove(player.getUniqueId());
+						player.sendMessage("Releasing the cannons!");
+						return;
+					}
 					NamespacedKey key = new NamespacedKey(CrunchSiegeCore.plugin, "cannons");		
 					TileState state = (TileState)  sign.getBlock().getState();
-					CrunchSiegeCore.TrackedStands.remove(p.getUniqueId());
+					CrunchSiegeCore.TrackedStands.remove(player.getUniqueId());
 					List<UUID> temp = new ArrayList<UUID>();
 					if (!state.getPersistentDataContainer().has(key,  PersistentDataType.STRING)) {
 						return;
 					}
 					String[] split = state.getPersistentDataContainer().get(key, PersistentDataType.STRING).replace("[", "").replace("]", "").split(",");
 					for (String s : split) {
-						p.sendMessage(s.trim());
+						player.sendMessage(s.trim());
 						temp.add(UUID.fromString(s.trim()));
 					}
 					for (UUID Id : temp) {
 						List<Entity> entities = new ArrayList<Entity>();
 						Entity ent = Bukkit.getEntity(Id);
 						if (ent != null) {
-							TakeControl(p, ent);
+							TakeControl(player, ent);
 						}
 					}
 				}
 			}
-			if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
-				CrunchSiegeCore.TrackedStands.remove(p.getUniqueId());
-				p.sendMessage("Releasing the cannons!");
-			}
+			
 		}
 	}
 
