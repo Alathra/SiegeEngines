@@ -21,7 +21,7 @@ public class RotationHandler implements Listener {
 		if (CrunchSiegeCore.TrackedStands.containsKey(player.getUniqueId())) {
 			ItemStack itemInHand = player.getInventory().getItemInMainHand();
 			if (itemInHand != null) {
-				if (itemInHand.getType() != Material.STICK) {
+				if (itemInHand.getType() != Material.CLOCK) {
 					//	TrackedStands.remove(player.getUniqueId());
 
 					return;
@@ -52,8 +52,15 @@ public class RotationHandler implements Listener {
 							ArmorStand stand = (ArmorStand) living;
 							
 							if (equipment.RotateUpDown) {
-								stand.setHeadPose(new EulerAngle(player.getLocation().getDirection().getY()*(-1),0,0));
 								loc.setPitch(player.getLocation().getPitch());
+								if (loc.getPitch()  < -85) {
+									loc.setPitch(-85);
+								}
+								if (loc.getPitch() > 85) {
+									loc.setPitch(85);
+								}
+								stand.setHeadPose(new EulerAngle(loc.getDirection().getY()*(-1),0,0));
+						
 							}
 						
 							

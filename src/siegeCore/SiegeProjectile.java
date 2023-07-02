@@ -12,6 +12,4 @@ public class SiegeProjectile {
 		Radius = rad;
 		DoFire = fire;
 	}
-	
-	public ItemStack AmmoItem = new ItemStack(Material.COBBLESTONE, 1);
 }

@@ -1,6 +1,7 @@
 package siegeCore;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
@@ -29,6 +30,8 @@ public class SiegeEquipment implements Cloneable  {
 
 	public ItemStack ItemToPlace;
 
+	public HashMap<Material, SiegeProjectile> Projectiles = new HashMap<Material, SiegeProjectile>() ;
+	
 	public String ItemToUseForModel;
 
 	public String WorldName;
@@ -36,7 +39,7 @@ public class SiegeEquipment implements Cloneable  {
 	public int XOffset = 7;
 	public int YOffset = 0;
 	public int MaxFuel = 5;
-	public float VelocityPerFuel = 0.5f;
+	public float VelocityPerFuel = 0.75f;
     public Material FuelMaterial = Material.GUNPOWDER;
 	public int FuseTime;
 	public long NextShotTime = System.currentTimeMillis();
@@ -62,16 +65,10 @@ public class SiegeEquipment implements Cloneable  {
 
 	public List<Integer> FiringModelNumbers = new ArrayList<Integer>();
 
-	public SiegeProjectile projectile = new SiegeProjectile(2, false);
-
 	public EquipmentMagazine AmmoHolder = new EquipmentMagazine();
 
-	public SiegeEquipment(UUID id) {
-		EntityId = id;
-	}
-
 	public Boolean isLoaded() {
-		return (AmmoHolder.LoadedFuel > 0 && AmmoHolder.LoadedProjectile > 1);
+		return (AmmoHolder.LoadedFuel > 0 && AmmoHolder.LoadedProjectile >= 1);
 	}
 
 	public Boolean CanLoadFuel() {
@@ -110,26 +107,35 @@ public class SiegeEquipment implements Cloneable  {
 			return;
 		}
 		float loadedFuel = this.AmmoHolder.LoadedFuel;
-		String LoadedProjectile = this.AmmoHolder.MaterialName;
+		Material LoadedProjectile = this.AmmoHolder.MaterialName;
 		
 		this.AmmoHolder.LoadedFuel = 0;
 		this.AmmoHolder.LoadedProjectile = 0;
-		this.AmmoHolder.MaterialName = Material.BEDROCK.toString();
+		this.AmmoHolder.MaterialName = Material.BEDROCK;
 		
+		LivingEntity living = (LivingEntity) Entity;
+		if (living.getEquipment() == null || living.getEquipment().getHelmet() == null || living.getEquipment().getHelmet().getItemMeta() == null) {
+			return;
+		}
+		if (living.getEquipment().getHelmet().getItemMeta().getCustomModelData() != this.ReadyModelNumber) {
+			return;
+		}
 		this.WorldName = Entity.getWorld().getName();
 		this.NextShotTime = System.currentTimeMillis() + 6000;
 		if (this.CycleThroughModelsBeforeFiring) {
 
 
 			this.TaskNumber = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(CrunchSiegeCore.plugin, () -> {
-				LivingEntity living = (LivingEntity) Entity;
+	
 				Location loc = living.getEyeLocation();
 				Vector direction = Entity.getLocation().getDirection().multiply(XOffset);
-				loc.add(direction);
 				Random random = new Random();
+				float randomVar = random.nextFloat() * (6 - -6) + -6;
+				loc.add(direction.multiply(randomVar));
+				loc.setYaw(loc.getYaw() + randomVar);
 
-				float randomVar = random.nextFloat() * (7 - -7) + -7;
-
+			
+				
 				this.NextModelNumber = 0;
 				this.location = loc;
 
@@ -172,7 +178,7 @@ public class SiegeEquipment implements Cloneable  {
 						if (modelData == this.ModelNumberToFireAt) {
 							Entity tnt = Bukkit.getServer().getWorld(this.WorldName).spawnEntity(loc, EntityType.SNOWBALL);
 
-							ClickHandler.projectiles.put(tnt.getUniqueId(), this.projectile);
+							ClickHandler.projectiles.put(tnt.getUniqueId(), Projectiles.get(LoadedProjectile));
 							tnt.setVelocity(loc.getDirection().multiply(loadedFuel * this.VelocityPerFuel));
 							Bukkit.getServer().getWorld(this.WorldName).playSound(this.location, Sound.ENTITY_BAT_DEATH, 20, 2);
 						}
@@ -189,20 +195,19 @@ public class SiegeEquipment implements Cloneable  {
 
 			this.TaskNumber = Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(CrunchSiegeCore.plugin, () -> {
 				//player.sendMessage("task");
-				LivingEntity living = (LivingEntity) Entity;
+
 				Location loc = living.getEyeLocation();
 				Vector direction = Entity.getLocation().getDirection().multiply(XOffset);
-				loc.add(direction);
 				Random random = new Random();
-
-				float randomVar = random.nextFloat() * (7 - -7) + -7;
-
+				float randomVar = random.nextFloat() * (6 - -6) + -6;
+				loc.add(direction);
+				loc.setYaw(loc.getYaw() + randomVar);
 				this.NextModelNumber = 0;
 				this.location = loc;
 
 				//	player.sendMessage("Cannot fire for another " + CrunchSiegeCore.convertTime(this.NextShotTime - System.currentTimeMillis()));
 				Entity tnt = Bukkit.getServer().getWorld(this.WorldName).spawnEntity(loc, EntityType.SNOWBALL);
-				ClickHandler.projectiles.put(tnt.getUniqueId(), this.projectile);
+				ClickHandler.projectiles.put(tnt.getUniqueId(), Projectiles.get(LoadedProjectile));
 				tnt.setVelocity(loc.getDirection().multiply(loadedFuel * this.VelocityPerFuel));
 				Bukkit.getServer().getWorld(this.WorldName).playSound(this.location, Sound.ENTITY_GENERIC_EXPLODE, 20, 2);
 				Bukkit.getServer().getWorld(this.WorldName).spawnParticle(Particle.EXPLOSION_LARGE, loc.getX(), loc.getY(), loc.getZ(), 0);

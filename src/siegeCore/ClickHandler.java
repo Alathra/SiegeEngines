@@ -18,6 +18,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.block.TileState;
 import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.ArmorStand.LockType;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -33,6 +34,7 @@ import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -83,15 +85,6 @@ public class ClickHandler implements Listener {
 			}
 			SiegeEquipment siege = CrunchSiegeCore.equipment.get(ent.getUniqueId());
 
-		
-
-			if (player.getInventory().containsAtLeast(new ItemStack(Material.COBBLESTONE), 10)) {
-				player.getInventory().remove(new ItemStack(Material.COBBLESTONE, 10));
-			}
-			else {
-				player.sendMessage("Cannot fire, missing cobblestone, requires 10 per shot");
-				continue;
-			}
 			if (siege.isLoaded()) {
 				siege.Fire(player, actualDelay);
 				actualDelay += delay;
@@ -126,7 +119,7 @@ public class ClickHandler implements Listener {
 
 
 		if (event.getAction() == Action.LEFT_CLICK_AIR) {
-			if (ItemInHand.getType() != Material.STICK) {
+			if (ItemInHand.getType() != Material.CLOCK) {
 				return;
 			}
 
@@ -152,14 +145,30 @@ public class ClickHandler implements Listener {
 
 	public static void TakeControl(Player player, Entity entity) {
 		LivingEntity living = (LivingEntity) entity;
+		if (CrunchSiegeCore.TrackedStands.containsKey(player.getUniqueId())) {
+			List<Entity> entities = CrunchSiegeCore.TrackedStands.get(player.getUniqueId());
+			if (entities.contains(entity)) {
+				return;
+			}
+		}
+
 		if (living.getEquipment().getHelmet() != null && living.getEquipment().getHelmet().getType() == Material.CARVED_PUMPKIN) {
 			if (living.getEquipment() == null || living.getEquipment().getHelmet() == null || living.getEquipment().getHelmet().getItemMeta() == null) {
 				return;
 			}
 
-			SiegeEquipment equip = CrunchSiegeCore.CreateClone(living.getEquipment().getHelmet().getItemMeta().getCustomModelData());
-			equip.Entity = entity;
-			equip.EntityId = entity.getUniqueId();
+			ArmorStand stand = (ArmorStand) entity;
+			stand.addEquipmentLock(EquipmentSlot.HEAD, LockType.REMOVING_OR_CHANGING);
+			SiegeEquipment equip;
+			if (CrunchSiegeCore.equipment.containsKey(entity.getUniqueId())) {
+				equip = CrunchSiegeCore.equipment.get(entity.getUniqueId());
+			}
+			else {
+				equip = CrunchSiegeCore.CreateClone(living.getEquipment().getHelmet().getItemMeta().getCustomModelData());
+				equip.AmmoHolder = new EquipmentMagazine();
+				equip.Entity = entity;
+				equip.EntityId = entity.getUniqueId();
+			}
 
 			if (CrunchSiegeCore.TrackedStands.containsKey(player.getUniqueId())) {
 				List<Entity> entities = CrunchSiegeCore.TrackedStands.get(player.getUniqueId());
@@ -198,7 +207,7 @@ public class ClickHandler implements Listener {
 			Location loc = ent.getLocation();
 			ArmorStand stand = (ArmorStand) ent;
 			//	player.sendMessage(String.format("" + loc.getPitch()));
-			if (loc.getPitch() == -90 || loc.getPitch() - amount < -90) {
+			if (loc.getPitch() == -85 || loc.getPitch() - amount < -85) {
 				return;
 			}
 			loc.setPitch((float) (loc.getPitch() - amount));
@@ -215,7 +224,7 @@ public class ClickHandler implements Listener {
 			Location loc = ent.getLocation();
 			ArmorStand stand = (ArmorStand) ent;
 			//	player.sendMessage(String.format("" + loc.getPitch()));
-			if (loc.getPitch() == 90 || loc.getPitch() + amount > 90) {
+			if (loc.getPitch() == 85 || loc.getPitch() + amount > 85) {
 				return;
 			}
 
@@ -313,12 +322,7 @@ public class ClickHandler implements Listener {
 			return;
 		}
 		if (entity.getType() == EntityType.ARMOR_STAND){
-			if (itemInHand.getType() == Material.CLOCK) {
-
-				TakeControl(player, entity);
-				return;
-			}
-		
+			TakeControl(player, entity);
 			if (CrunchSiegeCore.equipment.containsKey(entity.getUniqueId())) {
 				SiegeEquipment equipment = CrunchSiegeCore.equipment.get(entity.getUniqueId());
 				if (itemInHand.getType().equals(equipment.FuelMaterial)) {
@@ -330,7 +334,20 @@ public class ClickHandler implements Listener {
 					}
 				}
 				if (itemInHand.getType().equals(Material.FLINT)) {
-					Shoot(player, 6);
+					if (equipment.isLoaded()) {
+						equipment.Fire(player, 6);
+					}
+					else {
+						player.sendMessage("Cannon is not loaded");
+					}
+					return;
+				}
+
+				if (equipment.Projectiles.containsKey(itemInHand.getType()) && !equipment.isLoaded()){
+					equipment.AmmoHolder.LoadedProjectile = 1;
+					equipment.AmmoHolder.MaterialName = (Material) itemInHand.getType();
+					player.sendMessage("Adding projectile to cannon");
+					itemInHand.setAmount(itemInHand.getAmount() - 1);
 				}
 				return;
 			}

@@ -114,7 +114,8 @@ public class CrunchSiegeCore extends JavaPlugin {
 	}
 
 	public static void AddDefined() {
-		SiegeEquipment equip = new SiegeEquipment(null);
+		SiegeEquipment equip = new SiegeEquipment();
+		equip.Projectiles.put(Material.COBBLESTONE, new SiegeProjectile(2, false));
 		ItemStack item = new ItemStack(Material.CARVED_PUMPKIN);
 		equip.ReadyModelNumber = 122;
 		equip.ModelNumberToFireAt = 135;
@@ -132,7 +133,7 @@ public class CrunchSiegeCore extends JavaPlugin {
 		Location l = player.getLocation();
 		l.setY(l.getY() - 1);
 		Entity entity2 = player.getWorld().spawnEntity(l, EntityType.ARMOR_STAND);
-		SiegeEquipment equip = new SiegeEquipment(entity2.getUniqueId());
+		SiegeEquipment equip = new SiegeEquipment();
 		ItemStack item = new ItemStack(Material.CARVED_PUMPKIN);
 		equip.ReadyModelNumber = 122;
 		equip.ModelNumberToFireAt = 135;
@@ -143,6 +144,7 @@ public class CrunchSiegeCore extends JavaPlugin {
 				));
 		equip.CycleThroughModelsBeforeFiring = false;
 		equip.Entity = entity2;
+		equip.EntityId = entity2.getUniqueId();
 		entity2.setCustomName("Weapon");
 		ItemMeta meta = item.getItemMeta();
 		
