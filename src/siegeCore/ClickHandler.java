@@ -165,6 +165,7 @@ public class ClickHandler implements Listener {
 			}
 			else {
 				equip = CrunchSiegeCore.CreateClone(living.getEquipment().getHelmet().getItemMeta().getCustomModelData());
+			
 				equip.AmmoHolder = new EquipmentMagazine();
 				equip.Entity = entity;
 				equip.EntityId = entity.getUniqueId();
@@ -277,16 +278,18 @@ public class ClickHandler implements Listener {
 			}
 
 			if(sign.getLine(0).equalsIgnoreCase( "[Cannon]")){
+				if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
+					CrunchSiegeCore.TrackedStands.remove(player.getUniqueId());
+					player.sendMessage("Releasing the cannons!");
+					return;
+				}
+				
 				if(event.getAction() == Action.RIGHT_CLICK_BLOCK){
 					if (player.isSneaking()) {
 						SaveCannons(player, event.getClickedBlock());
 						return;
 					}
-					if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
-						CrunchSiegeCore.TrackedStands.remove(player.getUniqueId());
-						player.sendMessage("Releasing the cannons!");
-						return;
-					}
+				
 					NamespacedKey key = new NamespacedKey(CrunchSiegeCore.plugin, "cannons");		
 					TileState state = (TileState)  sign.getBlock().getState();
 					CrunchSiegeCore.TrackedStands.remove(player.getUniqueId());
@@ -343,7 +346,7 @@ public class ClickHandler implements Listener {
 					return;
 				}
 
-				if (equipment.Projectiles.containsKey(itemInHand.getType()) && !equipment.isLoaded()){
+				if (equipment.Projectiles.containsKey(itemInHand.getType()) && equipment.AmmoHolder.LoadedProjectile == 0){
 					equipment.AmmoHolder.LoadedProjectile = 1;
 					equipment.AmmoHolder.MaterialName = (Material) itemInHand.getType();
 					player.sendMessage("Adding projectile to cannon");

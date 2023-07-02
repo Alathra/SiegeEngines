@@ -11,12 +11,18 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Firework;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
+
+import me.libraryaddict.disguise.DisguiseAPI;
+import me.libraryaddict.disguise.disguisetypes.DisguiseType;
+import me.libraryaddict.disguise.disguisetypes.MiscDisguise;
 
 public class SiegeEquipment implements Cloneable  {
 
@@ -51,7 +57,7 @@ public class SiegeEquipment implements Cloneable  {
 	public Location location;
 	public int ModelNumberToFireAt;
 	public Boolean CycleThroughModelsBeforeFiring = false;
-	public Boolean RotateSideways = false;
+	public Boolean RotateSideways = true;
 	public Boolean RotateUpDown = true;
 
 	public Boolean HasFired = false;
@@ -176,11 +182,7 @@ public class SiegeEquipment implements Cloneable  {
 						//	player.sendMessage("" + modelData);
 						CrunchSiegeCore.UpdateEntityIdModel(this.Entity, modelData, this.WorldName);
 						if (modelData == this.ModelNumberToFireAt) {
-							Entity tnt = Bukkit.getServer().getWorld(this.WorldName).spawnEntity(loc, EntityType.SNOWBALL);
-
-							ClickHandler.projectiles.put(tnt.getUniqueId(), Projectiles.get(LoadedProjectile));
-							tnt.setVelocity(loc.getDirection().multiply(loadedFuel * this.VelocityPerFuel));
-							Bukkit.getServer().getWorld(this.WorldName).playSound(this.location, Sound.ENTITY_BAT_DEATH, 20, 2);
+							   Shoot(loc, loadedFuel, LoadedProjectile);
 						}
 						this.NextModelNumber += 1;
 
@@ -198,23 +200,77 @@ public class SiegeEquipment implements Cloneable  {
 
 				Location loc = living.getEyeLocation();
 				Vector direction = Entity.getLocation().getDirection().multiply(XOffset);
-				Random random = new Random();
-				float randomVar = random.nextFloat() * (6 - -6) + -6;
+		
 				loc.add(direction);
-				loc.setYaw(loc.getYaw() + randomVar);
+		
 				this.NextModelNumber = 0;
 				this.location = loc;
 
 				//	player.sendMessage("Cannot fire for another " + CrunchSiegeCore.convertTime(this.NextShotTime - System.currentTimeMillis()));
-				Entity tnt = Bukkit.getServer().getWorld(this.WorldName).spawnEntity(loc, EntityType.SNOWBALL);
-				ClickHandler.projectiles.put(tnt.getUniqueId(), Projectiles.get(LoadedProjectile));
-				tnt.setVelocity(loc.getDirection().multiply(loadedFuel * this.VelocityPerFuel));
-				Bukkit.getServer().getWorld(this.WorldName).playSound(this.location, Sound.ENTITY_GENERIC_EXPLODE, 20, 2);
-				Bukkit.getServer().getWorld(this.WorldName).spawnParticle(Particle.EXPLOSION_LARGE, loc.getX(), loc.getY(), loc.getZ(), 0);
-	
+		
+	           Shoot(loc, loadedFuel, LoadedProjectile);
 			}, (long) delay);
 
 		}
 	}
+	public static Random random = new Random();
+	
+	public void Shoot(Location loc, float loadedFuel, Material LoadedProjectile) {
 
+		switch (LoadedProjectile) {
+		
+		case COBBLESTONE:
+		case COPPER_BLOCK:
+		{
+			float randomVar = random.nextFloat() * (6 - -6) + -6;
+			loc.setYaw(loc.getYaw() + randomVar);
+			Entity tnt = Bukkit.getServer().getWorld(this.WorldName).spawnEntity(loc, EntityType.SNOWBALL);
+			ClickHandler.projectiles.put(tnt.getUniqueId(), Projectiles.get(LoadedProjectile));
+			tnt.setVelocity(loc.getDirection().multiply(loadedFuel * this.VelocityPerFuel));
+			Bukkit.getServer().getWorld(this.WorldName).playSound(this.location, Sound.ENTITY_GENERIC_EXPLODE, 20, 2);
+			Bukkit.getServer().getWorld(this.WorldName).spawnParticle(Particle.EXPLOSION_LARGE, loc.getX(), loc.getY(), loc.getZ(), 0);
+		}
+			break;
+		case GRAVEL:
+		{
+			for (int i = 0; i < 20; i++) {
+				Entity arrow = Bukkit.getServer().getWorld(this.WorldName).spawnEntity(loc, EntityType.ARROW);
+				arrow.setVelocity(loc.getDirection().multiply(loadedFuel * this.VelocityPerFuel / 2).add(new Vector(random.nextDouble(), random.nextDouble(), random.nextDouble())
+		                .subtract(new Vector(random.nextDouble(), random.nextDouble(), random.nextDouble()))));
+				Arrow arr = (Arrow) arrow;
+				arr.setDamage(3 * loadedFuel);
+				MiscDisguise miscDisguise = new MiscDisguise(DisguiseType.DROPPED_ITEM, Material.IRON_NUGGET);
+				DisguiseAPI.disguiseEntity(arrow, miscDisguise);
+				Bukkit.getServer().getWorld(this.WorldName).playSound(this.location, Sound.ITEM_CROSSBOW_SHOOT, 20, 2);
+			}
+		}
+			break;
+		case TNT:
+		{
+			for (int i = 0; i < 5; i++) {
+			//float randomVar = random.nextFloat() * (15 - -15) + -15;
+			Entity tnt = Bukkit.getServer().getWorld(this.WorldName).spawnEntity(loc, EntityType.SNOWBALL);
+			ClickHandler.projectiles.put(tnt.getUniqueId(), Projectiles.get(LoadedProjectile));
+			tnt.setVelocity(loc.getDirection().multiply(loadedFuel * this.VelocityPerFuel).add(new Vector(random.nextDouble(), random.nextDouble(), random.nextDouble())
+	                .subtract(new Vector(random.nextDouble(), random.nextDouble(), random.nextDouble()))));
+			Bukkit.getServer().getWorld(this.WorldName).playSound(this.location, Sound.ENTITY_GENERIC_EXPLODE, 20, 2);
+			Bukkit.getServer().getWorld(this.WorldName).spawnParticle(Particle.EXPLOSION_LARGE, loc.getX(), loc.getY(), loc.getZ(), 0);
+			}
+		}
+			break;
+		case FIREWORK_STAR:
+		{
+			for (int i = 0; i < 4; i++) {
+				Entity arrow = Bukkit.getServer().getWorld(this.WorldName).spawnEntity(loc, EntityType.SMALL_FIREBALL);
+				arrow.setVelocity(loc.getDirection().multiply(loadedFuel * this.VelocityPerFuel).add(new Vector(random.nextDouble(), random.nextDouble(), random.nextDouble())
+		                .subtract(new Vector(random.nextDouble(), random.nextDouble(), random.nextDouble()))));
+				Bukkit.getServer().getWorld(this.WorldName).playSound(this.location, Sound.ITEM_CROSSBOW_SHOOT, 20, 2);
+			}
+		}
+			break;
+		}
+		
+
+	}
+	
 }

@@ -3,5 +3,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="lib" path="E:/4 1.19.4 test/spigot-api-1.19.4-R0.1-SNAPSHOT-shaded.jar"/>
+	<classpathentry kind="lib" path="E:/4 1.19.4 test/plugins/LibsDisguises-10.0.37-Free.jar"/>
+	<classpathentry kind="lib" path="E:/4 1.19.4 test/plugins/ProtocolLib (15).jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -115,7 +115,11 @@ public class CrunchSiegeCore extends JavaPlugin {
 
 	public static void AddDefined() {
 		SiegeEquipment equip = new SiegeEquipment();
-		equip.Projectiles.put(Material.COBBLESTONE, new SiegeProjectile(2, false));
+		equip.Projectiles.put(Material.COBBLESTONE, new SiegeProjectile(1, false));
+		equip.Projectiles.put(Material.TNT, new SiegeProjectile(1, false));
+		equip.Projectiles.put(Material.COPPER_BLOCK, new SiegeProjectile(4, false));
+		equip.Projectiles.put(Material.GRAVEL, new SiegeProjectile(1, false));
+		equip.Projectiles.put(Material.FIREWORK_STAR, new SiegeProjectile(1, false));
 		ItemStack item = new ItemStack(Material.CARVED_PUMPKIN);
 		equip.ReadyModelNumber = 122;
 		equip.ModelNumberToFireAt = 135;
