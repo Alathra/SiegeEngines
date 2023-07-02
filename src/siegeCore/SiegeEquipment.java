@@ -239,8 +239,8 @@ public class SiegeEquipment implements Cloneable  {
 		                .subtract(new Vector(random.nextDouble(), random.nextDouble(), random.nextDouble()))));
 				Arrow arr = (Arrow) arrow;
 				arr.setDamage(3 * loadedFuel);
-				MiscDisguise miscDisguise = new MiscDisguise(DisguiseType.DROPPED_ITEM, Material.IRON_NUGGET);
-				DisguiseAPI.disguiseEntity(arrow, miscDisguise);
+//				MiscDisguise miscDisguise = new MiscDisguise(DisguiseType.DROPPED_ITEM, Material.IRON_NUGGET);
+//				DisguiseAPI.disguiseEntity(arrow, miscDisguise);
 				Bukkit.getServer().getWorld(this.WorldName).playSound(this.location, Sound.ITEM_CROSSBOW_SHOOT, 20, 2);
 			}
 		}
