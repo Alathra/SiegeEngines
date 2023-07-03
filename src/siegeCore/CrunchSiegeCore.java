@@ -51,6 +51,7 @@ import org.bukkit.util.Vector;
 import CrunchProjectiles.EntityProjectile;
 import CrunchProjectiles.CrunchProjectile;
 import CrunchProjectiles.ExplosiveProjectile;
+import CrunchProjectiles.PotionProjectile;
 
 
 public class CrunchSiegeCore extends JavaPlugin {
@@ -151,7 +152,7 @@ public class CrunchSiegeCore extends JavaPlugin {
 		pig.SoundType = Sound.ITEM_CROSSBOW_SHOOT;
 		pig.ParticleType = Particle.GLOW;
 		equip.Projectiles.put(Material.PORKCHOP, pig);
-		
+		equip.Projectiles.put(Material.BONE, new PotionProjectile());
 		ItemStack item = new ItemStack(Material.CARVED_PUMPKIN);
 		equip.ReadyModelNumber = 122;
 		equip.ModelNumberToFireAt = 135;
