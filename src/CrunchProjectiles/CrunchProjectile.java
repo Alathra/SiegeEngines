@@ -8,6 +8,6 @@ import org.bukkit.entity.Player;
 
 public interface CrunchProjectile {
  
-	public void Shoot(Player player, Entity entity, Location loc, Float velocity);
+	public void Shoot(Player player, Entity entity, double XOffset, double YOffset, Float velocity);
 
 }

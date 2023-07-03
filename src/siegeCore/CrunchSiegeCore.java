@@ -123,16 +123,16 @@ public class CrunchSiegeCore extends JavaPlugin {
 	public static void AddDefined() {
 		SiegeEquipment equip = new SiegeEquipment();
 		ExplosiveProjectile proj = new ExplosiveProjectile();
-		proj.Radius = 1;
+		proj.ExplodePower = 1;
 		equip.Projectiles.put(Material.COBBLESTONE, proj);
 		proj = new ExplosiveProjectile();
-		proj.Radius = 1;
-		proj.ProjectilesCount = 50;
+		proj.ExplodePower = 1;
+		proj.ProjectilesCount = 3;
 		proj.DelayedFire = true;
-		proj.Inaccuracy = 0.3f;
+		proj.Inaccuracy = 0.5f;
 		equip.Projectiles.put(Material.TNT, proj);
 		proj = new ExplosiveProjectile();
-		proj.Radius = 4;
+		proj.ExplodePower = 4;
 		proj.ProjectilesCount = 1;
 		equip.Projectiles.put(Material.COPPER_BLOCK, proj);
 		equip.Projectiles.put(Material.GRAVEL, new EntityProjectile());

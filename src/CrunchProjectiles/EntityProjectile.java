@@ -9,6 +9,7 @@ import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Fireball;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -25,24 +26,30 @@ public class EntityProjectile implements CrunchProjectile{
 	public Particle ParticleType = Particle.EXPLOSION_LARGE;
 	public Sound SoundType = Sound.ENTITY_GENERIC_EXPLODE;
 	@Override
-	public void Shoot(Player player, Entity entity, Location loc, Float velocity) {
+	public void Shoot(Player player, Entity entity, double XOffset, double YOffset, Float velocity) {
 		int baseDelay = 0;
 		for (int i = 0; i < EntityCount; i++) {
 			if (DelayedFire) {
 				baseDelay += DelayTime;
 				Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(CrunchSiegeCore.plugin, () -> {
-					CreateEntity(entity, loc, velocity);
+			
+					CreateEntity(entity, XOffset, YOffset, velocity);
 				}, (long) baseDelay);
 			}
 			else {
-				CreateEntity(entity, loc, velocity);
+
+				CreateEntity(entity, XOffset, YOffset, velocity);
 			}
 	
 			//	}
 		}
 	}
-	private void CreateEntity(Entity entity, Location loc, Float velocity) {
+	private void CreateEntity(Entity entity,  double XOffset, double YOffset, Float velocity) {
 		World world = entity.getLocation().getWorld();
+		LivingEntity living = (LivingEntity) entity;
+		Location loc =  living.getEyeLocation();
+		Vector direction = entity.getLocation().getDirection().multiply(XOffset);
+		loc.add(direction);
 
 		Entity arrow = world.spawnEntity(loc, EntityTyp);
 		if (Inaccuracy != 0f) {

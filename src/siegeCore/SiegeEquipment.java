@@ -184,7 +184,7 @@ public class SiegeEquipment implements Cloneable  {
 						//	player.sendMessage("" + modelData);
 						CrunchSiegeCore.UpdateEntityIdModel(this.Entity, modelData, this.WorldName);
 						if (modelData == this.ModelNumberToFireAt) {
-							Projectiles.get(LoadedProjectile).Shoot(player, this.Entity, loc,  loadedFuel * this.VelocityPerFuel);
+							Projectiles.get(LoadedProjectile).Shoot(player, this.Entity, XOffset, YOffset, loadedFuel * this.VelocityPerFuel);
 						}
 						this.NextModelNumber += 1;
 
@@ -210,7 +210,7 @@ public class SiegeEquipment implements Cloneable  {
 
 				//	player.sendMessage("Cannot fire for another " + CrunchSiegeCore.convertTime(this.NextShotTime - System.currentTimeMillis()));
 
-				Projectiles.get(LoadedProjectile).Shoot(player, this.Entity, loc, loadedFuel * this.VelocityPerFuel);
+				Projectiles.get(LoadedProjectile).Shoot(player, this.Entity, XOffset, YOffset, loadedFuel * this.VelocityPerFuel);
 			}, (long) delay);
 
 		}
