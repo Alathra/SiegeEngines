@@ -207,6 +207,9 @@ public class ClickHandler implements Listener {
 	public void AimUp(Player player, float amount) {
 
 		for (Entity ent : CrunchSiegeCore.TrackedStands.get(player.getUniqueId())) {
+			if (ent.isDead()) {
+				continue;
+			}
 			Location loc = ent.getLocation();
 			ArmorStand stand = (ArmorStand) ent;
 			//	player.sendMessage(String.format("" + loc.getPitch()));
@@ -224,6 +227,9 @@ public class ClickHandler implements Listener {
 	public void AimDown(Player player, float amount) {
 
 		for (Entity ent : CrunchSiegeCore.TrackedStands.get(player.getUniqueId())) {
+			if (ent.isDead()) {
+				continue;
+			}
 			Location loc = ent.getLocation();
 			ArmorStand stand = (ArmorStand) ent;
 			//	player.sendMessage(String.format("" + loc.getPitch()));

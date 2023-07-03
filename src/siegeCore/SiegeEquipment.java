@@ -59,7 +59,7 @@ public class SiegeEquipment implements Cloneable  {
 	public Location location;
 	public int ModelNumberToFireAt;
 	public Boolean CycleThroughModelsBeforeFiring = false;
-	public Boolean RotateSideways = true;
+	public Boolean RotateSideways = false;
 	public Boolean RotateUpDown = true;
 
 	public Boolean HasFired = false;
