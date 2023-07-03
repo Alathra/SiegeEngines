@@ -19,7 +19,7 @@ import siegeCore.CrunchSiegeCore;
 public class ExplosiveProjectile implements CrunchProjectile {
 
 	public int ExplodePower = 2;
-	public float Inaccuracy = 0.4f;
+	public float Inaccuracy = 0.3f;
 	public int ProjectilesCount = 1;
 	public Boolean DelayedFire = false;
 	public int DelayTime = 6;
