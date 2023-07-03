@@ -23,10 +23,10 @@ import org.bukkit.util.Vector;
 import siegeCore.CrunchSiegeCore;
 
 public class PotionProjectile implements CrunchProjectile {
-	public int EntityCount = 20;
+	public int EntityCount = 3;
 	public Boolean DelayedFire = false;
 	public int DelayTime = 6;
-	public float Inaccuracy = 0.4f;
+	public float Inaccuracy = 0.1f;
 	public Particle ParticleType = Particle.EXPLOSION_LARGE;
 	public Sound SoundType = Sound.ENTITY_GENERIC_EXPLODE;
 	
@@ -65,9 +65,9 @@ public class PotionProjectile implements CrunchProjectile {
 		else {
 			arrow.setVelocity(loc.getDirection().multiply(velocity));
 		}
-		ItemStack itemStack = new ItemStack(Material.LINGERING_POTION);
+		ItemStack itemStack = new ItemStack(Material.SPLASH_POTION);
 		PotionMeta potionMeta = (PotionMeta) itemStack.getItemMeta();
-		potionMeta.addCustomEffect(new PotionEffect(PotionEffectType.POISON, 100, 0, true), true);
+		potionMeta.addCustomEffect(new PotionEffect(PotionEffectType.HARM, 100, 3, true), true);
 		itemStack.setItemMeta(potionMeta);
 		ThrownPotion  potion = (ThrownPotion) arrow;
 		potion.setItem(itemStack);
