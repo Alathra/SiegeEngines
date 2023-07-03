@@ -14,6 +14,7 @@ import java.util.logging.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
@@ -126,8 +127,9 @@ public class CrunchSiegeCore extends JavaPlugin {
 		equip.Projectiles.put(Material.COBBLESTONE, proj);
 		proj = new ExplosiveProjectile();
 		proj.Radius = 1;
-		proj.ProjectilesCount = 3;
-		proj.Inaccuracy = 12;
+		proj.ProjectilesCount = 50;
+		proj.DelayedFire = true;
+		proj.Inaccuracy = 0.3f;
 		equip.Projectiles.put(Material.TNT, proj);
 		proj = new ExplosiveProjectile();
 		proj.Radius = 4;
@@ -137,7 +139,19 @@ public class CrunchSiegeCore extends JavaPlugin {
 		EntityProjectile fireProj = new EntityProjectile();
 		fireProj.EntityCount = 3;
 		fireProj.EntityTyp = EntityType.SMALL_FIREBALL;
+		fireProj.ParticleType = Particle.WHITE_ASH;
+		fireProj.SoundType = Sound.ENTITY_BLAZE_SHOOT;
 		equip.Projectiles.put(Material.DIAMOND, fireProj);
+		
+		EntityProjectile pig = new EntityProjectile();
+		pig.EntityCount = 100;
+		pig.DelayedFire = true;
+		pig.DelayTime = 3;
+		pig.EntityTyp = EntityType.ARROW;
+		pig.SoundType = Sound.ITEM_CROSSBOW_SHOOT;
+		pig.ParticleType = Particle.GLOW;
+		equip.Projectiles.put(Material.PORKCHOP, pig);
+		
 		ItemStack item = new ItemStack(Material.CARVED_PUMPKIN);
 		equip.ReadyModelNumber = 122;
 		equip.ModelNumberToFireAt = 135;
