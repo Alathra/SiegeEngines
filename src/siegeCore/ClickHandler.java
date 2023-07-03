@@ -44,16 +44,18 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.EulerAngle;
 
+import CrunchProjectiles.ExplosiveProjectile;
+
 public class ClickHandler implements Listener {
 
 	public float MinDelay = 5;
 
-	public static HashMap<UUID, SiegeProjectile> projectiles = new HashMap<UUID, SiegeProjectile>();
+	public static HashMap<UUID, ExplosiveProjectile> projectiles = new HashMap<UUID, ExplosiveProjectile>();
 
 	@EventHandler
 	public void onHit(ProjectileHitEvent event) {
 		if ((event.getEntity() instanceof Snowball) && projectiles.containsKey(event.getEntity().getUniqueId())) {
-			SiegeProjectile proj = projectiles.get(event.getEntity().getUniqueId());
+			ExplosiveProjectile proj = projectiles.get(event.getEntity().getUniqueId());
 			Entity snowball = event.getEntity();
 			Location loc = snowball.getLocation();
 			World world = event.getEntity().getWorld();

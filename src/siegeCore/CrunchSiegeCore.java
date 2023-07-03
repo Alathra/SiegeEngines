@@ -47,10 +47,16 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
+import CrunchProjectiles.EntityProjectile;
+import CrunchProjectiles.CrunchProjectile;
+import CrunchProjectiles.ExplosiveProjectile;
+
 
 public class CrunchSiegeCore extends JavaPlugin {
 	public static Plugin plugin;
-
+	
+	public static Random random = new Random();
+	
 	@SuppressWarnings("deprecation")
 	@Override
 	public void onEnable() {
@@ -115,11 +121,23 @@ public class CrunchSiegeCore extends JavaPlugin {
 
 	public static void AddDefined() {
 		SiegeEquipment equip = new SiegeEquipment();
-		equip.Projectiles.put(Material.COBBLESTONE, new SiegeProjectile(1, false));
-		equip.Projectiles.put(Material.TNT, new SiegeProjectile(1, false));
-		equip.Projectiles.put(Material.COPPER_BLOCK, new SiegeProjectile(4, false));
-		equip.Projectiles.put(Material.GRAVEL, new SiegeProjectile(1, false));
-		equip.Projectiles.put(Material.FIREWORK_STAR, new SiegeProjectile(1, false));
+		ExplosiveProjectile proj = new ExplosiveProjectile();
+		proj.Radius = 1;
+		equip.Projectiles.put(Material.COBBLESTONE, proj);
+		proj = new ExplosiveProjectile();
+		proj.Radius = 1;
+		proj.ProjectilesCount = 3;
+		proj.Inaccuracy = 12;
+		equip.Projectiles.put(Material.TNT, proj);
+		proj = new ExplosiveProjectile();
+		proj.Radius = 4;
+		proj.ProjectilesCount = 1;
+		equip.Projectiles.put(Material.COPPER_BLOCK, proj);
+		equip.Projectiles.put(Material.GRAVEL, new EntityProjectile());
+		EntityProjectile fireProj = new EntityProjectile();
+		fireProj.EntityCount = 3;
+		fireProj.EntityTyp = EntityType.SMALL_FIREBALL;
+		equip.Projectiles.put(Material.DIAMOND, fireProj);
 		ItemStack item = new ItemStack(Material.CARVED_PUMPKIN);
 		equip.ReadyModelNumber = 122;
 		equip.ModelNumberToFireAt = 135;
