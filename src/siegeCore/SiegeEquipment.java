@@ -36,11 +36,7 @@ public class SiegeEquipment implements Cloneable  {
 	public UUID EntityId;
 	public Entity Entity;
 
-	public ItemStack ItemToPlace;
-
 	public HashMap<Material, CrunchProjectile> Projectiles = new HashMap<Material, CrunchProjectile>() ;
-
-	public String ItemToUseForModel;
 
 	public String WorldName;
 
@@ -49,14 +45,12 @@ public class SiegeEquipment implements Cloneable  {
 	public int MaxFuel = 5;
 	public float VelocityPerFuel = 0.75f;
 	public Material FuelMaterial = Material.GUNPOWDER;
-	public int FuseTime;
 	public long NextShotTime = System.currentTimeMillis();
 
 	public int MillisecondsBetweenFiringStages;
 	public int MillisecondsBetweenReloadingStages;
 
 	public int MillisecondsToLoad;
-	public Location location;
 	public int ModelNumberToFireAt;
 	public Boolean CycleThroughModelsBeforeFiring = false;
 	public Boolean RotateSideways = false;
@@ -145,7 +139,6 @@ public class SiegeEquipment implements Cloneable  {
 
 
 				this.NextModelNumber = 0;
-				this.location = loc;
 
 				//	player.sendMessage("Cannot fire for another " + CrunchSiegeCore.convertTime(this.NextShotTime - System.currentTimeMillis()));
 				//player.sendMessage("task");
@@ -206,9 +199,6 @@ public class SiegeEquipment implements Cloneable  {
 				loc.add(direction);
 
 				this.NextModelNumber = 0;
-				this.location = loc;
-
-				//	player.sendMessage("Cannot fire for another " + CrunchSiegeCore.convertTime(this.NextShotTime - System.currentTimeMillis()));
 
 				Projectiles.get(LoadedProjectile).Shoot(player, this.Entity, XOffset, YOffset, loadedFuel * this.VelocityPerFuel);
 			}, (long) delay);
@@ -216,54 +206,5 @@ public class SiegeEquipment implements Cloneable  {
 		}
 	}
 
-//
-//	public void Shoot(Location loc, float loadedFuel, Material LoadedProjectile) {
-//
-//		switch (LoadedProjectile) {
-//
-//		case COBBLESTONE:
-//		case COPPER_BLOCK:
-//		{
-//			float randomVar = random.nextFloat() * (6 - -6) + -6;
-//			loc.setYaw(loc.getYaw() + randomVar);
-//			Entity tnt = Bukkit.getServer().getWorld(this.WorldName).spawnEntity(loc, EntityType.SNOWBALL);
-//			ClickHandler.projectiles.put(tnt.getUniqueId(), );
-//			tnt.setVelocity(loc.getDirection().multiply(loadedFuel * this.VelocityPerFuel));
-//			Bukkit.getServer().getWorld(this.WorldName).playSound(this.location, Sound.ENTITY_GENERIC_EXPLODE, 20, 2);
-//			Bukkit.getServer().getWorld(this.WorldName).spawnParticle(Particle.EXPLOSION_LARGE, loc.getX(), loc.getY(), loc.getZ(), 0);
-//		}
-//		break;
-//		case GRAVEL:
-//		{
-
-//		}
-//		break;
-//		case TNT:
-//		{
-//			for (int i = 0; i < 5; i++) {
-//				//float randomVar = random.nextFloat() * (15 - -15) + -15;
-//				Entity tnt = Bukkit.getServer().getWorld(this.WorldName).spawnEntity(loc, EntityType.SNOWBALL);
-//				ClickHandler.projectiles.put(tnt.getUniqueId(), Projectiles.get(LoadedProjectile));
-//				tnt.setVelocity(loc.getDirection().multiply(loadedFuel * this.VelocityPerFuel).add(new Vector(random.nextDouble(), random.nextDouble(), random.nextDouble())
-//						.subtract(new Vector(random.nextDouble(), random.nextDouble(), random.nextDouble()))));
-//				Bukkit.getServer().getWorld(this.WorldName).playSound(this.location, Sound.ENTITY_GENERIC_EXPLODE, 20, 2);
-//				Bukkit.getServer().getWorld(this.WorldName).spawnParticle(Particle.EXPLOSION_LARGE, loc.getX(), loc.getY(), loc.getZ(), 0);
-//			}
-//		}
-//		break;
-//		case FIREWORK_STAR:
-//		{
-//			for (int i = 0; i < 4; i++) {
-//				Entity arrow = Bukkit.getServer().getWorld(this.WorldName).spawnEntity(loc, EntityType.SMALL_FIREBALL);
-//				arrow.setVelocity(loc.getDirection().multiply(loadedFuel * this.VelocityPerFuel).add(new Vector(random.nextDouble(), random.nextDouble(), random.nextDouble())
-//						.subtract(new Vector(random.nextDouble(), random.nextDouble(), random.nextDouble()))));
-//				Bukkit.getServer().getWorld(this.WorldName).playSound(this.location, Sound.ITEM_CROSSBOW_SHOOT, 20, 2);
-//			}
-//		}
-//		break;
-//		}
-//
-//
-//	}
 
 }

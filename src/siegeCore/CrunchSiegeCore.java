@@ -1,5 +1,6 @@
 package siegeCore;
 
+import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -53,22 +54,38 @@ import CrunchProjectiles.CrunchProjectile;
 import CrunchProjectiles.ExplosiveProjectile;
 import CrunchProjectiles.PotionProjectile;
 
-
 public class CrunchSiegeCore extends JavaPlugin {
 	public static Plugin plugin;
 	
 	public static Random random = new Random();
+	private static String Path;
 	
 	@SuppressWarnings("deprecation")
 	@Override
 	public void onEnable() {
 		plugin = this;
-
+		Path = this.getDataFolder().getAbsolutePath();
 		this.getCommand("siegetest").setExecutor(new SiegeCommand());
 		getServer().getPluginManager().registerEvents(new RotationHandler(), this);
 		getServer().getPluginManager().registerEvents(new ClickHandler(), this);
-
+		StorageManager.setup(Path, plugin);
 		AddDefined();
+		File f = new File(Path + "/Example.Json");
+		if (!f.exists()) {
+			for (SiegeEquipment i : DefinedEquipment.values()) {
+				StorageManager.Save(i);
+			}
+			DefinedEquipment.clear();
+		}
+		File folder = new File(Path);
+		File[] listOfFiles = folder.listFiles();
+
+		for (int i = 0; i < listOfFiles.length; i++) {
+		  if (listOfFiles[i].isFile()) {
+		    SiegeEquipment equip = StorageManager.load(listOfFiles[i].getAbsolutePath());
+		    DefinedEquipment.put(equip.ReadyModelNumber, equip);
+		  }
+		}
 	}
 	
 	public class SiegeCommand implements CommandExecutor {

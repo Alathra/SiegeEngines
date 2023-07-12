@@ -23,6 +23,7 @@ import org.bukkit.util.Vector;
 import siegeCore.CrunchSiegeCore;
 
 public class PotionProjectile implements CrunchProjectile {
+	public String ProjectileType = "Potion";
 	public int EntityCount = 3;
 	public Boolean DelayedFire = false;
 	public int DelayTime = 6;

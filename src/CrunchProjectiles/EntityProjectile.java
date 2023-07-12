@@ -17,6 +17,7 @@ import siegeCore.CrunchSiegeCore;
 
 public class EntityProjectile implements CrunchProjectile{
 
+	public String ProjectileType = "Entity";
 	public int EntityCount = 20;
 	public int ArrowOnlyDamage = 6;
 	public Boolean DelayedFire = false;
