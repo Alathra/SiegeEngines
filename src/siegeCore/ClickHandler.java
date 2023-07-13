@@ -15,6 +15,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.block.TileState;
 import org.bukkit.entity.ArmorStand;
@@ -71,6 +72,22 @@ public class ClickHandler implements Listener {
 		}
 	}
 
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void BlockPlaceEvent(org.bukkit.event.block.BlockPlaceEvent event) {
+		Player thePlayer = event.getPlayer();
+		if (event.getPlayer().getInventory().getItemInMainHand().getType() == Material.CARVED_PUMPKIN)
+		{
+			ItemStack item = event.getPlayer().getInventory().getItemInMainHand();
+			if (item.getItemMeta() != null && item.getItemMeta().hasCustomModelData()) {
+				int customModel = item.getItemMeta().getCustomModelData();
+				CrunchSiegeCore.CreateTrebuchet(thePlayer, customModel, event.getBlockAgainst().getLocation());
+				event.setCancelled(true);
+				item.setAmount(item.getAmount() - 1);
+				thePlayer.getInventory().setItemInMainHand(item);
+			}
+		}
+	}
+
 
 	public void Shoot(Player player, long delay) {
 		float actualDelay = delay;
@@ -110,14 +127,14 @@ public class ClickHandler implements Listener {
 			return;
 		}
 
-		if (ItemInHand.getType() == Material.PAPER) {
-			ItemMeta meta = ItemInHand.getItemMeta();
-			if (meta.hasCustomModelData() && meta.getCustomModelData() == 505050505) {
-				CrunchSiegeCore.CreateTrebuchet(player);
-				ItemInHand.setAmount(ItemInHand.getAmount() - 1);
-				return;
-			}
-		}
+//		if (ItemInHand.getType() == Material.PAPER) {
+//			ItemMeta meta = ItemInHand.getItemMeta();
+//			if (meta.hasCustomModelData() && meta.getCustomModelData() == 505050505) {
+//				CrunchSiegeCore.CreateTrebuchet(player);
+//				ItemInHand.setAmount(ItemInHand.getAmount() - 1);
+//				return;
+//			}
+//		}
 
 
 		if (event.getAction() == Action.LEFT_CLICK_AIR) {
@@ -167,7 +184,7 @@ public class ClickHandler implements Listener {
 			}
 			else {
 				equip = CrunchSiegeCore.CreateClone(living.getEquipment().getHelmet().getItemMeta().getCustomModelData());
-			
+
 				equip.AmmoHolder = new EquipmentMagazine();
 				equip.Entity = entity;
 				equip.EntityId = entity.getUniqueId();
@@ -291,13 +308,13 @@ public class ClickHandler implements Listener {
 					player.sendMessage("Releasing the cannons!");
 					return;
 				}
-				
+
 				if(event.getAction() == Action.RIGHT_CLICK_BLOCK){
 					if (player.isSneaking()) {
 						SaveCannons(player, event.getClickedBlock());
 						return;
 					}
-				
+
 					NamespacedKey key = new NamespacedKey(CrunchSiegeCore.plugin, "cannons");		
 					TileState state = (TileState)  sign.getBlock().getState();
 					CrunchSiegeCore.TrackedStands.remove(player.getUniqueId());

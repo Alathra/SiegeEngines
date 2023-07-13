@@ -22,6 +22,7 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.ArmorStand.LockType;
 import org.bukkit.entity.Entity;
@@ -56,16 +57,16 @@ import CrunchProjectiles.PotionProjectile;
 
 public class CrunchSiegeCore extends JavaPlugin {
 	public static Plugin plugin;
-	
+
 	public static Random random = new Random();
 	private static String Path;
-	
+
 	@SuppressWarnings("deprecation")
 	@Override
 	public void onEnable() {
 		plugin = this;
 		Path = this.getDataFolder().getAbsolutePath();
-		this.getCommand("siegetest").setExecutor(new SiegeCommand());
+		this.getCommand("crunchsiege").setExecutor(new SiegeCommand());
 		getServer().getPluginManager().registerEvents(new RotationHandler(), this);
 		getServer().getPluginManager().registerEvents(new ClickHandler(), this);
 		StorageManager.setup(Path, plugin);
@@ -77,28 +78,72 @@ public class CrunchSiegeCore extends JavaPlugin {
 			}
 			DefinedEquipment.clear();
 		}
+		LoadConfigs();
+	}
+
+	public static void LoadConfigs() {
+
 		File folder = new File(Path);
 		File[] listOfFiles = folder.listFiles();
 
 		for (int i = 0; i < listOfFiles.length; i++) {
-		  if (listOfFiles[i].isFile()) {
-		    SiegeEquipment equip = StorageManager.load(listOfFiles[i].getAbsolutePath());
-		    DefinedEquipment.put(equip.ReadyModelNumber, equip);
-		  }
+			if (listOfFiles[i].isFile()) {
+				SiegeEquipment equip = StorageManager.load(listOfFiles[i].getAbsolutePath());
+				if (equip.Enabled) {
+					DefinedEquipment.put(equip.ReadyModelNumber, equip);
+				}
+				else {
+					plugin.getLogger().log(Level.ALL, "Equipment is not enabled, set Enabled to true to load it");
+				}
+			}
 		}
 	}
-	
-	public class SiegeCommand implements CommandExecutor {
 
-		// This method is called, when somebody uses our command
+	public class SiegeCommand implements CommandExecutor {
 		@Override
 		@EventHandler
 		public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+			Player player = null;
 			if (sender instanceof Player) {
-				Player player = (Player) sender;
-				if (player.isOp()) {
-					CreateTrebuchet(player);
+				player = (Player) sender;
+			}
+			if (args != null && args.length > 0) {
+
+				switch (args[0].toLowerCase()) {
+				case "get":
+					if (player == null) {
+						sender.sendMessage("only a player can use this command.");
+						return true;	
+					}
+					if (!sender.hasPermission("crunchsiege.get")) {
+						sender.sendMessage("No perms to crunchsiege.get");
+						return true;
+					}
+					for (SiegeEquipment i : DefinedEquipment.values()) {
+						ItemStack item = new ItemStack(Material.CARVED_PUMPKIN);
+						ItemMeta meta = item.getItemMeta();
+						meta.setCustomModelData(i.ReadyModelNumber);
+						meta.setDisplayName("§e" + i.EquipmentName +" spawn item");
+						List<String> Lore = new ArrayList<String>();
+						Lore.add("§ePlace as a block to spawn a " + i.EquipmentName + " or put on an armour stand.");
+						meta.setLore(Lore);
+						item.setItemMeta(meta);
+						player.getInventory().addItem(item);
+					}
+					break;
+				case "reload":
+					if (!sender.hasPermission("crunchsiege.reload")) {
+						sender.sendMessage("No perms to crunchsiege.reload");
+						return true;
+					}	
+					LoadConfigs();
+					sender.sendMessage("Crunch siege configs reloaded");
+					break;
 				}
+
+			}
+			else {
+				sender.sendMessage("Incorrect usage, /crunchsiege get, /crunchsiege reload");
 			}
 			return true;
 		}
@@ -109,14 +154,14 @@ public class CrunchSiegeCore extends JavaPlugin {
 			return DefinedEquipment.get(ModelId).clone();
 		} catch (CloneNotSupportedException e) {
 			// TODO Auto-generated catch block
-		
+
 		}
-		
+
 		return null;
 	}
-	
+
 	public static HashMap<Integer, SiegeEquipment> DefinedEquipment = new HashMap<Integer, SiegeEquipment>();
-	
+
 	public static HashMap<UUID, List<Entity>> TrackedStands = new HashMap<UUID, List<Entity>>();
 
 	public static HashMap<UUID, SiegeEquipment> equipment = new HashMap<UUID, SiegeEquipment>();
@@ -160,7 +205,7 @@ public class CrunchSiegeCore extends JavaPlugin {
 		fireProj.ParticleType = Particle.WHITE_ASH;
 		fireProj.SoundType = Sound.ENTITY_BLAZE_SHOOT;
 		equip.Projectiles.put(Material.DIAMOND, fireProj);
-		
+
 		EntityProjectile pig = new EntityProjectile();
 		pig.EntityCount = 100;
 		pig.DelayedFire = true;
@@ -179,30 +224,31 @@ public class CrunchSiegeCore extends JavaPlugin {
 				123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139
 				));
 		equip.CycleThroughModelsBeforeFiring = false;
-		
+
 		DefinedEquipment.put(equip.ReadyModelNumber, equip);
 	}
-	
-	public static void CreateTrebuchet(Player player) {
-		Location l = player.getLocation();
-		l.setY(l.getY() - 1);
+	public static Location getCenter(Location loc) {
+	    return new Location(loc.getWorld(),
+	        getRelativeCoord(loc.getBlockX()),
+	        getRelativeCoord(loc.getBlockY()),
+	        getRelativeCoord(loc.getBlockZ()));
+	}
+	 
+	private static double getRelativeCoord(int i) {
+	    double d = i;
+	    d = d < 0 ? d - .5 : d + .5;
+	    return d;
+	}
+	public static void CreateTrebuchet(Player player, int CustomModelData, Location l) {
+		//l.setY(l.getY() - 1);
+     	l.add(0.5, 0, 0.5);
+     	l.setDirection(player.getLocation().getDirection());
 		Entity entity2 = player.getWorld().spawnEntity(l, EntityType.ARMOR_STAND);
-		SiegeEquipment equip = new SiegeEquipment();
+		SiegeEquipment equip = CreateClone(CustomModelData);
 		ItemStack item = new ItemStack(Material.CARVED_PUMPKIN);
-		equip.ReadyModelNumber = 122;
-		equip.ModelNumberToFireAt = 135;
-		equip.MillisecondsBetweenFiringStages = 2;
-		equip.MillisecondsBetweenReloadingStages = 30;
-		equip.FiringModelNumbers = new ArrayList<>(Arrays.asList(
-				123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139
-				));
-		equip.CycleThroughModelsBeforeFiring = false;
-		equip.Entity = entity2;
-		equip.EntityId = entity2.getUniqueId();
-		entity2.setCustomName("Weapon");
 		ItemMeta meta = item.getItemMeta();
-		
-		meta.setCustomModelData(equip.ReadyModelNumber);
+
+		meta.setCustomModelData(CustomModelData);
 		item.setItemMeta(meta);
 
 		LivingEntity ent = (LivingEntity) entity2;
@@ -214,6 +260,7 @@ public class CrunchSiegeCore extends JavaPlugin {
 		ent.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 2000000, 1));
 		//	stand.setSmall(true);
 		stand.setVisible(true);
+		stand.setGravity(false);
 		//stand.setSmall(true);
 		ent.getEquipment().setHelmet(item);
 		if (TrackedStands.containsKey(player.getUniqueId())) {

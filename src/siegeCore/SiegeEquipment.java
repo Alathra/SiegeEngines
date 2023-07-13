@@ -32,14 +32,14 @@ public class SiegeEquipment implements Cloneable  {
 	public SiegeEquipment clone() throws CloneNotSupportedException {
 		return (SiegeEquipment)super.clone();
 	}
-
+	public Boolean Enabled = false;
 	public UUID EntityId;
 	public Entity Entity;
 
 	public HashMap<Material, CrunchProjectile> Projectiles = new HashMap<Material, CrunchProjectile>() ;
 
 	public String WorldName;
-
+	public String EquipmentName = "Cannon";
 	public int XOffset = 7;
 	public int YOffset = 0;
 	public int MaxFuel = 5;
