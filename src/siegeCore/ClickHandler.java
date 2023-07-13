@@ -80,10 +80,16 @@ public class ClickHandler implements Listener {
 			ItemStack item = event.getPlayer().getInventory().getItemInMainHand();
 			if (item.getItemMeta() != null && item.getItemMeta().hasCustomModelData()) {
 				int customModel = item.getItemMeta().getCustomModelData();
-				CrunchSiegeCore.CreateTrebuchet(thePlayer, customModel, event.getBlockAgainst().getLocation());
+				Boolean created = CrunchSiegeCore.CreateTrebuchet(thePlayer, customModel, event.getBlockAgainst().getLocation());
+				if (created) {
+					item.setAmount(item.getAmount() - 1);
+					thePlayer.getInventory().setItemInMainHand(item);
+					thePlayer.sendMessage("Cannon spawned!");
+				}
+				else {
+					thePlayer.sendMessage("Cannon could not be spawned, is it enabled?");
+				}
 				event.setCancelled(true);
-				item.setAmount(item.getAmount() - 1);
-				thePlayer.getInventory().setItemInMainHand(item);
 			}
 		}
 	}
@@ -179,12 +185,18 @@ public class ClickHandler implements Listener {
 			ArmorStand stand = (ArmorStand) entity;
 			stand.addEquipmentLock(EquipmentSlot.HEAD, LockType.REMOVING_OR_CHANGING);
 			SiegeEquipment equip;
+			
 			if (CrunchSiegeCore.equipment.containsKey(entity.getUniqueId())) {
 				equip = CrunchSiegeCore.equipment.get(entity.getUniqueId());
+				if (equip == null || !equip.Enabled) {
+					return;
+				}
 			}
 			else {
 				equip = CrunchSiegeCore.CreateClone(living.getEquipment().getHelmet().getItemMeta().getCustomModelData());
-
+				if (equip == null || !equip.Enabled) {
+					return;
+				}
 				equip.AmmoHolder = new EquipmentMagazine();
 				equip.Entity = entity;
 				equip.EntityId = entity.getUniqueId();

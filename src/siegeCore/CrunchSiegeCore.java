@@ -239,12 +239,16 @@ public class CrunchSiegeCore extends JavaPlugin {
 	    d = d < 0 ? d - .5 : d + .5;
 	    return d;
 	}
-	public static void CreateTrebuchet(Player player, int CustomModelData, Location l) {
+	public static Boolean CreateTrebuchet(Player player, int CustomModelData, Location l) {
 		//l.setY(l.getY() - 1);
      	l.add(0.5, 0, 0.5);
+    	SiegeEquipment equip = CreateClone(CustomModelData);
+    	if (equip == null || !equip.Enabled) {
+    		return false;
+    	}
      	l.setDirection(player.getLocation().getDirection());
 		Entity entity2 = player.getWorld().spawnEntity(l, EntityType.ARMOR_STAND);
-		SiegeEquipment equip = CreateClone(CustomModelData);
+	
 		ItemStack item = new ItemStack(Material.CARVED_PUMPKIN);
 		ItemMeta meta = item.getItemMeta();
 		equip.AmmoHolder = new EquipmentMagazine();
@@ -278,6 +282,7 @@ public class CrunchSiegeCore extends JavaPlugin {
 			TrackedStands.put(player.getUniqueId(), newList);
 		}
 		equipment.put(entity2.getUniqueId(), equip);
+		return true;
 	}
 
 	public static void UpdateEntityIdModel(Entity ent, int modelNumber, String WorldName) {
