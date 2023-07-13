@@ -116,7 +116,7 @@ public class SiegeEquipment implements Cloneable  {
 		this.AmmoHolder.MaterialName = Material.BEDROCK;
 
 		LivingEntity living = (LivingEntity) Entity;
-		if (living.getEquipment() == null || living.getEquipment().getHelmet() == null || living.getEquipment().getHelmet().getItemMeta() == null) {
+		if (living == null || living.getEquipment() == null || living.getEquipment().getHelmet() == null || living.getEquipment().getHelmet().getItemMeta() == null) {
 			return;
 		}
 		if (living.getEquipment().getHelmet().getItemMeta().getCustomModelData() != this.ReadyModelNumber) {

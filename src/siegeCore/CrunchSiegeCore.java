@@ -247,12 +247,16 @@ public class CrunchSiegeCore extends JavaPlugin {
 		SiegeEquipment equip = CreateClone(CustomModelData);
 		ItemStack item = new ItemStack(Material.CARVED_PUMPKIN);
 		ItemMeta meta = item.getItemMeta();
-
+		equip.AmmoHolder = new EquipmentMagazine();
+		
+	
 		meta.setCustomModelData(CustomModelData);
 		item.setItemMeta(meta);
 
 		LivingEntity ent = (LivingEntity) entity2;
 		ArmorStand stand = (ArmorStand) ent;
+		equip.Entity = entity2;
+		equip.EntityId = entity2.getUniqueId();
 		stand.addEquipmentLock(EquipmentSlot.HEAD, LockType.REMOVING_OR_CHANGING);
 		stand.addEquipmentLock(EquipmentSlot.LEGS, LockType.ADDING_OR_CHANGING);
 		stand.addEquipmentLock(EquipmentSlot.CHEST, LockType.ADDING_OR_CHANGING);
