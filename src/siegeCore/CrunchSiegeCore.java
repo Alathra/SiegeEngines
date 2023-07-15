@@ -61,6 +61,28 @@ public class CrunchSiegeCore extends JavaPlugin {
 	public static Random random = new Random();
 	private static String Path;
 
+	
+	@SuppressWarnings("deprecation")
+	@Override
+	public void onDisable() {
+		for (SiegeEquipment equip : equipment.values()) {
+			if (equip.Entity != null) {
+				ItemStack item = new ItemStack(Material.CARVED_PUMPKIN);
+				ItemMeta meta = item.getItemMeta();
+				equip.AmmoHolder = new EquipmentMagazine();
+				
+				meta.setCustomModelData(equip.ReadyModelNumber);
+				meta.setDisplayName("§e" + equip.EquipmentName +" spawn item");
+				List<String> Lore = new ArrayList<String>();
+				Lore.add("§ePlace as a block to spawn a " + equip.EquipmentName + " or put on an armour stand.");
+				meta.setLore(Lore);
+				item.setItemMeta(meta);
+
+				((LivingEntity) equip.Entity).getEquipment().setHelmet(item);
+			}
+		}
+	}
+	
 	@SuppressWarnings("deprecation")
 	@Override
 	public void onEnable() {
@@ -206,15 +228,15 @@ public class CrunchSiegeCore extends JavaPlugin {
 		fireProj.SoundType = Sound.ENTITY_BLAZE_SHOOT;
 		equip.Projectiles.put(Material.DIAMOND, fireProj);
 
-		EntityProjectile pig = new EntityProjectile();
-		pig.EntityCount = 100;
-		pig.DelayedFire = true;
-		pig.DelayTime = 3;
-		pig.EntityTyp = EntityType.ARROW;
-		pig.SoundType = Sound.ITEM_CROSSBOW_SHOOT;
-		pig.ParticleType = Particle.GLOW;
-		equip.Projectiles.put(Material.PORKCHOP, pig);
-		equip.Projectiles.put(Material.BONE, new PotionProjectile());
+//		EntityProjectile pig = new EntityProjectile();
+//		pig.EntityCount = 100;
+//		pig.DelayedFire = true;
+//		pig.DelayTime = 3;
+//		pig.EntityTyp = EntityType.ARROW;
+//		pig.SoundType = Sound.ITEM_CROSSBOW_SHOOT;
+//		pig.ParticleType = Particle.GLOW;
+//		equip.Projectiles.put(Material.PORKCHOP, pig);
+	//	equip.Projectiles.put(Material.BONE, new PotionProjectile());
 		ItemStack item = new ItemStack(Material.CARVED_PUMPKIN);
 		equip.ReadyModelNumber = 122;
 		equip.ModelNumberToFireAt = 135;
@@ -227,18 +249,7 @@ public class CrunchSiegeCore extends JavaPlugin {
 
 		DefinedEquipment.put(equip.ReadyModelNumber, equip);
 	}
-	public static Location getCenter(Location loc) {
-	    return new Location(loc.getWorld(),
-	        getRelativeCoord(loc.getBlockX()),
-	        getRelativeCoord(loc.getBlockY()),
-	        getRelativeCoord(loc.getBlockZ()));
-	}
-	 
-	private static double getRelativeCoord(int i) {
-	    double d = i;
-	    d = d < 0 ? d - .5 : d + .5;
-	    return d;
-	}
+
 	public static Boolean CreateTrebuchet(Player player, int CustomModelData, Location l) {
 		//l.setY(l.getY() - 1);
      	l.add(0.5, 0, 0.5);
@@ -253,10 +264,14 @@ public class CrunchSiegeCore extends JavaPlugin {
 		ItemMeta meta = item.getItemMeta();
 		equip.AmmoHolder = new EquipmentMagazine();
 		
-	
-		meta.setCustomModelData(CustomModelData);
+		meta.setCustomModelData(equip.ReadyModelNumber);
+		meta.setDisplayName("§e" + equip.EquipmentName +" spawn item");
+		List<String> Lore = new ArrayList<String>();
+		Lore.add("§ePlace as a block to spawn a " + equip.EquipmentName + " or put on an armour stand.");
+		meta.setLore(Lore);
 		item.setItemMeta(meta);
 
+	
 		LivingEntity ent = (LivingEntity) entity2;
 		ArmorStand stand = (ArmorStand) ent;
 		equip.Entity = entity2;

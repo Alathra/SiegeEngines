@@ -35,7 +35,7 @@ public class SiegeEquipment implements Cloneable  {
 	public Boolean Enabled = false;
 	public UUID EntityId;
 	public Entity Entity;
-
+	public Boolean RotateStandHead = true;
 	public HashMap<Material, CrunchProjectile> Projectiles = new HashMap<Material, CrunchProjectile>() ;
 
 	public String WorldName;
@@ -103,6 +103,38 @@ public class SiegeEquipment implements Cloneable  {
 	}
 
 
+	public Location GetFireLocation(LivingEntity living) {
+		Location loc =  living.getEyeLocation();
+		Vector direction = living.getLocation().getDirection().multiply(XOffset);
+		loc.add(direction);
+		if (this.YOffset > 0) {
+			loc.setY(loc.getY() + this.YOffset);
+		}
+		else {
+			loc.setY(loc.getY() - this.YOffset);
+		}
+		
+		return loc;
+	}
+	
+	public void ShowFireLocation(Player player) {
+	    LivingEntity living = (LivingEntity) this.Entity;
+	    if (living != null) {
+			Location origin = this.GetFireLocation(living);
+			Vector direction = origin.getDirection();
+			direction.multiply(5 /* the range */);
+			Location destination = origin.clone().add(direction);
+					
+			direction.normalize();
+			for (int i = 0; i < 3 /* range */; i+= 1) {
+			    Location spawn = origin.add(direction);
+			  
+				player.spawnParticle(Particle.CLOUD, spawn, 1, 0,0,0,0);
+			} 
+	    }
+
+	}
+	
 	public void Fire(Player player, float delay) {
 		if (System.currentTimeMillis() < this.NextShotTime) {
 			player.sendMessage("Cannot fire for another " + CrunchSiegeCore.convertTime(this.NextShotTime - System.currentTimeMillis()));
@@ -129,10 +161,12 @@ public class SiegeEquipment implements Cloneable  {
 
 			this.TaskNumber = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(CrunchSiegeCore.plugin, () -> {
 
-				Location loc = living.getEyeLocation();
-				Vector direction = Entity.getLocation().getDirection().multiply(XOffset);
+	
 				Random random = new Random();
 				float randomVar = random.nextFloat() * (6 - -6) + -6;
+				Location loc = living.getEyeLocation();
+				Vector direction = Entity.getLocation().getDirection().multiply(XOffset);
+				
 				loc.add(direction.multiply(randomVar));
 				loc.setYaw(loc.getYaw() + randomVar);
 
@@ -177,7 +211,7 @@ public class SiegeEquipment implements Cloneable  {
 						//	player.sendMessage("" + modelData);
 						CrunchSiegeCore.UpdateEntityIdModel(this.Entity, modelData, this.WorldName);
 						if (modelData == this.ModelNumberToFireAt) {
-							Projectiles.get(LoadedProjectile).Shoot(player, this.Entity, XOffset, YOffset, loadedFuel * this.VelocityPerFuel);
+							Projectiles.get(LoadedProjectile).Shoot(player, this.Entity, this.GetFireLocation(living),  loadedFuel * this.VelocityPerFuel);
 						}
 						this.NextModelNumber += 1;
 
@@ -200,7 +234,7 @@ public class SiegeEquipment implements Cloneable  {
 
 				this.NextModelNumber = 0;
 
-				Projectiles.get(LoadedProjectile).Shoot(player, this.Entity, XOffset, YOffset, loadedFuel * this.VelocityPerFuel);
+				Projectiles.get(LoadedProjectile).Shoot(player, this.Entity, this.GetFireLocation(living), loadedFuel * this.VelocityPerFuel);
 			}, (long) delay);
 
 		}

@@ -27,30 +27,28 @@ public class EntityProjectile implements CrunchProjectile{
 	public Particle ParticleType = Particle.EXPLOSION_LARGE;
 	public Sound SoundType = Sound.ENTITY_GENERIC_EXPLODE;
 	@Override
-	public void Shoot(Player player, Entity entity, double XOffset, double YOffset, Float velocity) {
+	public void Shoot(Player player, Entity entity, Location FireLocation, Float velocity) {
 		int baseDelay = 0;
 		for (int i = 0; i < EntityCount; i++) {
 			if (DelayedFire) {
 				baseDelay += DelayTime;
 				Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(CrunchSiegeCore.plugin, () -> {
 			
-					CreateEntity(entity, XOffset, YOffset, velocity);
+					CreateEntity(entity, FireLocation, velocity);
 				}, (long) baseDelay);
 			}
 			else {
 
-				CreateEntity(entity, XOffset, YOffset, velocity);
+				CreateEntity(entity, FireLocation, velocity);
 			}
 	
 			//	}
 		}
 	}
-	private void CreateEntity(Entity entity,  double XOffset, double YOffset, Float velocity) {
+	private void CreateEntity(Entity entity,  Location loc, Float velocity) {
 		World world = entity.getLocation().getWorld();
 		LivingEntity living = (LivingEntity) entity;
-		Location loc =  living.getEyeLocation();
-		Vector direction = entity.getLocation().getDirection().multiply(XOffset);
-		loc.add(direction);
+		
 
 		Entity arrow = world.spawnEntity(loc, EntityTyp);
 		if (Inaccuracy != 0f) {

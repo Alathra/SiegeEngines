@@ -133,14 +133,14 @@ public class ClickHandler implements Listener {
 			return;
 		}
 
-//		if (ItemInHand.getType() == Material.PAPER) {
-//			ItemMeta meta = ItemInHand.getItemMeta();
-//			if (meta.hasCustomModelData() && meta.getCustomModelData() == 505050505) {
-//				CrunchSiegeCore.CreateTrebuchet(player);
-//				ItemInHand.setAmount(ItemInHand.getAmount() - 1);
-//				return;
-//			}
-//		}
+		//		if (ItemInHand.getType() == Material.PAPER) {
+		//			ItemMeta meta = ItemInHand.getItemMeta();
+		//			if (meta.hasCustomModelData() && meta.getCustomModelData() == 505050505) {
+		//				CrunchSiegeCore.CreateTrebuchet(player);
+		//				ItemInHand.setAmount(ItemInHand.getAmount() - 1);
+		//				return;
+		//			}
+		//		}
 
 
 		if (event.getAction() == Action.LEFT_CLICK_AIR) {
@@ -183,9 +183,8 @@ public class ClickHandler implements Listener {
 			}
 
 			ArmorStand stand = (ArmorStand) entity;
-			stand.addEquipmentLock(EquipmentSlot.HEAD, LockType.REMOVING_OR_CHANGING);
 			SiegeEquipment equip;
-			
+
 			if (CrunchSiegeCore.equipment.containsKey(entity.getUniqueId())) {
 				equip = CrunchSiegeCore.equipment.get(entity.getUniqueId());
 				if (equip == null || !equip.Enabled) {
@@ -201,7 +200,10 @@ public class ClickHandler implements Listener {
 				equip.Entity = entity;
 				equip.EntityId = entity.getUniqueId();
 			}
-
+			stand.addEquipmentLock(EquipmentSlot.HEAD, LockType.REMOVING_OR_CHANGING);
+			stand.addEquipmentLock(EquipmentSlot.LEGS, LockType.ADDING_OR_CHANGING);
+			stand.addEquipmentLock(EquipmentSlot.CHEST, LockType.ADDING_OR_CHANGING);
+			stand.addEquipmentLock(EquipmentSlot.FEET, LockType.ADDING_OR_CHANGING);
 			if (CrunchSiegeCore.TrackedStands.containsKey(player.getUniqueId())) {
 				List<Entity> entities = CrunchSiegeCore.TrackedStands.get(player.getUniqueId());
 				entities.add(entity);
@@ -246,10 +248,21 @@ public class ClickHandler implements Listener {
 				return;
 			}
 			loc.setPitch((float) (loc.getPitch() - amount));
-			stand.setHeadPose(new EulerAngle(loc.getDirection().getY()*(-1),0,0));
+			SiegeEquipment equipment = CrunchSiegeCore.equipment.get(ent.getUniqueId());
+			if (equipment != null) {
+
+				equipment.ShowFireLocation(player);   
+				if (equipment.RotateStandHead) {
+					stand.setHeadPose(new EulerAngle(loc.getDirection().getY()*(-1),0,0));
+				}
+
+			}
+
 
 
 			ent.teleport(loc);
+
+
 		}
 	}
 
@@ -265,9 +278,17 @@ public class ClickHandler implements Listener {
 			if (loc.getPitch() == 85 || loc.getPitch() + amount > 85) {
 				return;
 			}
+			SiegeEquipment equipment = CrunchSiegeCore.equipment.get(ent.getUniqueId());
+			if (equipment != null) {
 
+				equipment.ShowFireLocation(player);   
+				if (equipment.RotateStandHead) {
+					stand.setHeadPose(new EulerAngle(loc.getDirection().getY()*(-1),0,0));
+
+				}
+			}
 			loc.setPitch((float) (loc.getPitch() + amount));
-			stand.setHeadPose(new EulerAngle(loc.getDirection().getY()*(-1),0,0));
+
 			ent.teleport(loc);
 		}
 	}

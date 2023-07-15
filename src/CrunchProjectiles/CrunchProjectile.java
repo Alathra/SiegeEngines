@@ -9,7 +9,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public interface CrunchProjectile {
  
-	public void Shoot(Player player, Entity entity, double XOffset, double YOffset, Float velocity);
+	public void Shoot(Player player, Entity entity, Location fireLocation, Float velocity);
 	public String ProjectileType = "Default";
 }
 

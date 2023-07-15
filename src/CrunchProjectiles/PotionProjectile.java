@@ -32,7 +32,7 @@ public class PotionProjectile implements CrunchProjectile {
 	public Sound SoundType = Sound.ENTITY_GENERIC_EXPLODE;
 	
 	@Override
-	public void Shoot(Player player, Entity entity, double XOffset, double YOffset, Float velocity) {
+	public void Shoot(Player player, Entity entity, Location loc, Float velocity) {
 		// TODO Auto-generated method stub
 		int baseDelay = 0;
 		for (int i = 0; i < EntityCount; i++) {
@@ -40,23 +40,20 @@ public class PotionProjectile implements CrunchProjectile {
 				baseDelay += DelayTime;
 				Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(CrunchSiegeCore.plugin, () -> {
 			
-					CreateEntity(entity, XOffset, YOffset, velocity);
+					CreateEntity(entity,loc, velocity);
 				}, (long) baseDelay);
 			}
 			else {
 
-				CreateEntity(entity, XOffset, YOffset, velocity);
+				CreateEntity(entity, loc, velocity);
 			}
 	
 			//	}
 		}
 	}
-	private void CreateEntity(Entity entity,  double XOffset, double YOffset, Float velocity) {
+	private void CreateEntity(Entity entity,  Location loc, Float velocity) {
 		World world = entity.getLocation().getWorld();
 		LivingEntity living = (LivingEntity) entity;
-		Location loc =  living.getEyeLocation();
-		Vector direction = entity.getLocation().getDirection().multiply(XOffset);
-		loc.add(direction);
 
 		Entity arrow = world.spawnEntity(loc, EntityType.SPLASH_POTION);
 		if (Inaccuracy != 0f) {

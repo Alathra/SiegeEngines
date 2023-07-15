@@ -1,7 +1,11 @@
 package siegeCore;
 
+import java.awt.Color;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
+import org.bukkit.block.Block;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -10,6 +14,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.BlockIterator;
 import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
 
@@ -59,16 +64,24 @@ public class RotationHandler implements Listener {
 								if (loc.getPitch() > 85) {
 									loc.setPitch(85);
 								}
+								if (equipment.RotateStandHead) {
 								stand.setHeadPose(new EulerAngle(loc.getDirection().getY()*(-1),0,0));
-						
+								}
 							}
 						
 							
 							living.teleport(loc);
+						    equipment.ShowFireLocation(player);     
 						}
 					}	
 				}
 			}
 		}
 	}
+	
+	 Vector getDirectionBetweenLocations(Location Start, Location End) {
+	        Vector from = Start.toVector();
+	        Vector to = End.toVector();
+	        return to.subtract(from);
+	    }
 }
