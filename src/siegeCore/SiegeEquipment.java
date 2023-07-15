@@ -35,7 +35,7 @@ public class SiegeEquipment implements Cloneable  {
 	public Boolean Enabled = false;
 	public UUID EntityId;
 	public Entity Entity;
-	public Boolean RotateStandHead = true;
+
 	public HashMap<Material, CrunchProjectile> Projectiles = new HashMap<Material, CrunchProjectile>() ;
 
 	public String WorldName;
@@ -55,7 +55,7 @@ public class SiegeEquipment implements Cloneable  {
 	public Boolean CycleThroughModelsBeforeFiring = false;
 	public Boolean RotateSideways = false;
 	public Boolean RotateUpDown = true;
-
+	public Boolean RotateStandHead = true;
 	public Boolean HasFired = false;
 	public Boolean HasReloaded = false;
 
@@ -143,39 +143,27 @@ public class SiegeEquipment implements Cloneable  {
 		float loadedFuel = this.AmmoHolder.LoadedFuel;
 		Material LoadedProjectile = this.AmmoHolder.MaterialName;
 
-		this.AmmoHolder.LoadedFuel = 0;
-		this.AmmoHolder.LoadedProjectile = 0;
-		this.AmmoHolder.MaterialName = Material.BEDROCK;
 
 		LivingEntity living = (LivingEntity) Entity;
 		if (living == null || living.getEquipment() == null || living.getEquipment().getHelmet() == null || living.getEquipment().getHelmet().getItemMeta() == null) {
 			return;
 		}
+		
 		if (living.getEquipment().getHelmet().getItemMeta().getCustomModelData() != this.ReadyModelNumber) {
+			player.sendMessage("Cannot fire yet!");
 			return;
 		}
+		this.AmmoHolder.LoadedFuel = 0;
+		this.AmmoHolder.LoadedProjectile = 0;
+		this.AmmoHolder.MaterialName = Material.BEDROCK;
+
 		this.WorldName = Entity.getWorld().getName();
 		this.NextShotTime = System.currentTimeMillis() + 1000;
 		if (this.CycleThroughModelsBeforeFiring) {
 
-
+	
 			this.TaskNumber = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(CrunchSiegeCore.plugin, () -> {
 
-	
-				Random random = new Random();
-				float randomVar = random.nextFloat() * (6 - -6) + -6;
-				Location loc = living.getEyeLocation();
-				Vector direction = Entity.getLocation().getDirection().multiply(XOffset);
-				
-				loc.add(direction.multiply(randomVar));
-				loc.setYaw(loc.getYaw() + randomVar);
-
-
-
-				this.NextModelNumber = 0;
-
-				//	player.sendMessage("Cannot fire for another " + CrunchSiegeCore.convertTime(this.NextShotTime - System.currentTimeMillis()));
-				//player.sendMessage("task");
 				if (this.HasFired) {
 					Bukkit.getServer().getScheduler().cancelTask(this.TaskNumber);
 					this.TaskNumber = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(CrunchSiegeCore.plugin, () -> {
@@ -186,6 +174,8 @@ public class SiegeEquipment implements Cloneable  {
 							this.HasReloaded = false;
 							this.HasFired = false;
 							this.NextModelNumber = 0;
+							CrunchSiegeCore.UpdateEntityIdModel(this.Entity, this.ReadyModelNumber, this.WorldName);
+							this.TaskNumber = 0;
 						}
 						else {
 							//firing stages
@@ -211,6 +201,7 @@ public class SiegeEquipment implements Cloneable  {
 						//	player.sendMessage("" + modelData);
 						CrunchSiegeCore.UpdateEntityIdModel(this.Entity, modelData, this.WorldName);
 						if (modelData == this.ModelNumberToFireAt) {
+						//	player.sendMessage("firing" + modelData);
 							Projectiles.get(LoadedProjectile).Shoot(player, this.Entity, this.GetFireLocation(living),  loadedFuel * this.VelocityPerFuel);
 						}
 						this.NextModelNumber += 1;
