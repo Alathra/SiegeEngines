@@ -31,6 +31,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.SignChangeEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
@@ -263,6 +264,36 @@ public class ClickHandler implements Listener {
 			ent.teleport(loc);
 
 
+		}
+	}
+
+	@EventHandler
+	public void DeathEvent(EntityDeathEvent event) {
+		Boolean removeStands = false;
+		List<ItemStack> items = event.getDrops();
+		if (event.getEntity() instanceof ArmorStand) {
+			if (CrunchSiegeCore.equipment.containsKey(event.getEntity().getUniqueId())) {
+				removeStands = true;
+			}
+			else {
+				for (ItemStack i : items) {
+					if (i.getType() == Material.CARVED_PUMPKIN && i.hasItemMeta() && i.getItemMeta().hasCustomModelData()) {
+						if (CrunchSiegeCore.DefinedEquipment.containsKey(i.getItemMeta().getCustomModelData())) {
+							removeStands = true;
+							break;
+						}
+
+					}
+				}
+			}
+			if (removeStands) {
+				for (ItemStack i : items) {
+					if (i.getType() == Material.ARMOR_STAND) {
+						i.setAmount(0);
+						return;
+					}
+				}	
+			}
 		}
 	}
 
