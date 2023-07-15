@@ -116,7 +116,7 @@ public class ClickHandler implements Listener {
 				actualDelay += delay;
 			}
 			else {
-				player.sendMessage("Cannon is not loaded");
+				player.sendMessage("Equipment is not loaded");
 			}
 			//	player.sendMessage(String.format("§e" +actualDelay));
 
@@ -369,7 +369,7 @@ public class ClickHandler implements Listener {
 			if(sign.getLine(0).equalsIgnoreCase( "[Cannon]")){
 				if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
 					CrunchSiegeCore.TrackedStands.remove(player.getUniqueId());
-					player.sendMessage("Releasing the cannons!");
+					player.sendMessage("Releasing the equipment!");
 					return;
 				}
 
