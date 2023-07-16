@@ -24,6 +24,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Snowball;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
@@ -31,6 +32,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.SignChangeEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
@@ -160,11 +162,20 @@ public class ClickHandler implements Listener {
 		if (topline == null) topline = "";
 		Player player = event.getPlayer();
 		String toplinetrimmed = topline.trim();
-		event.getPlayer().sendMessage("1");
 		if (toplinetrimmed.equals("[Cannon]")) {
 			SaveCannons(player, event.getBlock());
 		}
-		event.getPlayer().sendMessage("2");
+
+	}
+
+	@EventHandler
+	public void damage(EntityDamageByEntityEvent event){
+		if (event.getEntity() instanceof ArmorStand) {
+			if (event.getDamager() instanceof Projectile) {
+				event.setDamage(0);
+				event.setCancelled(true);
+			}
+		}
 	}
 
 
@@ -205,6 +216,7 @@ public class ClickHandler implements Listener {
 			stand.addEquipmentLock(EquipmentSlot.LEGS, LockType.ADDING_OR_CHANGING);
 			stand.addEquipmentLock(EquipmentSlot.CHEST, LockType.ADDING_OR_CHANGING);
 			stand.addEquipmentLock(EquipmentSlot.FEET, LockType.ADDING_OR_CHANGING);
+			stand.setBasePlate(false);
 			if (CrunchSiegeCore.TrackedStands.containsKey(player.getUniqueId())) {
 				List<Entity> entities = CrunchSiegeCore.TrackedStands.get(player.getUniqueId());
 				entities.add(entity);

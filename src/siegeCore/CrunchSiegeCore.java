@@ -93,7 +93,7 @@ public class CrunchSiegeCore extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(new ClickHandler(), this);
 		StorageManager.setup(Path, plugin);
 		AddDefined();
-		File f = new File(Path + "/Example.Json");
+		File f = new File(Path + "/Trebuchet.Json");
 		if (!f.exists()) {
 			for (SiegeEquipment i : DefinedEquipment.values()) {
 				StorageManager.Save(i);
@@ -107,7 +107,8 @@ public class CrunchSiegeCore extends JavaPlugin {
 
 		File folder = new File(Path);
 		File[] listOfFiles = folder.listFiles();
-
+		equipment.clear();
+		TrackedStands.clear();
 		for (int i = 0; i < listOfFiles.length; i++) {
 			if (listOfFiles[i].isFile()) {
 				SiegeEquipment equip = StorageManager.load(listOfFiles[i].getAbsolutePath());
@@ -207,9 +208,63 @@ public class CrunchSiegeCore extends JavaPlugin {
 
 	public static void AddDefined() {
 		SiegeEquipment equip = new SiegeEquipment();
+		equip.EquipmentName = "Trebuchet";
+		equip.XOffset = 5;
+		equip.YOffset = 5;
+		equip.VelocityPerFuel = 0.3f;
 		ExplosiveProjectile proj = new ExplosiveProjectile();
-		proj.ExplodePower = 1;
+		proj.ExplodePower = 2;
+		equip.RotateStandHead = false;
+		equip.RotateSideways = true;
+		equip.FuelMaterial = Material.STRING;
 		equip.Projectiles.put(Material.COBBLESTONE, proj);
+		equip.ReadyModelNumber = 122;
+		equip.ModelNumberToFireAt = 135;
+		equip.MillisecondsBetweenFiringStages = 2;
+		equip.MillisecondsBetweenReloadingStages = 10;
+		equip.FiringModelNumbers = new ArrayList<>(Arrays.asList(
+				123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139
+				));
+		equip.CycleThroughModelsBeforeFiring = true;
+		DefinedEquipment.put(equip.ReadyModelNumber, equip);
+		
+		equip = new SiegeEquipment();
+		equip.EquipmentName = "Naval Cannon";
+		equip.Projectiles.put(Material.COBBLESTONE, proj);
+		equip.PlacementOffsetY = -1;
+		equip.ReadyModelNumber = 142;
+		equip.ModelNumberToFireAt = 142;
+		equip.FiringModelNumbers = new ArrayList<Integer>();
+		equip.RotateStandHead = true;
+		equip.RotateSideways = false;
+		proj = new ExplosiveProjectile();
+		proj.ExplodePower = 1;
+		proj.ProjectilesCount = 3;
+		proj.DelayedFire = true;
+		proj.Inaccuracy = 0.5f;
+		equip.Projectiles.put(Material.TNT, proj);
+		proj = new ExplosiveProjectile();
+		proj.ExplodePower = 4;
+		proj.ProjectilesCount = 1;
+		equip.Projectiles.put(Material.COPPER_BLOCK, proj);
+
+		EntityProjectile fireProj = new EntityProjectile();
+		fireProj.EntityCount = 2;
+		fireProj.EntityTyp = EntityType.SMALL_FIREBALL;
+		fireProj.ParticleType = Particle.WHITE_ASH;
+		fireProj.SoundType = Sound.ENTITY_BLAZE_SHOOT;
+		equip.Projectiles.put(Material.FIRE_CHARGE, fireProj);
+		DefinedEquipment.put(equip.ReadyModelNumber, equip);
+		equip = new SiegeEquipment();
+		equip.EquipmentName = "Siege Cannon";
+		proj.ExplodePower = 2;
+		equip.Projectiles.put(Material.COBBLESTONE, proj);
+		equip.PlacementOffsetY = -1;
+		equip.ReadyModelNumber = 141;
+		equip.ModelNumberToFireAt = 141;
+		equip.FiringModelNumbers = new ArrayList<Integer>();
+		equip.RotateStandHead = true;
+		equip.RotateSideways = true;
 		proj = new ExplosiveProjectile();
 		proj.ExplodePower = 1;
 		proj.ProjectilesCount = 3;
@@ -221,13 +276,7 @@ public class CrunchSiegeCore extends JavaPlugin {
 		proj.ProjectilesCount = 1;
 		equip.Projectiles.put(Material.COPPER_BLOCK, proj);
 		equip.Projectiles.put(Material.GRAVEL, new EntityProjectile());
-		EntityProjectile fireProj = new EntityProjectile();
-		fireProj.EntityCount = 3;
-		fireProj.EntityTyp = EntityType.SMALL_FIREBALL;
-		fireProj.ParticleType = Particle.WHITE_ASH;
-		fireProj.SoundType = Sound.ENTITY_BLAZE_SHOOT;
-		equip.Projectiles.put(Material.DIAMOND, fireProj);
-
+		DefinedEquipment.put(equip.ReadyModelNumber, equip);
 //		EntityProjectile pig = new EntityProjectile();
 //		pig.EntityCount = 100;
 //		pig.DelayedFire = true;
@@ -237,26 +286,19 @@ public class CrunchSiegeCore extends JavaPlugin {
 //		pig.ParticleType = Particle.GLOW;
 //		equip.Projectiles.put(Material.PORKCHOP, pig);
 	//	equip.Projectiles.put(Material.BONE, new PotionProjectile());
-		ItemStack item = new ItemStack(Material.CARVED_PUMPKIN);
-		equip.ReadyModelNumber = 122;
-		equip.ModelNumberToFireAt = 135;
-		equip.MillisecondsBetweenFiringStages = 2;
-		equip.MillisecondsBetweenReloadingStages = 30;
-		equip.FiringModelNumbers = new ArrayList<>(Arrays.asList(
-				123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139
-				));
-		equip.CycleThroughModelsBeforeFiring = false;
 
-		DefinedEquipment.put(equip.ReadyModelNumber, equip);
 	}
 
 	public static Boolean CreateTrebuchet(Player player, int CustomModelData, Location l) {
 		//l.setY(l.getY() - 1);
      	l.add(0.5, 0, 0.5);
+  
     	SiegeEquipment equip = CreateClone(CustomModelData);
     	if (equip == null || !equip.Enabled) {
     		return false;
     	}
+    	l.setY(l.getY() + 1);
+    	l.setY(l.getY() + equip.PlacementOffsetY);
      	l.setDirection(player.getLocation().getDirection());
 		Entity entity2 = player.getWorld().spawnEntity(l, EntityType.ARMOR_STAND);
 	
@@ -280,6 +322,7 @@ public class CrunchSiegeCore extends JavaPlugin {
 		stand.addEquipmentLock(EquipmentSlot.LEGS, LockType.ADDING_OR_CHANGING);
 		stand.addEquipmentLock(EquipmentSlot.CHEST, LockType.ADDING_OR_CHANGING);
 		stand.addEquipmentLock(EquipmentSlot.FEET, LockType.ADDING_OR_CHANGING);
+		stand.setBasePlate(false);
 		ent.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 2000000, 1));
 		//	stand.setSmall(true);
 		stand.setVisible(true);

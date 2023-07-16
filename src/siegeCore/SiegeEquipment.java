@@ -43,6 +43,7 @@ public class SiegeEquipment implements Cloneable  {
 	public int XOffset = 7;
 	public int YOffset = 0;
 	public int MaxFuel = 5;
+	public int PlacementOffsetY = 0;
 	public float VelocityPerFuel = 0.75f;
 	public Material FuelMaterial = Material.GUNPOWDER;
 	public long NextShotTime = System.currentTimeMillis();

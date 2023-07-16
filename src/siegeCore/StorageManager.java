@@ -74,7 +74,7 @@ public class StorageManager {
 	
 	public static void Save(SiegeEquipment equipment) {
 
-		storage = new File(folder, "Example.json");
+		storage = new File(folder, equipment.EquipmentName + ".json");
 		FileWriter writer;
 		try {
 			writer = new FileWriter(storage, false);		
@@ -95,7 +95,7 @@ public class StorageManager {
 	    public CrunchProjectile deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) {
 	        JsonObject Object = json.getAsJsonObject();
 	        JsonElement type = Object.get(TypeName);
-	        System.out.println(type.getAsString());
+	      
 	        switch (type.getAsString()) {
 	        case "Entity":
 	            return gson.fromJson(Object, EntityProjectile.class);
