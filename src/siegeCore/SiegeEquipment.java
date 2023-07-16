@@ -32,7 +32,7 @@ public class SiegeEquipment implements Cloneable  {
 	public SiegeEquipment clone() throws CloneNotSupportedException {
 		return (SiegeEquipment)super.clone();
 	}
-	public Boolean Enabled = false;
+	public Boolean Enabled = true;
 	public UUID EntityId;
 	public Entity Entity;
 

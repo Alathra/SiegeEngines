@@ -87,10 +87,10 @@ public class ClickHandler implements Listener {
 				if (created) {
 					item.setAmount(item.getAmount() - 1);
 					thePlayer.getInventory().setItemInMainHand(item);
-					thePlayer.sendMessage("Cannon spawned!");
+					thePlayer.sendMessage("Equipment spawned!");
 				}
 				else {
-					thePlayer.sendMessage("Cannon could not be spawned, is it enabled?");
+					thePlayer.sendMessage("Equipment could not be spawned, is it enabled?");
 				}
 				event.setCancelled(true);
 			}
