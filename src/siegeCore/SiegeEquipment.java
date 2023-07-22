@@ -88,6 +88,7 @@ public class SiegeEquipment implements Cloneable  {
 				AmmoHolder.LoadedFuel += 1;
 				SaveState();
 				player.getInventory().removeItem(fuelItem);
+				player.sendMessage("Loaded " + this.AmmoHolder.LoadedFuel + "/" + this.MaxFuel);
 				return true;
 			}
 			else {
@@ -99,6 +100,20 @@ public class SiegeEquipment implements Cloneable  {
 
 	}
 
+	public Boolean LoadProjectile(Player player, ItemStack itemInHand) {
+		if (itemInHand.getAmount() <= 0) {
+			return false;
+		}
+		if (this.Projectiles.containsKey(itemInHand.getType()) && this.AmmoHolder.LoadedProjectile == 0){
+			this.AmmoHolder.LoadedProjectile = 1;
+			this.AmmoHolder.MaterialName = (Material) itemInHand.getType();
+			player.sendMessage("Adding projectile to cannon");
+			itemInHand.setAmount(itemInHand.getAmount() - 1);
+			return true;
+		}
+		return false;
+	}
+	
 	public void SaveState() {
 
 	}

@@ -336,6 +336,32 @@ public class ClickHandler implements Listener {
 		}
 	}
 
+	public void LoadCannonsWithPowder(Player player) {
+		for (Entity ent : CrunchSiegeCore.TrackedStands.get(player.getUniqueId())) {
+			if (ent.isDead()) {
+				continue;
+			}
+		
+			SiegeEquipment equipment = CrunchSiegeCore.equipment.get(ent.getUniqueId());
+			if (equipment != null) {
+				equipment.LoadFuel(player);
+			}
+		}
+	}
+	
+	public void LoadCannonsWithProjectile(Player player, ItemStack projectile) {
+		for (Entity ent : CrunchSiegeCore.TrackedStands.get(player.getUniqueId())) {
+			if (ent.isDead()) {
+				continue;
+			}
+		
+			SiegeEquipment equipment = CrunchSiegeCore.equipment.get(ent.getUniqueId());
+			if (equipment != null) {
+				equipment.LoadProjectile(player, projectile);
+			}
+		}
+	}
+	
 	@EventHandler
 	public void onPlayerClickSign(PlayerInteractEvent event){
 		Player player = event.getPlayer();
@@ -356,7 +382,24 @@ public class ClickHandler implements Listener {
 				}
 				return;
 			}
-
+			if(sign.getLine(0).equalsIgnoreCase( "[Load]")){
+				if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
+					LoadCannonsWithPowder(player);
+					return;
+				}
+				if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+					//load proj
+					ItemStack itemInHand = player.getInventory().getItemInMainHand();
+					if (itemInHand == null) {
+						return;
+					}
+		
+	
+					LoadCannonsWithProjectile(player, player.getInventory().getItemInMainHand());
+					return;
+				}
+			}
+			
 			if(sign.getLine(0).equalsIgnoreCase( "[Aim]")){
 				if (!CrunchSiegeCore.TrackedStands.containsKey(player.getUniqueId())) {
 					return;
@@ -400,7 +443,6 @@ public class ClickHandler implements Listener {
 					}
 					String[] split = state.getPersistentDataContainer().get(key, PersistentDataType.STRING).replace("[", "").replace("]", "").split(",");
 					for (String s : split) {
-						player.sendMessage(s.trim());
 						temp.add(UUID.fromString(s.trim()));
 					}
 					for (UUID Id : temp) {
@@ -430,10 +472,7 @@ public class ClickHandler implements Listener {
 			if (CrunchSiegeCore.equipment.containsKey(entity.getUniqueId())) {
 				SiegeEquipment equipment = CrunchSiegeCore.equipment.get(entity.getUniqueId());
 				if (itemInHand.getType().equals(equipment.FuelMaterial)) {
-					if (equipment.LoadFuel(player)) {
-						player.sendMessage("Loaded " + equipment.AmmoHolder.LoadedFuel + "/" + equipment.MaxFuel);
-					}
-					else {
+					if (!equipment.LoadFuel(player)) {
 						player.sendMessage("Could not load powder.");
 					}
 				}
