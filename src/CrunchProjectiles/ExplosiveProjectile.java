@@ -13,6 +13,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
+import me.libraryaddict.disguise.disguisetypes.DisguiseType;
+import me.libraryaddict.disguise.disguisetypes.MiscDisguise;
 import siegeCore.ClickHandler;
 import siegeCore.CrunchSiegeCore;
 
@@ -58,6 +60,9 @@ public class ExplosiveProjectile implements CrunchProjectile {
 			tnt.setVelocity(loc.getDirection().multiply(velocity));
 		}
 
+//		MiscDisguise miscDisguise = new MiscDisguise(DisguiseType.ARROW);
+//		miscDisguise.setEntity(tnt);
+//		miscDisguise.startDisguise();
 		world.playSound(loc, this.SoundType, 20, 2);
 		world.spawnParticle(this.ParticleType, loc.getX(), loc.getY(), loc.getZ(), 0);
 	}
