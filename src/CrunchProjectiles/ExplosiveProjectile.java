@@ -21,6 +21,9 @@ import siegeCore.CrunchSiegeCore;
 public class ExplosiveProjectile implements CrunchProjectile {
 	
 	public String ProjectileType = "Explosive";
+	public Boolean PlaceBlocks = false;
+	public Material BlockToPlace = Material.COBWEB;
+	public int BlocksToPlaceAmount = 3;
 	public int ExplodePower = 2;
 	public float Inaccuracy = 0.3f;
 	public int ProjectilesCount = 1;

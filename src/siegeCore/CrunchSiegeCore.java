@@ -50,6 +50,9 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
+import com.comphenix.protocol.wrappers.EnumWrappers.Direction;
+import com.palmergames.bukkit.towny.Towny;
+
 import CrunchProjectiles.EntityProjectile;
 import CrunchProjectiles.CrunchProjectile;
 import CrunchProjectiles.ExplosiveProjectile;
@@ -61,6 +64,7 @@ public class CrunchSiegeCore extends JavaPlugin {
 	public static Random random = new Random();
 	private static String Path;
 
+	public static Towny towny;
 	
 	@SuppressWarnings("deprecation")
 	@Override
@@ -101,6 +105,7 @@ public class CrunchSiegeCore extends JavaPlugin {
 			DefinedEquipment.clear();
 		}
 		LoadConfigs();
+		towny = (Towny) Bukkit.getServer().getPluginManager().getPlugin("Towny");
 	}
 
 	public static void LoadConfigs() {
@@ -299,7 +304,8 @@ public class CrunchSiegeCore extends JavaPlugin {
     	}
     	l.setY(l.getY() + 1);
     	l.setY(l.getY() + equip.PlacementOffsetY);
-     	l.setDirection(player.getLocation().getDirection());
+     	l.setDirection(player.getFacing().getDirection());
+   
 		Entity entity2 = player.getWorld().spawnEntity(l, EntityType.ARMOR_STAND);
 	
 		ItemStack item = new ItemStack(Material.CARVED_PUMPKIN);
@@ -313,10 +319,11 @@ public class CrunchSiegeCore extends JavaPlugin {
 		meta.setLore(Lore);
 		item.setItemMeta(meta);
 
-	
+		
 		LivingEntity ent = (LivingEntity) entity2;
 		ArmorStand stand = (ArmorStand) ent;
 		equip.Entity = entity2;
+		
 		equip.EntityId = entity2.getUniqueId();
 		stand.addEquipmentLock(EquipmentSlot.HEAD, LockType.REMOVING_OR_CHANGING);
 		stand.addEquipmentLock(EquipmentSlot.LEGS, LockType.ADDING_OR_CHANGING);

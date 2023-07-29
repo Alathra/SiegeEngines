@@ -35,6 +35,7 @@ import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -47,6 +48,10 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.EulerAngle;
+
+import com.palmergames.bukkit.towny.TownyAPI;
+import com.palmergames.bukkit.towny.event.actions.TownyDestroyEvent;
+import com.palmergames.bukkit.towny.object.TownBlock;
 
 import CrunchProjectiles.ExplosiveProjectile;
 
@@ -65,14 +70,56 @@ public class ClickHandler implements Listener {
 			World world = event.getEntity().getWorld();
 			//	world.createExplosion(loc, proj.Radius, proj.DoFire);
 			Entity tnt = event.getEntity().getWorld().spawnEntity(loc, EntityType.PRIMED_TNT);
-			TNTPrimed tntEnt = (TNTPrimed) tnt;
-			tntEnt.setYield(proj.ExplodePower);
-			tntEnt.setFuseTicks(0);
-
-
-
+	
 			projectiles.remove(event.getEntity().getUniqueId());
+			
+			if (proj.PlaceBlocks) {
+				TNTPrimed tntEnt = (TNTPrimed) tnt;
+				tntEnt.setYield(1);
+				tntEnt.setFuseTicks(0);
+				if (CrunchSiegeCore.towny != null) {
+					TownBlock block = TownyAPI.getInstance().getTownBlock(loc);
+					if (block != null) {
+						if (block.hasTown()) {
+							if (!block.getTownBlockOwner().getPermissions().explosion) {
+								return;
+							}
+						}
+					}
+					List<Block> Blocks = sphere(loc, proj.ExplodePower);
+					for (int i = 0; i < proj.BlocksToPlaceAmount; i++) {
+						Block replace = getRandomElement(Blocks);
+						replace.setType(Material.COBWEB);
+					}
+				}
+			}
+			else {
+				TNTPrimed tntEnt = (TNTPrimed) tnt;
+				tntEnt.setYield(proj.ExplodePower);
+				tntEnt.setFuseTicks(0);
+			}
+			
 		}
+	}
+
+	public ArrayList<Block> sphere(final Location center, final int radius) {
+		ArrayList<Block> sphere = new ArrayList<Block>();
+		for (int Y = -radius; Y < radius; Y++)
+			for (int X = -radius; X < radius; X++)
+				for (int Z = -radius; Z < radius; Z++)
+					if (Math.sqrt((X * X) + (Y * Y) + (Z * Z)) <= radius) {
+						final Block block = center.getWorld().getBlockAt(X + center.getBlockX(), Y + center.getBlockY(), Z + center.getBlockZ());
+						if (block.getType() == Material.AIR) {
+							sphere.add(block);
+						}
+					}
+		return sphere;
+	}
+
+	public Block getRandomElement(List<Block> list)
+	{
+		Random rand = new Random();
+		return list.get(rand.nextInt(list.size()));
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
@@ -341,27 +388,27 @@ public class ClickHandler implements Listener {
 			if (ent.isDead()) {
 				continue;
 			}
-		
+
 			SiegeEquipment equipment = CrunchSiegeCore.equipment.get(ent.getUniqueId());
 			if (equipment != null) {
 				equipment.LoadFuel(player);
 			}
 		}
 	}
-	
+
 	public void LoadCannonsWithProjectile(Player player, ItemStack projectile) {
 		for (Entity ent : CrunchSiegeCore.TrackedStands.get(player.getUniqueId())) {
 			if (ent.isDead()) {
 				continue;
 			}
-		
+
 			SiegeEquipment equipment = CrunchSiegeCore.equipment.get(ent.getUniqueId());
 			if (equipment != null) {
 				equipment.LoadProjectile(player, projectile);
 			}
 		}
 	}
-	
+
 	@EventHandler
 	public void onPlayerClickSign(PlayerInteractEvent event){
 		Player player = event.getPlayer();
@@ -393,13 +440,13 @@ public class ClickHandler implements Listener {
 					if (itemInHand == null) {
 						return;
 					}
-		
-	
+
+
 					LoadCannonsWithProjectile(player, player.getInventory().getItemInMainHand());
 					return;
 				}
 			}
-			
+
 			if(sign.getLine(0).equalsIgnoreCase( "[Aim]")){
 				if (!CrunchSiegeCore.TrackedStands.containsKey(player.getUniqueId())) {
 					return;

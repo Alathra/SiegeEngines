@@ -5,5 +5,6 @@
 	<classpathentry kind="lib" path="E:/4 1.19.4 test/spigot-api-1.19.4-R0.1-SNAPSHOT-shaded.jar"/>
 	<classpathentry kind="lib" path="E:/4 1.19.4 test/plugins/LibsDisguises-10.0.37-Free.jar"/>
 	<classpathentry kind="lib" path="E:/4 1.19.4 test/plugins/ProtocolLib (15).jar"/>
+	<classpathentry kind="lib" path="E:/4 1.19.4 test/plugins/Towny-0.99.5.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
