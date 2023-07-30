@@ -28,24 +28,26 @@ public class EntityProjectile implements CrunchProjectile{
 	public Sound SoundType = Sound.ENTITY_GENERIC_EXPLODE;
 	@Override
 	public void Shoot(Player player, Entity entity, Location FireLocation, Float velocity) {
+		PlaySound = true;
 		int baseDelay = 0;
 		for (int i = 0; i < EntityCount; i++) {
 			if (DelayedFire) {
 				baseDelay += DelayTime;
 				Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(CrunchSiegeCore.plugin, () -> {
-			
-					CreateEntity(entity, FireLocation, velocity);
+					
+					CreateEntity(entity, FireLocation, velocity, player);
 				}, (long) baseDelay);
 			}
 			else {
 
-				CreateEntity(entity, FireLocation, velocity);
+				CreateEntity(entity, FireLocation, velocity, player);
 			}
 	
 			//	}
 		}
 	}
-	private void CreateEntity(Entity entity,  Location loc, Float velocity) {
+	private boolean PlaySound = true;
+	private void CreateEntity(Entity entity,  Location loc, Float velocity, Player player) {
 		World world = entity.getLocation().getWorld();
 		LivingEntity living = (LivingEntity) entity;
 		
@@ -62,11 +64,16 @@ public class EntityProjectile implements CrunchProjectile{
 		if (arrow instanceof Arrow) {
 			Arrow arr = (Arrow) arrow;
 			arr.setDamage(8);
+			arr.setShooter(player);
 		}
 		//				MiscDisguise miscDisguise = new MiscDisguise(DisguiseType.DROPPED_ITEM, Material.IRON_NUGGET);
 		//				DisguiseAPI.disguiseEntity(arrow, miscDisguise);
-		world.playSound(loc, this.SoundType, 20, 2);
-		world.spawnParticle(this.ParticleType, loc.getX(), loc.getY(), loc.getZ(), 0);
+		if (PlaySound) {
+			world.playSound(loc, this.SoundType, 20, 2);
+			world.spawnParticle(this.ParticleType, loc.getX(), loc.getY(), loc.getZ(), 0);
+			PlaySound = false;
+		}
+
 	}
 	
 	private Vector Randomise() {

@@ -86,10 +86,12 @@ public class ClickHandler implements Listener {
 							}
 						}
 					}
-					List<Block> Blocks = sphere(loc, proj.ExplodePower);
-					for (int i = 0; i < proj.BlocksToPlaceAmount; i++) {
-						Block replace = getRandomElement(Blocks);
-						replace.setType(Material.COBWEB);
+					if (event.getHitBlock() != null) {
+						List<Block> Blocks = sphere(event.getHitBlock().getLocation(), proj.ExplodePower);
+						for (int i = 0; i < proj.BlocksToPlaceAmount; i++) {
+							Block replace = getRandomElement(Blocks);
+							replace.setType(Material.COBWEB);
+						}
 					}
 				}
 			}
