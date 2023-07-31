@@ -75,7 +75,7 @@ public class ClickHandler implements Listener {
 			
 			if (proj.PlaceBlocks) {
 				TNTPrimed tntEnt = (TNTPrimed) tnt;
-				tntEnt.setYield(1);
+				tntEnt.setYield(0);
 				tntEnt.setFuseTicks(0);
 				if (CrunchSiegeCore.towny != null) {
 					TownBlock block = TownyAPI.getInstance().getTownBlock(loc);
@@ -86,12 +86,12 @@ public class ClickHandler implements Listener {
 							}
 						}
 					}
-					if (event.getHitBlock() != null) {
-						List<Block> Blocks = sphere(event.getHitBlock().getLocation(), proj.ExplodePower);
-						for (int i = 0; i < proj.BlocksToPlaceAmount; i++) {
-							Block replace = getRandomElement(Blocks);
-							replace.setType(Material.COBWEB);
-						}
+				}
+				if (event.getHitBlock() != null) {
+					List<Block> Blocks = sphere(event.getHitBlock().getLocation(), proj.ExplodePower);
+					for (int i = 0; i < proj.BlocksToPlaceAmount; i++) {
+						Block replace = getRandomElement(Blocks);
+						replace.setType(Material.COBWEB);
 					}
 				}
 			}
@@ -303,31 +303,56 @@ public class ClickHandler implements Listener {
 			if (ent.isDead()) {
 				continue;
 			}
-			Location loc = ent.getLocation();
-			ArmorStand stand = (ArmorStand) ent;
-			//	player.sendMessage(String.format("" + loc.getPitch()));
-			if (loc.getPitch() == -85 || loc.getPitch() - amount < -85) {
-				return;
-			}
-			loc.setPitch((float) (loc.getPitch() - amount));
-			SiegeEquipment equipment = CrunchSiegeCore.equipment.get(ent.getUniqueId());
-			if (equipment != null) {
 
-				equipment.ShowFireLocation(player);   
-				if (equipment.RotateStandHead) {
-					stand.setHeadPose(new EulerAngle(loc.getDirection().getY()*(-1),0,0));
-				}
-
-			}
-
-
-
-			ent.teleport(loc);
-
+			DoAimUp(ent, amount, player);
 
 		}
 	}
 
+	public void DoAimUp(Entity ent, float amount, Player player) {
+		Location loc = ent.getLocation();
+		ArmorStand stand = (ArmorStand) ent;
+		//	player.sendMessage(String.format("" + loc.getPitch()));
+		if (loc.getPitch() == -85 || loc.getPitch() - amount < -85) {
+			return;
+		}
+		loc.setPitch((float) (loc.getPitch() - amount));
+		SiegeEquipment equipment = CrunchSiegeCore.equipment.get(ent.getUniqueId());
+		if (equipment != null) {
+
+			equipment.ShowFireLocation(player);   
+			if (equipment.RotateStandHead) {
+				stand.setHeadPose(new EulerAngle(loc.getDirection().getY()*(-1),0,0));
+			}
+
+		}
+
+
+
+		ent.teleport(loc);
+	}
+	
+	public void DoAimDown(Entity ent, float amount, Player player) {
+		Location loc = ent.getLocation();
+		ArmorStand stand = (ArmorStand) ent;
+		//	player.sendMessage(String.format("" + loc.getPitch()));
+		if (loc.getPitch() == 85 || loc.getPitch() + amount > 85) {
+			return;
+		}
+		SiegeEquipment equipment = CrunchSiegeCore.equipment.get(ent.getUniqueId());
+		if (equipment != null) {
+
+			equipment.ShowFireLocation(player);   
+			if (equipment.RotateStandHead) {
+				stand.setHeadPose(new EulerAngle(loc.getDirection().getY()*(-1),0,0));
+
+			}
+		}
+		loc.setPitch((float) (loc.getPitch() + amount));
+
+		ent.teleport(loc);
+	}
+	
 	@EventHandler
 	public void DeathEvent(EntityDeathEvent event) {
 		Boolean removeStands = false;
@@ -364,24 +389,8 @@ public class ClickHandler implements Listener {
 			if (ent.isDead()) {
 				continue;
 			}
-			Location loc = ent.getLocation();
-			ArmorStand stand = (ArmorStand) ent;
-			//	player.sendMessage(String.format("" + loc.getPitch()));
-			if (loc.getPitch() == 85 || loc.getPitch() + amount > 85) {
-				return;
-			}
-			SiegeEquipment equipment = CrunchSiegeCore.equipment.get(ent.getUniqueId());
-			if (equipment != null) {
-
-				equipment.ShowFireLocation(player);   
-				if (equipment.RotateStandHead) {
-					stand.setHeadPose(new EulerAngle(loc.getDirection().getY()*(-1),0,0));
-
-				}
-			}
-			loc.setPitch((float) (loc.getPitch() + amount));
-
-			ent.teleport(loc);
+	
+			DoAimDown(ent, amount, player);
 		}
 	}
 
@@ -519,6 +528,15 @@ public class ClickHandler implements Listener {
 		if (entity.getType() == EntityType.ARMOR_STAND){
 			TakeControl(player, entity);
 			if (CrunchSiegeCore.equipment.containsKey(entity.getUniqueId())) {
+				if (itemInHand == null || itemInHand.getType() == Material.AIR) {
+					if (player.isSneaking()) {
+						DoAimDown(entity, 1, player);
+					}
+					else {
+						DoAimUp(entity, 1, player);
+					}
+					return;
+				}
 				SiegeEquipment equipment = CrunchSiegeCore.equipment.get(entity.getUniqueId());
 				if (itemInHand.getType().equals(equipment.FuelMaterial)) {
 					if (!equipment.LoadFuel(player)) {
