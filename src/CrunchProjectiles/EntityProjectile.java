@@ -71,7 +71,9 @@ public class EntityProjectile implements CrunchProjectile{
 		if (PlaySound) {
 			world.playSound(loc, this.SoundType, 20, 2);
 			world.spawnParticle(this.ParticleType, loc.getX(), loc.getY(), loc.getZ(), 0);
-			PlaySound = false;
+			if (!DelayedFire) {
+				PlaySound = false;
+			}
 		}
 
 	}

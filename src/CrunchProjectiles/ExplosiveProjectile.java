@@ -31,8 +31,11 @@ public class ExplosiveProjectile implements CrunchProjectile {
 	public int DelayTime = 6;
 	public Particle ParticleType = Particle.EXPLOSION_LARGE;
 	public Sound SoundType = Sound.ENTITY_GENERIC_EXPLODE;
+	private boolean PlaySound = true;
+	
 	@Override
 	public void Shoot(Player player, Entity entity, Location loc, Float velocity) {
+		PlaySound = true;
 		int baseDelay = 0;
 		for (int i = 0; i < ProjectilesCount; i++) {
 			if (DelayedFire) {
@@ -63,12 +66,17 @@ public class ExplosiveProjectile implements CrunchProjectile {
 			tnt.setVelocity(loc.getDirection().multiply(velocity));
 		}
 
-		
+		if (PlaySound) {
+			world.playSound(loc, this.SoundType, 20, 2);
+			world.spawnParticle(this.ParticleType, loc.getX(), loc.getY(), loc.getZ(), 0);
+			if (!DelayedFire) {
+				PlaySound = false;
+			}
+		}
 //		MiscDisguise miscDisguise = new MiscDisguise(DisguiseType.ARROW);
 //		miscDisguise.setEntity(tnt);
 //		miscDisguise.startDisguise();
-		world.playSound(loc, this.SoundType, 20, 2);
-		world.spawnParticle(this.ParticleType, loc.getX(), loc.getY(), loc.getZ(), 0);
+
 	}
 	
 	private Vector Randomise() {
