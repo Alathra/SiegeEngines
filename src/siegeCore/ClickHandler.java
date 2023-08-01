@@ -177,8 +177,8 @@ public class ClickHandler implements Listener {
 			}
 			double distance = player.getLocation().distance(ent.getLocation());
 			if (distance >= 250) {
-				player.sendMessage("Too far away to fire");
-				return;
+				
+				continue;
 			}
 			SiegeEquipment siege = CrunchSiegeCore.equipment.get(ent.getUniqueId());
 
