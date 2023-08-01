@@ -89,7 +89,7 @@ public class ClickHandler implements Listener {
 			Snowball ball = (Snowball) snowball;
 			Player player = (Player) ball.getShooter();
 			if (player != null) {
-				player.sendMessage("Distance to impact: " + player.getLocation().distance(ball.getLocation()));
+				player.sendMessage("Distance to impact: " + String.format("%.2f",player.getLocation().distance(ball.getLocation())));
 			}
 			Location loc = snowball.getLocation();
 			World world = event.getEntity().getWorld();

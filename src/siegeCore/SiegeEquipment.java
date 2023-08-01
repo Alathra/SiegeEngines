@@ -42,7 +42,7 @@ public class SiegeEquipment implements Cloneable  {
 	public String EquipmentName = "Cannon";
 	public int XOffset = 7;
 	public int YOffset = 0;
-	public int PitchOffset = -90;
+	public int PitchOffset = 0;
 	public int MaxFuel = 5;
 	public double PlacementOffsetY = 0;
 	public float VelocityPerFuel = 0.75f;
