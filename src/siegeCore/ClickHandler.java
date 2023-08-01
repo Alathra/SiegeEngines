@@ -34,6 +34,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
@@ -60,6 +61,25 @@ public class ClickHandler implements Listener {
 	public float MinDelay = 5;
 
 	public static HashMap<UUID, ExplosiveProjectile> projectiles = new HashMap<UUID, ExplosiveProjectile>();
+	@EventHandler
+	public void onExplode(EntityExplodeEvent e) {
+		for (Entity entity : e.getEntity().getNearbyEntities(e.getYield() + 1, e.getYield()+ 1, e.getYield()+ 1)) {
+			if(entity instanceof ArmorStand) {
+				ArmorStand stand = (ArmorStand) entity;
+				if (CrunchSiegeCore.towny != null) {
+					TownBlock block = TownyAPI.getInstance().getTownBlock(stand.getLocation());
+					if (block != null) {
+						if (block.hasTown()) {
+							if (!block.getTownBlockOwner().getPermissions().explosion) {
+								return;
+							}
+						}
+					}
+				}
+				stand.remove();
+			}
+		}
+	}
 
 	@EventHandler
 	public void onHit(ProjectileHitEvent event) {
@@ -70,9 +90,9 @@ public class ClickHandler implements Listener {
 			World world = event.getEntity().getWorld();
 			//	world.createExplosion(loc, proj.Radius, proj.DoFire);
 			Entity tnt = event.getEntity().getWorld().spawnEntity(loc, EntityType.PRIMED_TNT);
-	
+
 			projectiles.remove(event.getEntity().getUniqueId());
-			
+
 			if (proj.PlaceBlocks) {
 				TNTPrimed tntEnt = (TNTPrimed) tnt;
 				tntEnt.setYield(0);
@@ -100,7 +120,7 @@ public class ClickHandler implements Listener {
 				tntEnt.setYield(proj.ExplodePower);
 				tntEnt.setFuseTicks(0);
 			}
-			
+
 		}
 	}
 
@@ -331,7 +351,7 @@ public class ClickHandler implements Listener {
 
 		ent.teleport(loc);
 	}
-	
+
 	public void DoAimDown(Entity ent, float amount, Player player) {
 		Location loc = ent.getLocation();
 		ArmorStand stand = (ArmorStand) ent;
@@ -352,7 +372,7 @@ public class ClickHandler implements Listener {
 
 		ent.teleport(loc);
 	}
-	
+
 	@EventHandler
 	public void DeathEvent(EntityDeathEvent event) {
 		Boolean removeStands = false;
@@ -389,7 +409,7 @@ public class ClickHandler implements Listener {
 			if (ent.isDead()) {
 				continue;
 			}
-	
+
 			DoAimDown(ent, amount, player);
 		}
 	}
@@ -528,7 +548,7 @@ public class ClickHandler implements Listener {
 		if (entity.getType() == EntityType.ARMOR_STAND){
 			TakeControl(player, entity);
 			if (CrunchSiegeCore.equipment.containsKey(entity.getUniqueId())) {
-				if (itemInHand == null || itemInHand.getType() == Material.AIR) {
+				if (itemInHand.getType() == Material.COMPASS) {
 					if (player.isSneaking()) {
 						DoAimDown(entity, 1, player);
 					}
@@ -537,7 +557,19 @@ public class ClickHandler implements Listener {
 					}
 					return;
 				}
+			
 				SiegeEquipment equipment = CrunchSiegeCore.equipment.get(entity.getUniqueId());
+		
+				if (itemInHand == null || itemInHand.getType() == Material.AIR) {
+					ArmorStand stand = (ArmorStand) entity;
+					if (stand.isInvisible()) {
+						stand.setInvisible(false);
+					}
+					else{
+						stand.setInvisible(true);
+					}
+					return;
+				}
 				if (itemInHand.getType().equals(equipment.FuelMaterial)) {
 					if (!equipment.LoadFuel(player)) {
 						player.sendMessage("Could not load powder.");

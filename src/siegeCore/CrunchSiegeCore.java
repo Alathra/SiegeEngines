@@ -153,7 +153,9 @@ public class CrunchSiegeCore extends JavaPlugin {
 						meta.setCustomModelData(i.ReadyModelNumber);
 						meta.setDisplayName("§e" + i.EquipmentName +" spawn item");
 						List<String> Lore = new ArrayList<String>();
-						Lore.add("§ePlace as a block to spawn a " + i.EquipmentName + " or put on an armour stand.");
+						Lore.add("§ePlace as a block to spawn a " + i.EquipmentName);
+						Lore.add("§eor put on an armour stand.");
+						Lore.add("§eRight click to toggle visibility of stand.");
 						meta.setLore(Lore);
 						item.setItemMeta(meta);
 						player.getInventory().addItem(item);
@@ -332,7 +334,7 @@ public class CrunchSiegeCore extends JavaPlugin {
 		stand.setBasePlate(false);
 		ent.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 2000000, 1));
 		//	stand.setSmall(true);
-		stand.setVisible(true);
+		stand.setInvisible(true);
 		stand.setGravity(false);
 		//stand.setSmall(true);
 		ent.getEquipment().setHelmet(item);
