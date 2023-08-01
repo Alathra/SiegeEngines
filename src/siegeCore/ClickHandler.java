@@ -566,13 +566,14 @@ public class ClickHandler implements Listener {
 						stand.setInvisible(false);
 					}
 					else{
-						stand.setInvisible(true);
+						if (equipment.AllowInvisibleStand) {
+							stand.setInvisible(true);
+						}
 					}
-					return;
 				}
 				if (itemInHand.getType().equals(equipment.FuelMaterial)) {
 					if (!equipment.LoadFuel(player)) {
-						player.sendMessage("Could not load powder.");
+						player.sendMessage("Could not load Fuel.");
 					}
 				}
 				if (itemInHand.getType().equals(Material.FLINT)) {
@@ -580,7 +581,7 @@ public class ClickHandler implements Listener {
 						equipment.Fire(player, 6);
 					}
 					else {
-						player.sendMessage("Cannon is not loaded");
+						player.sendMessage("Equipment is not loaded");
 					}
 					return;
 				}
@@ -588,7 +589,7 @@ public class ClickHandler implements Listener {
 				if (equipment.Projectiles.containsKey(itemInHand.getType()) && equipment.AmmoHolder.LoadedProjectile == 0){
 					equipment.AmmoHolder.LoadedProjectile = 1;
 					equipment.AmmoHolder.MaterialName = (Material) itemInHand.getType();
-					player.sendMessage("Adding projectile to cannon");
+					player.sendMessage("Adding projectile to equipment");
 					itemInHand.setAmount(itemInHand.getAmount() - 1);
 				}
 				return;

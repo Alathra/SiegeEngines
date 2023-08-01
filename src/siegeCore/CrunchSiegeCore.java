@@ -334,7 +334,9 @@ public class CrunchSiegeCore extends JavaPlugin {
 		stand.setBasePlate(false);
 		ent.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 2000000, 1));
 		//	stand.setSmall(true);
-		stand.setInvisible(true);
+		if (equip.AllowInvisibleStand) {
+			stand.setInvisible(true);
+		}
 		stand.setGravity(false);
 		//stand.setSmall(true);
 		ent.getEquipment().setHelmet(item);

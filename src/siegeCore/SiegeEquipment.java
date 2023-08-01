@@ -43,7 +43,7 @@ public class SiegeEquipment implements Cloneable  {
 	public int XOffset = 7;
 	public int YOffset = 0;
 	public int MaxFuel = 5;
-	public int PlacementOffsetY = 0;
+	public double PlacementOffsetY = 0;
 	public float VelocityPerFuel = 0.75f;
 	public Material FuelMaterial = Material.GUNPOWDER;
 	public long NextShotTime = System.currentTimeMillis();
@@ -59,7 +59,7 @@ public class SiegeEquipment implements Cloneable  {
 	public Boolean RotateStandHead = true;
 	public Boolean HasFired = false;
 	public Boolean HasReloaded = false;
-
+	public Boolean AllowInvisibleStand = true;
 	public int TaskNumber;
 
 	public int ReadyModelNumber;
@@ -83,7 +83,7 @@ public class SiegeEquipment implements Cloneable  {
 		if (AmmoHolder.LoadedFuel == this.MaxFuel) {
 			return true;
 		}
-		if (player.getInventory().containsAtLeast(fuelItem, 1)) {
+		if (player.getInventory().containsAtLeast(fuelItem, 1) || fuelItem.getType() == Material.AIR) {
 			if (CanLoadFuel()) {
 				AmmoHolder.LoadedFuel += 1;
 				SaveState();

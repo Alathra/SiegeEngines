@@ -65,6 +65,7 @@ public class EntityProjectile implements CrunchProjectile{
 			Arrow arr = (Arrow) arrow;
 			arr.setDamage(8);
 			arr.setShooter(player);
+			//arr.setBasePotionData(arg0);
 		}
 		//				MiscDisguise miscDisguise = new MiscDisguise(DisguiseType.DROPPED_ITEM, Material.IRON_NUGGET);
 		//				DisguiseAPI.disguiseEntity(arrow, miscDisguise);
