@@ -42,6 +42,7 @@ public class SiegeEquipment implements Cloneable  {
 	public String EquipmentName = "Cannon";
 	public int XOffset = 7;
 	public int YOffset = 0;
+	public int PitchOffset = -90;
 	public int MaxFuel = 5;
 	public double PlacementOffsetY = 0;
 	public float VelocityPerFuel = 0.75f;
@@ -60,6 +61,9 @@ public class SiegeEquipment implements Cloneable  {
 	public Boolean HasFired = false;
 	public Boolean HasReloaded = false;
 	public Boolean AllowInvisibleStand = true;
+	public Boolean HaseBaseStand = false;
+	public double BaseStandOffset = 0;
+	public int BaseStandModelNumber = 147;
 	public int TaskNumber;
 
 	public int ReadyModelNumber;
@@ -129,7 +133,7 @@ public class SiegeEquipment implements Cloneable  {
 		else {
 			loc.setY(loc.getY() - this.YOffset);
 		}
-		
+		loc.setPitch(loc.getPitch() + this.PitchOffset);
 		return loc;
 	}
 	

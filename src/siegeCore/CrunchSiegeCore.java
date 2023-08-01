@@ -305,15 +305,37 @@ public class CrunchSiegeCore extends JavaPlugin {
     		return false;
     	}
     	l.setY(l.getY() + 1);
-    	l.setY(l.getY() + equip.PlacementOffsetY);
+
      	l.setDirection(player.getFacing().getDirection());
    
-		Entity entity2 = player.getWorld().spawnEntity(l, EntityType.ARMOR_STAND);
-	
+
+	//	
+		
 		ItemStack item = new ItemStack(Material.CARVED_PUMPKIN);
 		ItemMeta meta = item.getItemMeta();
+
 		equip.AmmoHolder = new EquipmentMagazine();
-		
+		if (equip.HaseBaseStand) {
+			Location l2 = l;
+			l2.setY(l.getY() + equip.BaseStandOffset);
+			Entity entity3 = player.getWorld().spawnEntity(l, EntityType.ARMOR_STAND);
+			LivingEntity ent = (LivingEntity) entity3;
+			ArmorStand stand = (ArmorStand) ent;
+			meta.setCustomModelData(equip.BaseStandModelNumber);
+			stand.addEquipmentLock(EquipmentSlot.HEAD, LockType.REMOVING_OR_CHANGING);
+			stand.addEquipmentLock(EquipmentSlot.LEGS, LockType.ADDING_OR_CHANGING);
+			stand.addEquipmentLock(EquipmentSlot.CHEST, LockType.ADDING_OR_CHANGING);
+			stand.addEquipmentLock(EquipmentSlot.FEET, LockType.ADDING_OR_CHANGING);
+			stand.setBasePlate(false);
+			//	stand.setSmall(true);
+			item.setItemMeta(meta);
+				stand.setInvisible(equip.AllowInvisibleStand);
+				ent.getEquipment().setHelmet(item);
+			stand.setGravity(false);
+			stand.setMarker(true);
+		}
+    	l.setY(l.getY() + equip.PlacementOffsetY);
+		Entity entity2 = player.getWorld().spawnEntity(l, EntityType.ARMOR_STAND);
 		meta.setCustomModelData(equip.ReadyModelNumber);
 		meta.setDisplayName("§e" + equip.EquipmentName +" spawn item");
 		List<String> Lore = new ArrayList<String>();
@@ -321,6 +343,7 @@ public class CrunchSiegeCore extends JavaPlugin {
 		meta.setLore(Lore);
 		item.setItemMeta(meta);
 
+	//	entity3.addPassenger(entity2);
 		
 		LivingEntity ent = (LivingEntity) entity2;
 		ArmorStand stand = (ArmorStand) ent;
@@ -334,9 +357,9 @@ public class CrunchSiegeCore extends JavaPlugin {
 		stand.setBasePlate(false);
 		ent.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 2000000, 1));
 		//	stand.setSmall(true);
-		if (equip.AllowInvisibleStand) {
-			stand.setInvisible(true);
-		}
+
+			stand.setInvisible(equip.AllowInvisibleStand);
+		
 		stand.setGravity(false);
 		//stand.setSmall(true);
 		ent.getEquipment().setHelmet(item);

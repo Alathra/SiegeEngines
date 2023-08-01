@@ -10,6 +10,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Snowball;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
@@ -32,7 +33,7 @@ public class ExplosiveProjectile implements CrunchProjectile {
 	public Particle ParticleType = Particle.EXPLOSION_LARGE;
 	public Sound SoundType = Sound.ENTITY_GENERIC_EXPLODE;
 	private boolean PlaySound = true;
-	
+	public Boolean AlertOnLanding = false;
 	@Override
 	public void Shoot(Player player, Entity entity, Location loc, Float velocity) {
 		PlaySound = true;
@@ -41,23 +42,26 @@ public class ExplosiveProjectile implements CrunchProjectile {
 			if (DelayedFire) {
 				baseDelay += DelayTime;
 				Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(CrunchSiegeCore.plugin, () -> {
-					CreateEntity(entity, loc, velocity);
+					CreateEntity(entity, loc, velocity, player);
 				}, (long) baseDelay);
 			}
 			else {
 			
-				CreateEntity(entity,loc, velocity);
+				CreateEntity(entity,loc, velocity, player);
 			}
 	
 			//	}
 		}
 	}
 
-	private void CreateEntity(Entity entity, Location loc, Float velocity) {
+	private void CreateEntity(Entity entity, Location loc, Float velocity, Player player) {
 		LivingEntity living = (LivingEntity) entity;
 		World world = entity.getLocation().getWorld();
 		Entity tnt = world.spawnEntity(loc, EntityType.SNOWBALL);
+		Snowball ball = (Snowball) tnt;
+		ball.setShooter(player);
 		ClickHandler.projectiles.put(tnt.getUniqueId(), this);
+		
 		if (Inaccuracy != 0f) {
 			tnt.setVelocity(loc.getDirection().multiply(velocity).add(Randomise())
 					.subtract(Randomise()));

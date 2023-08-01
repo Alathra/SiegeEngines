@@ -86,6 +86,11 @@ public class ClickHandler implements Listener {
 		if ((event.getEntity() instanceof Snowball) && projectiles.containsKey(event.getEntity().getUniqueId())) {
 			ExplosiveProjectile proj = projectiles.get(event.getEntity().getUniqueId());
 			Entity snowball = event.getEntity();
+			Snowball ball = (Snowball) snowball;
+			Player player = (Player) ball.getShooter();
+			if (player != null) {
+				player.sendMessage("Distance to impact: " + player.getLocation().distance(ball.getLocation()));
+			}
 			Location loc = snowball.getLocation();
 			World world = event.getEntity().getWorld();
 			//	world.createExplosion(loc, proj.Radius, proj.DoFire);
