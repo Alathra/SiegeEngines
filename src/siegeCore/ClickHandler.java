@@ -377,12 +377,16 @@ public class ClickHandler implements Listener {
 
 		ent.teleport(loc);
 	}
-
+	NamespacedKey key = new NamespacedKey(CrunchSiegeCore.plugin, "cannons");	
 	@EventHandler
 	public void DeathEvent(EntityDeathEvent event) {
 		Boolean removeStands = false;
 		List<ItemStack> items = event.getDrops();
 		if (event.getEntity() instanceof ArmorStand) {
+			if (event.getEntity().getPersistentDataContainer().has(key,  PersistentDataType.STRING)) {
+				Entity base = Bukkit.getEntity(UUID.fromString(event.getEntity().getPersistentDataContainer().get(key, PersistentDataType.STRING)));
+				base.remove();
+			}
 			if (CrunchSiegeCore.equipment.containsKey(event.getEntity().getUniqueId())) {
 				removeStands = true;
 			}
@@ -553,7 +557,7 @@ public class ClickHandler implements Listener {
 		if (entity.getType() == EntityType.ARMOR_STAND){
 			TakeControl(player, entity);
 			if (CrunchSiegeCore.equipment.containsKey(entity.getUniqueId())) {
-				if (itemInHand.getType() == Material.COMPASS) {
+				if (itemInHand.getType() == Material.RECOVERY_COMPASS) {
 					if (player.isSneaking()) {
 						DoAimDown(entity, 1, player);
 					}
@@ -569,10 +573,12 @@ public class ClickHandler implements Listener {
 					ArmorStand stand = (ArmorStand) entity;
 					if (stand.isInvisible()) {
 						stand.setInvisible(false);
+						player.sendMessage("Equipment is now breakable");
 					}
 					else{
 						if (equipment.AllowInvisibleStand) {
 							stand.setInvisible(true);
+							player.sendMessage("Equipment is no longer breakable");
 						}
 					}
 				}

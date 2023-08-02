@@ -15,6 +15,7 @@ import java.util.logging.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.World;
@@ -44,6 +45,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
@@ -299,7 +301,7 @@ public class CrunchSiegeCore extends JavaPlugin {
 	public static Boolean CreateTrebuchet(Player player, int CustomModelData, Location l) {
 		//l.setY(l.getY() - 1);
      	l.add(0.5, 0, 0.5);
-  
+    	NamespacedKey key = new NamespacedKey(CrunchSiegeCore.plugin, "cannons");	
     	SiegeEquipment equip = CreateClone(CustomModelData);
     	if (equip == null || !equip.Enabled) {
     		return false;
@@ -313,14 +315,18 @@ public class CrunchSiegeCore extends JavaPlugin {
 		
 		ItemStack item = new ItemStack(Material.CARVED_PUMPKIN);
 		ItemMeta meta = item.getItemMeta();
-
+        String id = "";
 		equip.AmmoHolder = new EquipmentMagazine();
 		if (equip.HaseBaseStand) {
+				
+	
 			Location l2 = l;
 			l2.setY(l.getY() + equip.BaseStandOffset);
 			Entity entity3 = player.getWorld().spawnEntity(l, EntityType.ARMOR_STAND);
+	
 			LivingEntity ent = (LivingEntity) entity3;
 			ArmorStand stand = (ArmorStand) ent;
+			id = entity3.getUniqueId().toString();
 			meta.setCustomModelData(equip.BaseStandModelNumber);
 			stand.addEquipmentLock(EquipmentSlot.HEAD, LockType.REMOVING_OR_CHANGING);
 			stand.addEquipmentLock(EquipmentSlot.LEGS, LockType.ADDING_OR_CHANGING);
@@ -336,6 +342,9 @@ public class CrunchSiegeCore extends JavaPlugin {
 		}
     	l.setY(l.getY() + equip.PlacementOffsetY);
 		Entity entity2 = player.getWorld().spawnEntity(l, EntityType.ARMOR_STAND);
+		if (id != "") {
+			entity2.getPersistentDataContainer().set(key, PersistentDataType.STRING, id);
+		}
 		meta.setCustomModelData(equip.ReadyModelNumber);
 		meta.setDisplayName("§e" + equip.EquipmentName +" spawn item");
 		List<String> Lore = new ArrayList<String>();

@@ -59,6 +59,7 @@ public class ExplosiveProjectile implements CrunchProjectile {
 		World world = entity.getLocation().getWorld();
 		Entity tnt = world.spawnEntity(loc, EntityType.SNOWBALL);
 		Snowball ball = (Snowball) tnt;
+		
 		ball.setShooter(player);
 		ClickHandler.projectiles.put(tnt.getUniqueId(), this);
 		

@@ -1,9 +1,12 @@
 package siegeCore;
 
 import java.awt.Color;
+import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.entity.ArmorStand;
@@ -14,11 +17,13 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
 
 public class RotationHandler implements Listener {
+	NamespacedKey key = new NamespacedKey(CrunchSiegeCore.plugin, "cannons");	
 	@EventHandler
 	public void playerMove(PlayerMoveEvent event) {
 		Player player = event.getPlayer();
@@ -42,11 +47,17 @@ public class RotationHandler implements Listener {
 							Location loc = ent.getLocation();
 							
 							if (equipment.RotateSideways) {
-								
-					
-							Location direction = player.getLocation().add(player.getLocation().getDirection().multiply(50));
+								Location direction = player.getLocation().add(player.getLocation().getDirection().multiply(50));
 
-							Vector dirBetweenLocations = direction.toVector().subtract(loc.toVector());
+								Vector dirBetweenLocations = direction.toVector().subtract(loc.toVector());
+								if (ent.getPersistentDataContainer().has(key,  PersistentDataType.STRING)) {
+									Entity base = Bukkit.getEntity(UUID.fromString(ent.getPersistentDataContainer().get(key, PersistentDataType.STRING)));
+									Location baseloc = base.getLocation();
+									baseloc.setDirection(dirBetweenLocations);
+									base.teleport(baseloc);
+								}
+					
+						
 
 							loc.setDirection(dirBetweenLocations);
 							}
