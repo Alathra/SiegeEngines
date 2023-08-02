@@ -344,6 +344,7 @@ public class CrunchSiegeCore extends JavaPlugin {
 		Entity entity2 = player.getWorld().spawnEntity(l, EntityType.ARMOR_STAND);
 		if (id != "") {
 			entity2.getPersistentDataContainer().set(key, PersistentDataType.STRING, id);
+			
 		}
 		meta.setCustomModelData(equip.ReadyModelNumber);
 		meta.setDisplayName("§e" + equip.EquipmentName +" spawn item");
