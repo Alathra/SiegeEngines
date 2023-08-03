@@ -310,9 +310,6 @@ public class CrunchSiegeCore extends JavaPlugin {
 
      	l.setDirection(player.getFacing().getDirection());
    
-
-	//	
-		
 		ItemStack item = new ItemStack(Material.CARVED_PUMPKIN);
 		ItemMeta meta = item.getItemMeta();
         String id = "";
@@ -344,7 +341,6 @@ public class CrunchSiegeCore extends JavaPlugin {
 		Entity entity2 = player.getWorld().spawnEntity(l, EntityType.ARMOR_STAND);
 		if (id != "") {
 			entity2.getPersistentDataContainer().set(key, PersistentDataType.STRING, id);
-			
 		}
 		meta.setCustomModelData(equip.ReadyModelNumber);
 		meta.setDisplayName("§e" + equip.EquipmentName +" spawn item");

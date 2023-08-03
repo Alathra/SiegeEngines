@@ -23,11 +23,11 @@ import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
 
 public class RotationHandler implements Listener {
-	NamespacedKey key = new NamespacedKey(CrunchSiegeCore.plugin, "cannons");	
+
 	@EventHandler
 	public void playerMove(PlayerMoveEvent event) {
 		Player player = event.getPlayer();
-
+		NamespacedKey key = new NamespacedKey(CrunchSiegeCore.plugin, "cannons");	
 		if (CrunchSiegeCore.TrackedStands.containsKey(player.getUniqueId())) {
 			ItemStack itemInHand = player.getInventory().getItemInMainHand();
 			if (itemInHand != null) {
@@ -39,7 +39,9 @@ public class RotationHandler implements Listener {
 				for (Entity ent : CrunchSiegeCore.TrackedStands.get(player.getUniqueId())) {
 					if (ent != null) {
 						SiegeEquipment equipment = CrunchSiegeCore.equipment.get(ent.getUniqueId());
-						
+						if (ent.isDead()) {
+							continue;
+						}
 						double distance = player.getLocation().distance(ent.getLocation());
 						if (distance <= 250) {
 							//	player.sendMessage("got id");
