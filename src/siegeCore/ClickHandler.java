@@ -113,7 +113,7 @@ public class ClickHandler implements Listener {
 					}
 				}
 				if (event.getHitBlock() != null) {
-					List<Block> Blocks = sphere(event.getHitBlock().getLocation(), proj.ExplodePower);
+					List<Block> Blocks = sphere(event.getHitBlock().getLocation(), (int) proj.ExplodePower);
 					for (int i = 0; i < proj.BlocksToPlaceAmount; i++) {
 						Block replace = getRandomElement(Blocks);
 						replace.setType(Material.COBWEB);
