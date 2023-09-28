@@ -1,4 +1,4 @@
-package siegeCore;
+package com.gunners.GunnersCore;
 
 import java.awt.Color;
 import java.util.UUID;
@@ -27,24 +27,24 @@ public class RotationHandler implements Listener {
 	@EventHandler
 	public void playerMove(PlayerMoveEvent event) {
 		Player player = event.getPlayer();
-		NamespacedKey key = new NamespacedKey(CrunchSiegeCore.plugin, "cannons");	
-		if (CrunchSiegeCore.TrackedStands.containsKey(player.getUniqueId())) {
+		NamespacedKey key = new NamespacedKey(GunnersCore.plugin, "cannons");	
+		if (GunnersCore.TrackedStands.containsKey(player.getUniqueId())) {
 			ItemStack itemInHand = player.getInventory().getItemInMainHand();
 			if (itemInHand != null) {
-				if (itemInHand.getType() != Material.CLOCK) {
+				if (itemInHand.getType() != Material.BOOK) {
 					//	TrackedStands.remove(player.getUniqueId());
 
 					return;
 				}
-				for (Entity ent : CrunchSiegeCore.TrackedStands.get(player.getUniqueId())) {
+				for (Entity ent : GunnersCore.TrackedStands.get(player.getUniqueId())) {
 					if (ent != null) {
-						SiegeEquipment equipment = CrunchSiegeCore.equipment.get(ent.getUniqueId());
+						GunnerEquipment equipment = GunnersCore.equipment.get(ent.getUniqueId());
 						if (ent.isDead()) {
 							continue;
 						}
 						double distance = player.getLocation().distance(ent.getLocation());
 						if (distance <= 250) {
-							//	player.sendMessage("got id");
+							//	player.sendMessage("§egot id");
 							LivingEntity living = (LivingEntity) ent;
 							Location loc = ent.getLocation();
 							

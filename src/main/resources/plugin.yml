@@ -1,0 +1,9 @@
+name: GunnersCore
+main: com.gunners.GunnersCore.GunnersCore
+version: 0.3.0A
+api-version: 1.19
+commands:
+    gunnerscore:
+        description: GunnersCore Commands
+        default: false
+        usage: gunnerscore

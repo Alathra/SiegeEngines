@@ -1,4 +1,4 @@
-package CrunchProjectiles;
+package com.gunners.GunnersCore;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -20,9 +20,8 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-import siegeCore.CrunchSiegeCore;
 
-public class PotionProjectile implements CrunchProjectile {
+public class PotionProjectile implements GunnersProjectile {
 	public String ProjectileType = "Potion";
 	public int EntityCount = 3;
 	public Boolean DelayedFire = false;
@@ -32,13 +31,13 @@ public class PotionProjectile implements CrunchProjectile {
 	public Sound SoundType = Sound.ENTITY_GENERIC_EXPLODE;
 	
 	@Override
-	public void Shoot(Player player, Entity entity, Location loc, Float velocity) {
+	public void Shoot(Entity player, Entity entity, Location loc, Float velocity) {
 		// TODO Auto-generated method stub
 		int baseDelay = 0;
 		for (int i = 0; i < EntityCount; i++) {
 			if (DelayedFire) {
 				baseDelay += DelayTime;
-				Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(CrunchSiegeCore.plugin, () -> {
+				Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(GunnersCore.plugin, () -> {
 			
 					CreateEntity(entity,loc, velocity);
 				}, (long) baseDelay);
@@ -76,6 +75,6 @@ public class PotionProjectile implements CrunchProjectile {
 	}
 	
 	private Vector Randomise() {
-		return new Vector(CrunchSiegeCore.random.nextFloat() * (Inaccuracy - (Inaccuracy * -1)) + (Inaccuracy * -1),CrunchSiegeCore.random.nextFloat() * (Inaccuracy - (Inaccuracy * -1)) + (Inaccuracy * -1),CrunchSiegeCore.random.nextFloat() * (Inaccuracy - (Inaccuracy * -1)) + (Inaccuracy * -1));
+		return new Vector(GunnersCore.random.nextFloat() * (Inaccuracy - (Inaccuracy * -1)) + (Inaccuracy * -1),GunnersCore.random.nextFloat() * (Inaccuracy - (Inaccuracy * -1)) + (Inaccuracy * -1),GunnersCore.random.nextFloat() * (Inaccuracy - (Inaccuracy * -1)) + (Inaccuracy * -1));
 	}
 }

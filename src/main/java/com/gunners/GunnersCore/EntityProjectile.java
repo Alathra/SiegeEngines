@@ -1,4 +1,4 @@
-package CrunchProjectiles;
+package com.gunners.GunnersCore;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -13,9 +13,8 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import siegeCore.CrunchSiegeCore;
 
-public class EntityProjectile implements CrunchProjectile{
+public class EntityProjectile implements GunnersProjectile{
 
 	public String ProjectileType = "Entity";
 	public int EntityCount = 20;
@@ -27,13 +26,13 @@ public class EntityProjectile implements CrunchProjectile{
 	public Particle ParticleType = Particle.EXPLOSION_LARGE;
 	public Sound SoundType = Sound.ENTITY_GENERIC_EXPLODE;
 	@Override
-	public void Shoot(Player player, Entity entity, Location FireLocation, Float velocity) {
+	public void Shoot(Entity player, Entity entity, Location FireLocation, Float velocity) {
 		PlaySound = true;
 		int baseDelay = 0;
 		for (int i = 0; i < EntityCount; i++) {
 			if (DelayedFire) {
 				baseDelay += DelayTime;
-				Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(CrunchSiegeCore.plugin, () -> {
+				Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(GunnersCore.plugin, () -> {
 					
 					CreateEntity(entity, FireLocation, velocity, player);
 				}, (long) baseDelay);
@@ -47,10 +46,9 @@ public class EntityProjectile implements CrunchProjectile{
 		}
 	}
 	private boolean PlaySound = true;
-	private void CreateEntity(Entity entity,  Location loc, Float velocity, Player player) {
+	private void CreateEntity(Entity entity,  Location loc, Float velocity, Entity player) {
 		World world = entity.getLocation().getWorld();
 		LivingEntity living = (LivingEntity) entity;
-		
 
 		Entity arrow = world.spawnEntity(loc, EntityTyp);
 		if (Inaccuracy != 0f) {
@@ -64,7 +62,8 @@ public class EntityProjectile implements CrunchProjectile{
 		if (arrow instanceof Arrow) {
 			Arrow arr = (Arrow) arrow;
 			arr.setDamage(8);
-			arr.setShooter(player);
+			if (player instanceof org.bukkit.projectiles.ProjectileSource)
+				arr.setShooter((org.bukkit.projectiles.ProjectileSource)player);
 			//arr.setBasePotionData(arg0);
 		}
 		//				MiscDisguise miscDisguise = new MiscDisguise(DisguiseType.DROPPED_ITEM, Material.IRON_NUGGET);
@@ -80,7 +79,7 @@ public class EntityProjectile implements CrunchProjectile{
 	}
 	
 	private Vector Randomise() {
-		return new Vector(CrunchSiegeCore.random.nextFloat() * (Inaccuracy - (Inaccuracy * -1)) + (Inaccuracy * -1),CrunchSiegeCore.random.nextFloat() * (Inaccuracy - (Inaccuracy * -1)) + (Inaccuracy * -1),CrunchSiegeCore.random.nextFloat() * (Inaccuracy - (Inaccuracy * -1)) + (Inaccuracy * -1));
+		return new Vector(GunnersCore.random.nextFloat() * (Inaccuracy - (Inaccuracy * -1)) + (Inaccuracy * -1),GunnersCore.random.nextFloat() * (Inaccuracy - (Inaccuracy * -1)) + (Inaccuracy * -1),GunnersCore.random.nextFloat() * (Inaccuracy - (Inaccuracy * -1)) + (Inaccuracy * -1));
 	}
 }
 

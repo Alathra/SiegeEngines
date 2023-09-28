@@ -1,4 +1,4 @@
-package CrunchProjectiles;
+package com.gunners.GunnersCore;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -14,12 +14,10 @@ import org.bukkit.entity.Snowball;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-import me.libraryaddict.disguise.disguisetypes.DisguiseType;
-import me.libraryaddict.disguise.disguisetypes.MiscDisguise;
-import siegeCore.ClickHandler;
-import siegeCore.CrunchSiegeCore;
+//import me.libraryaddict.disguise.disguisetypes.DisguiseType;
+//import me.libraryaddict.disguise.disguisetypes.MiscDisguise;
 
-public class ExplosiveProjectile implements CrunchProjectile {
+public class ExplosiveProjectile implements GunnersProjectile {
 	
 	public String ProjectileType = "Explosive";
 	public Boolean PlaceBlocks = false;
@@ -35,18 +33,17 @@ public class ExplosiveProjectile implements CrunchProjectile {
 	private boolean PlaySound = true;
 	public Boolean AlertOnLanding = false;
 	@Override
-	public void Shoot(Player player, Entity entity, Location loc, Float velocity) {
+	public void Shoot(Entity player, Entity entity, Location loc, Float velocity) {
 		PlaySound = true;
 		int baseDelay = 0;
 		for (int i = 0; i < ProjectilesCount; i++) {
 			if (DelayedFire) {
 				baseDelay += DelayTime;
-				Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(CrunchSiegeCore.plugin, () -> {
+				Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(GunnersCore.plugin, () -> {
 					CreateEntity(entity, loc, velocity, player);
 				}, (long) baseDelay);
 			}
 			else {
-			
 				CreateEntity(entity,loc, velocity, player);
 			}
 	
@@ -54,13 +51,13 @@ public class ExplosiveProjectile implements CrunchProjectile {
 		}
 	}
 
-	private void CreateEntity(Entity entity, Location loc, Float velocity, Player player) {
+	private void CreateEntity(Entity entity, Location loc, Float velocity, Entity player) {
 		LivingEntity living = (LivingEntity) entity;
 		World world = entity.getLocation().getWorld();
 		Entity tnt = world.spawnEntity(loc, EntityType.SNOWBALL);
 		Snowball ball = (Snowball) tnt;
-		
-		ball.setShooter(player);
+		if (player instanceof org.bukkit.projectiles.ProjectileSource)
+			ball.setShooter((org.bukkit.projectiles.ProjectileSource)player);
 		ClickHandler.projectiles.put(tnt.getUniqueId(), this);
 		
 		if (Inaccuracy != 0f) {
@@ -85,7 +82,7 @@ public class ExplosiveProjectile implements CrunchProjectile {
 	}
 	
 	private Vector Randomise() {
-		return new Vector(CrunchSiegeCore.random.nextFloat() * (Inaccuracy - (Inaccuracy * -1)) + (Inaccuracy * -1),CrunchSiegeCore.random.nextFloat() * (Inaccuracy - (Inaccuracy * -1)) + (Inaccuracy * -1),CrunchSiegeCore.random.nextFloat() * (Inaccuracy - (Inaccuracy * -1)) + (Inaccuracy * -1));
+		return new Vector(GunnersCore.random.nextFloat() * (Inaccuracy - (Inaccuracy * -1)) + (Inaccuracy * -1),GunnersCore.random.nextFloat() * (Inaccuracy - (Inaccuracy * -1)) + (Inaccuracy * -1),GunnersCore.random.nextFloat() * (Inaccuracy - (Inaccuracy * -1)) + (Inaccuracy * -1));
 	}
 }
 

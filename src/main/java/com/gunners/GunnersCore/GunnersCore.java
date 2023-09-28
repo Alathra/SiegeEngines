@@ -1,10 +1,11 @@
-package siegeCore;
+package com.gunners.GunnersCore;
 
 import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -53,34 +54,34 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import com.comphenix.protocol.wrappers.EnumWrappers.Direction;
-import com.palmergames.bukkit.towny.Towny;
+//import com.palmergames.bukkit.towny.Towny;
 
-import CrunchProjectiles.EntityProjectile;
-import CrunchProjectiles.CrunchProjectile;
-import CrunchProjectiles.ExplosiveProjectile;
-import CrunchProjectiles.PotionProjectile;
+//import GunnersProjectiles.EntityProjectile;
+//import GunnersProjectiles.GunnersProjectile;
+//import GunnersProjectiles.ExplosiveProjectile;
+//import GunnersProjectiles.PotionProjectile;
 
-public class CrunchSiegeCore extends JavaPlugin {
+public class GunnersCore extends JavaPlugin {
 	public static Plugin plugin;
 
 	public static Random random = new Random();
 	private static String Path;
 
-	public static Towny towny;
+	//public static Towny towny;
 	
 	@SuppressWarnings("deprecation")
 	@Override
 	public void onDisable() {
-		for (SiegeEquipment equip : equipment.values()) {
+		for (GunnerEquipment equip : equipment.values()) {
 			if (equip.Entity != null) {
 				ItemStack item = new ItemStack(Material.CARVED_PUMPKIN);
 				ItemMeta meta = item.getItemMeta();
 				equip.AmmoHolder = new EquipmentMagazine();
 				
 				meta.setCustomModelData(equip.ReadyModelNumber);
-				meta.setDisplayName("�e" + equip.EquipmentName +" spawn item");
+				meta.setDisplayName("§e" + equip.EquipmentName +" Item");
 				List<String> Lore = new ArrayList<String>();
-				Lore.add("�ePlace as a block to spawn a " + equip.EquipmentName + " or put on an armour stand.");
+				Lore.add("§ePlace as a block to spawn a " + equip.EquipmentName + " or put on an Armor Stand.");
 				meta.setLore(Lore);
 				item.setItemMeta(meta);
 
@@ -94,42 +95,26 @@ public class CrunchSiegeCore extends JavaPlugin {
 	public void onEnable() {
 		plugin = this;
 		Path = this.getDataFolder().getAbsolutePath();
-		this.getCommand("crunchsiege").setExecutor(new SiegeCommand());
+		this.getCommand("gunnerscore").setExecutor(new GunnersCommand());
 		getServer().getPluginManager().registerEvents(new RotationHandler(), this);
 		getServer().getPluginManager().registerEvents(new ClickHandler(), this);
-		StorageManager.setup(Path, plugin);
-		AddDefined();
-		File f = new File(Path + "/Trebuchet.Json");
-		if (!f.exists()) {
-			for (SiegeEquipment i : DefinedEquipment.values()) {
-				StorageManager.Save(i);
-			}
-			DefinedEquipment.clear();
-		}
-		LoadConfigs();
-		towny = (Towny) Bukkit.getServer().getPluginManager().getPlugin("Towny");
-	}
-
-	public static void LoadConfigs() {
-
-		File folder = new File(Path);
-		File[] listOfFiles = folder.listFiles();
+		//StorageManager.setup(Path, plugin);
 		equipment.clear();
 		TrackedStands.clear();
-		for (int i = 0; i < listOfFiles.length; i++) {
-			if (listOfFiles[i].isFile()) {
-				SiegeEquipment equip = StorageManager.load(listOfFiles[i].getAbsolutePath());
-				if (equip.Enabled) {
-					DefinedEquipment.put(equip.ReadyModelNumber, equip);
-				}
-				else {
-					plugin.getLogger().log(Level.ALL, "Equipment is not enabled, set Enabled to true to load it");
-				}
+		DefinedEquipment.clear();
+		AddDefaults();
+		HashMap<ItemStack,GunnersProjectile> projObj = new HashMap<>();
+		GunnerEquipment equip = CreateNewGun(null, null, null, null, null, null, projObj);
+		for (GunnerEquipment i : DefinedEquipment.values()) {
+			System.out.println("§eEnabled Weapon : "+i.EquipmentName);
+			System.out.println("§eWeapon Propellant/\"Fuel\" ItemStacks : "+i.FuelMaterial);
+			for (ItemStack proj : i.Projectiles.keySet()) {
+				System.out.println("§eWeapon Projectile ItemStacks : "+proj);
 			}
 		}
 	}
 
-	public class SiegeCommand implements CommandExecutor {
+	public class GunnersCommand implements CommandExecutor {
 		@Override
 		@EventHandler
 		public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -142,46 +127,58 @@ public class CrunchSiegeCore extends JavaPlugin {
 				switch (args[0].toLowerCase()) {
 				case "get":
 					if (player == null) {
-						sender.sendMessage("only a player can use this command.");
+						sender.sendMessage("§eonly a player can use this command.");
 						return true;	
 					}
-					if (!sender.hasPermission("crunchsiege.get")) {
-						sender.sendMessage("No perms to crunchsiege.get");
+					if (!sender.hasPermission("gunnerscore.get")) {
+						sender.sendMessage("§eNo perms to gunnerscore.get");
 						return true;
 					}
-					for (SiegeEquipment i : DefinedEquipment.values()) {
+					for (GunnerEquipment i : DefinedEquipment.values()) {
 						ItemStack item = new ItemStack(Material.CARVED_PUMPKIN);
 						ItemMeta meta = item.getItemMeta();
 						meta.setCustomModelData(i.ReadyModelNumber);
-						meta.setDisplayName("�e" + i.EquipmentName +" spawn item");
+						meta.setDisplayName("§e" + i.EquipmentName +" Item");
 						List<String> Lore = new ArrayList<String>();
-						Lore.add("�ePlace as a block to spawn a " + i.EquipmentName);
-						Lore.add("�eor put on an armour stand.");
-						Lore.add("�eRight click to toggle visibility of stand.");
+						Lore.add("§ePlace as a block to spawn a " + i.EquipmentName);
+						Lore.add("§eor put on an Armor Stand.");
+						Lore.add("§eRight click to toggle visibility of stand.");
 						meta.setLore(Lore);
 						item.setItemMeta(meta);
 						player.getInventory().addItem(item);
 					}
 					break;
 				case "reload":
-					if (!sender.hasPermission("crunchsiege.reload")) {
-						sender.sendMessage("No perms to crunchsiege.reload");
+					if (!sender.hasPermission("gunnerscore.reload")) {
+						sender.sendMessage("§eNo perms to gunnerscore.reload");
 						return true;
-					}	
-					LoadConfigs();
-					sender.sendMessage("Crunch siege configs reloaded");
+					}
+					equipment.clear();
+					TrackedStands.clear();
+					DefinedEquipment.clear();
+					AddDefaults();
+					HashMap<ItemStack,GunnersProjectile> projObj = new HashMap<>();
+					GunnerEquipment equip = CreateNewGun(null, null, null, null, null, null, projObj);
+					for (GunnerEquipment i : DefinedEquipment.values()) {
+						sender.sendMessage("§eEnabled Weapon : "+i.EquipmentName);
+						sender.sendMessage("§eWeapon Propellant/\"Fuel\" ItemStacks : "+i.FuelMaterial);
+						for (ItemStack proj : i.Projectiles.keySet()) {
+							sender.sendMessage("§eWeapon Projectile ItemStacks : "+proj);
+						}
+					}
+					sender.sendMessage("§eGunners Core configs reloaded");
 					break;
 				}
 
 			}
 			else {
-				sender.sendMessage("Incorrect usage, /crunchsiege get, /crunchsiege reload");
+				sender.sendMessage("§eIncorrect usage, /gunnerscore get, /gunnerscore reload");
 			}
 			return true;
 		}
 	}
 
-	public static SiegeEquipment CreateClone(Integer ModelId) {
+	public static GunnerEquipment CreateClone(Integer ModelId) {
 		try {
 			return DefinedEquipment.get(ModelId).clone();
 		} catch (CloneNotSupportedException e) {
@@ -192,11 +189,11 @@ public class CrunchSiegeCore extends JavaPlugin {
 		return null;
 	}
 
-	public static HashMap<Integer, SiegeEquipment> DefinedEquipment = new HashMap<Integer, SiegeEquipment>();
+	public static HashMap<Integer, GunnerEquipment> DefinedEquipment = new HashMap<Integer, GunnerEquipment>();
 
 	public static HashMap<UUID, List<Entity>> TrackedStands = new HashMap<UUID, List<Entity>>();
 
-	public static HashMap<UUID, SiegeEquipment> equipment = new HashMap<UUID, SiegeEquipment>();
+	public static HashMap<UUID, GunnerEquipment> equipment = new HashMap<UUID, GunnerEquipment>();
 
 	public static String convertTime(long time){
 
@@ -210,13 +207,55 @@ public class CrunchSiegeCore extends JavaPlugin {
 		time -= TimeUnit.MINUTES.toMillis(minutes);
 
 		long seconds = TimeUnit.MILLISECONDS.toSeconds(time);
-		String timeLeftFormatted = String.format("�e" + minutes + " Minutes " +seconds +" Seconds�f");
+		String timeLeftFormatted = String.format("§e" + minutes + " Minutes " +seconds +" Seconds§f");
 
 		return timeLeftFormatted;
 	}
+	public static GunnerEquipment CreateNewGun(String name, Integer XOffset, Integer YOffset, Integer fuelMax, Float fuelVelocityMod, Integer customModelId, HashMap<ItemStack,GunnersProjectile> projObj) {
+		GunnerEquipment equip = new GunnerEquipment();
+		if (customModelId == null || customModelId == 0)
+			customModelId = 150;
+		if (name == null)
+			name = "Peckle Gun";
+		if (XOffset == null)
+			XOffset = 0;
+		if (YOffset == null)
+			YOffset = 0;
+		if (fuelMax == null)
+			fuelMax = 0;
+		if (fuelVelocityMod == null)
+			fuelVelocityMod = 0.95f;
+		equip.EquipmentName = name;
+		equip.XOffset = XOffset;
+		equip.YOffset = YOffset;
+		equip.RotateStandHead = true;
+		equip.RotateSideways = true;
+		equip.PlacementOffsetY = -1.125f;
+		equip.ReadyModelNumber = customModelId;
+		equip.ModelNumberToFireAt = customModelId;
+		equip.FiringModelNumbers = new ArrayList<Integer>();
+		equip.VelocityPerFuel = fuelVelocityMod;
+		equip.FuelMaterial = new ItemStack(Material.GUNPOWDER);
+		equip.CycleThroughModelsBeforeFiring = false;
+		equip.MaxFuel = fuelMax;
+		equip.shotAmount = 1;
+		equip.AmmoHolder.LoadedFuel = fuelMax;
+		EntityProjectile defaultProj = new EntityProjectile();
+		defaultProj.EntityCount = 6;
+		defaultProj.EntityTyp = EntityType.SHULKER_BULLET;
+		defaultProj.ParticleType = Particle.WHITE_ASH;
+		defaultProj.SoundType = Sound.ENTITY_BLAZE_SHOOT;
+		if (projObj.keySet().isEmpty() || projObj.isEmpty())
+			projObj.put(new ItemStack(Material.GUNPOWDER),defaultProj);
+		for (ItemStack mat : projObj.keySet()) {
+			equip.Projectiles.put(mat,projObj.get(mat));
+		}
+		DefinedEquipment.put(equip.ReadyModelNumber,equip);
+		return equip;
+	}
 
-	public static void AddDefined() {
-		SiegeEquipment equip = new SiegeEquipment();
+	public static void AddDefaults() {
+		GunnerEquipment equip = new GunnerEquipment();
 		equip.EquipmentName = "Trebuchet";
 		equip.XOffset = 5;
 		equip.YOffset = 5;
@@ -225,8 +264,8 @@ public class CrunchSiegeCore extends JavaPlugin {
 		proj.ExplodePower = 2;
 		equip.RotateStandHead = false;
 		equip.RotateSideways = true;
-		equip.FuelMaterial = Material.STRING;
-		equip.Projectiles.put(Material.COBBLESTONE, proj);
+		equip.FuelMaterial = new ItemStack(Material.STRING);
+		equip.Projectiles.put(new ItemStack(Material.COBBLESTONE), proj);
 		equip.ReadyModelNumber = 122;
 		equip.ModelNumberToFireAt = 135;
 		equip.MillisecondsBetweenFiringStages = 2;
@@ -237,9 +276,9 @@ public class CrunchSiegeCore extends JavaPlugin {
 		equip.CycleThroughModelsBeforeFiring = true;
 		DefinedEquipment.put(equip.ReadyModelNumber, equip);
 		
-		equip = new SiegeEquipment();
+		equip = new GunnerEquipment();
 		equip.EquipmentName = "Naval Cannon";
-		equip.Projectiles.put(Material.COBBLESTONE, proj);
+		equip.Projectiles.put(new ItemStack(Material.COBBLESTONE), proj);
 		equip.PlacementOffsetY = -1;
 		equip.ReadyModelNumber = 142;
 		equip.ModelNumberToFireAt = 142;
@@ -250,24 +289,24 @@ public class CrunchSiegeCore extends JavaPlugin {
 		proj.ExplodePower = 1;
 		proj.ProjectilesCount = 3;
 		proj.DelayedFire = true;
-		proj.Inaccuracy = 0.5f;
-		equip.Projectiles.put(Material.TNT, proj);
+		proj.Inaccuracy = 0.75f;
+		equip.Projectiles.put(new ItemStack(Material.TNT), proj);
 		proj = new ExplosiveProjectile();
 		proj.ExplodePower = 4;
 		proj.ProjectilesCount = 1;
-		equip.Projectiles.put(Material.COPPER_BLOCK, proj);
+		equip.Projectiles.put(new ItemStack(Material.COPPER_BLOCK), proj);
 
 		EntityProjectile fireProj = new EntityProjectile();
 		fireProj.EntityCount = 2;
 		fireProj.EntityTyp = EntityType.SMALL_FIREBALL;
 		fireProj.ParticleType = Particle.WHITE_ASH;
 		fireProj.SoundType = Sound.ENTITY_BLAZE_SHOOT;
-		equip.Projectiles.put(Material.FIRE_CHARGE, fireProj);
+		equip.Projectiles.put(new ItemStack(Material.FIRE_CHARGE), fireProj);
 		DefinedEquipment.put(equip.ReadyModelNumber, equip);
-		equip = new SiegeEquipment();
+		equip = new GunnerEquipment();
 		equip.EquipmentName = "Siege Cannon";
 		proj.ExplodePower = 2;
-		equip.Projectiles.put(Material.COBBLESTONE, proj);
+		equip.Projectiles.put(new ItemStack(Material.COBBLESTONE), proj);
 		equip.PlacementOffsetY = -1;
 		equip.ReadyModelNumber = 141;
 		equip.ModelNumberToFireAt = 141;
@@ -279,12 +318,12 @@ public class CrunchSiegeCore extends JavaPlugin {
 		proj.ProjectilesCount = 3;
 		proj.DelayedFire = true;
 		proj.Inaccuracy = 0.5f;
-		equip.Projectiles.put(Material.TNT, proj);
+		equip.Projectiles.put(new ItemStack(Material.TNT), proj);
 		proj = new ExplosiveProjectile();
 		proj.ExplodePower = 4;
 		proj.ProjectilesCount = 1;
-		equip.Projectiles.put(Material.COPPER_BLOCK, proj);
-		equip.Projectiles.put(Material.GRAVEL, new EntityProjectile());
+		equip.Projectiles.put(new ItemStack(Material.COPPER_BLOCK), proj);
+		equip.Projectiles.put(new ItemStack(Material.GRAVEL), new EntityProjectile());
 		DefinedEquipment.put(equip.ReadyModelNumber, equip);
 //		EntityProjectile pig = new EntityProjectile();
 //		pig.EntityCount = 100;
@@ -298,21 +337,20 @@ public class CrunchSiegeCore extends JavaPlugin {
 
 	}
 
-	public static Boolean CreateTrebuchet(Player player, int CustomModelData, Location l) {
+	public static Boolean CreateCannon(Entity player, int CustomModelData, Location l) {
 		//l.setY(l.getY() - 1);
-     	l.add(0.5, 0, 0.5);
-    	NamespacedKey key = new NamespacedKey(CrunchSiegeCore.plugin, "cannons");	
-    	SiegeEquipment equip = CreateClone(CustomModelData);
-    	if (equip == null || !equip.Enabled) {
-    		return false;
-    	}
-    	l.setY(l.getY() + 1);
+		l.add(0.5, 0, 0.5);
+		NamespacedKey key = new NamespacedKey(GunnersCore.plugin, "cannons");	
+		GunnerEquipment equip = CreateClone(CustomModelData);
+		if (equip == null || !equip.Enabled) {
+			return false;
+		}
+		l.setY(l.getY() + 1);
 
-     	l.setDirection(player.getFacing().getDirection());
-   
+		l.setDirection(player.getFacing().getDirection());
 		ItemStack item = new ItemStack(Material.CARVED_PUMPKIN);
 		ItemMeta meta = item.getItemMeta();
-        String id = "";
+		String id = "";
 		equip.AmmoHolder = new EquipmentMagazine();
 		if (equip.HaseBaseStand) {
 				
@@ -329,23 +367,27 @@ public class CrunchSiegeCore extends JavaPlugin {
 			stand.addEquipmentLock(EquipmentSlot.LEGS, LockType.ADDING_OR_CHANGING);
 			stand.addEquipmentLock(EquipmentSlot.CHEST, LockType.ADDING_OR_CHANGING);
 			stand.addEquipmentLock(EquipmentSlot.FEET, LockType.ADDING_OR_CHANGING);
+			stand.addEquipmentLock(EquipmentSlot.HAND, LockType.REMOVING_OR_CHANGING);
+			stand.addEquipmentLock(EquipmentSlot.OFF_HAND, LockType.ADDING_OR_CHANGING);
+			stand.addEquipmentLock(EquipmentSlot.HAND, LockType.REMOVING_OR_CHANGING);
+			stand.addEquipmentLock(EquipmentSlot.OFF_HAND, LockType.REMOVING_OR_CHANGING);
 			stand.setBasePlate(false);
 			//	stand.setSmall(true);
 			item.setItemMeta(meta);
-				stand.setInvisible(equip.AllowInvisibleStand);
-				ent.getEquipment().setHelmet(item);
+			stand.setInvisible(equip.AllowInvisibleStand);
+			ent.getEquipment().setHelmet(item);
 			stand.setGravity(false);
 			stand.setMarker(true);
 		}
-    	l.setY(l.getY() + equip.PlacementOffsetY);
+		l.setY(l.getY() + equip.PlacementOffsetY);
 		Entity entity2 = player.getWorld().spawnEntity(l, EntityType.ARMOR_STAND);
 		if (id != "") {
 			entity2.getPersistentDataContainer().set(key, PersistentDataType.STRING, id);
 		}
 		meta.setCustomModelData(equip.ReadyModelNumber);
-		meta.setDisplayName("�e" + equip.EquipmentName +" spawn item");
+		meta.setDisplayName("§e" + equip.EquipmentName +" Item");
 		List<String> Lore = new ArrayList<String>();
-		Lore.add("�ePlace as a block to spawn a " + equip.EquipmentName + " or put on an armour stand.");
+		Lore.add("§ePlace as a block to spawn a " + equip.EquipmentName + " or put on an Armor Stand.");
 		meta.setLore(Lore);
 		item.setItemMeta(meta);
 
@@ -360,11 +402,14 @@ public class CrunchSiegeCore extends JavaPlugin {
 		stand.addEquipmentLock(EquipmentSlot.LEGS, LockType.ADDING_OR_CHANGING);
 		stand.addEquipmentLock(EquipmentSlot.CHEST, LockType.ADDING_OR_CHANGING);
 		stand.addEquipmentLock(EquipmentSlot.FEET, LockType.ADDING_OR_CHANGING);
+		stand.addEquipmentLock(EquipmentSlot.HAND, LockType.REMOVING_OR_CHANGING);
+		stand.addEquipmentLock(EquipmentSlot.OFF_HAND, LockType.ADDING_OR_CHANGING);
+		stand.addEquipmentLock(EquipmentSlot.HAND, LockType.REMOVING_OR_CHANGING);
+		stand.addEquipmentLock(EquipmentSlot.OFF_HAND, LockType.REMOVING_OR_CHANGING);
+		stand.setInvisible(equip.AllowInvisibleStand);
 		stand.setBasePlate(false);
 		ent.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 2000000, 1));
 		//	stand.setSmall(true);
-
-			stand.setInvisible(equip.AllowInvisibleStand);
 		
 		stand.setGravity(false);
 		//stand.setSmall(true);
