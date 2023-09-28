@@ -158,6 +158,8 @@ public class ClickHandler implements Listener {
 	@EventHandler(priority = EventPriority.HIGH)
 	public void BlockPlaceEvent(org.bukkit.event.block.BlockPlaceEvent event) {
 		Player thePlayer = event.getPlayer();
+		if (event.isCancelled())
+			return;
 		if (event.getPlayer().getInventory().getItemInMainHand().getType() == Material.CARVED_PUMPKIN) {
 			ItemStack item = event.getPlayer().getInventory().getItemInMainHand();
 			if (item.getItemMeta() != null && item.getItemMeta().hasCustomModelData()) {
@@ -179,7 +181,6 @@ public class ClickHandler implements Listener {
 	public void Shoot(Entity player, long delay) {
 		float actualDelay = delay;
 		Boolean FirstShot = true;
-
 		if (GunnersCore.TrackedStands.get(player.getUniqueId()) == null) {
 			for (Entity ent : player.getNearbyEntities(5, 5, 5)) {
 				if(ent instanceof ArmorStand) {
@@ -192,8 +193,8 @@ public class ClickHandler implements Listener {
 		}
 		if (GunnersCore.TrackedStands.get(player.getUniqueId()) == null)
 			return;
+		int counter = 0;
 		for (Entity ent : GunnersCore.TrackedStands.get(player.getUniqueId())){
-
 			if (ent == null || ent.isDead()) {
 				continue;
 			}
@@ -202,8 +203,10 @@ public class ClickHandler implements Listener {
 				continue;
 			}
 			GunnerEquipment siege = GunnersCore.equipment.get(ent.getUniqueId());
-			
+			if (counter > 4)
+				continue;
 			if (siege.isLoaded()) {
+				counter++;
 				if (player instanceof Player) {
 					siege.Fire(player, actualDelay,0);
 					actualDelay += delay;
@@ -260,7 +263,7 @@ public class ClickHandler implements Listener {
 
 
 		if (event.getAction() == Action.RIGHT_CLICK_AIR) {
-			if (ItemInHand.getType() != Material.BOOK) {
+			if (ItemInHand.getType() != Material.COMPASS) {
 				return;
 			}
 			if (!player.isSneaking())

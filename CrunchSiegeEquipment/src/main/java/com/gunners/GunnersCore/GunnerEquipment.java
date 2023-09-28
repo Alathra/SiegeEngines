@@ -61,7 +61,7 @@ public class GunnerEquipment implements Cloneable  {
 	public Boolean RotateStandHead = true;
 	public Boolean HasFired = false;
 	public Boolean HasReloaded = false;
-	public Boolean AllowInvisibleStand = true;
+	public Boolean AllowInvisibleStand = false;
 	public Boolean HaseBaseStand = false;
 	public double BaseStandOffset = 0;
 	public int BaseStandModelNumber = 147;

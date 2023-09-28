@@ -185,7 +185,6 @@ public class GunnersCore extends JavaPlugin {
 			// TODO Auto-generated catch block
 
 		}
-
 		return null;
 	}
 
@@ -333,7 +332,7 @@ public class GunnersCore extends JavaPlugin {
 //		pig.SoundType = Sound.ITEM_CROSSBOW_SHOOT;
 //		pig.ParticleType = Particle.GLOW;
 //		equip.Projectiles.put(Material.PORKCHOP, pig);
-	//	equip.Projectiles.put(Material.BONE, new PotionProjectile());
+//	  equip.Projectiles.put(Material.BONE, new PotionProjectile());
 
 	}
 
@@ -346,6 +345,7 @@ public class GunnersCore extends JavaPlugin {
 			return false;
 		}
 		l.setY(l.getY() + 1);
+		int maxNearby = 0;
 
 		l.setDirection(player.getFacing().getDirection());
 		ItemStack item = new ItemStack(Material.CARVED_PUMPKIN);
@@ -353,7 +353,6 @@ public class GunnersCore extends JavaPlugin {
 		String id = "";
 		equip.AmmoHolder = new EquipmentMagazine();
 		if (equip.HaseBaseStand) {
-				
 	
 			Location l2 = l;
 			l2.setY(l.getY() + equip.BaseStandOffset);
@@ -396,6 +395,14 @@ public class GunnersCore extends JavaPlugin {
 		LivingEntity ent = (LivingEntity) entity2;
 		ArmorStand stand = (ArmorStand) ent;
 		equip.Entity = entity2;
+		for (Entity le : l.getNearbyEntities(5, 5, 5)) {
+			if (maxNearby >= 4) {
+				ent.damage(100.0d,player);
+				return false;
+			}
+			if (le instanceof ArmorStand)
+				maxNearby++;
+		}
 		
 		equip.EntityId = entity2.getUniqueId();
 		stand.addEquipmentLock(EquipmentSlot.HEAD, LockType.REMOVING_OR_CHANGING);

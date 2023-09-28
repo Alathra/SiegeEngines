@@ -31,7 +31,7 @@ public class RotationHandler implements Listener {
 		if (GunnersCore.TrackedStands.containsKey(player.getUniqueId())) {
 			ItemStack itemInHand = player.getInventory().getItemInMainHand();
 			if (itemInHand != null) {
-				if (itemInHand.getType() != Material.BOOK) {
+				if (itemInHand.getType() != Material.COMPASS) {
 					//	TrackedStands.remove(player.getUniqueId());
 
 					return;
@@ -58,12 +58,9 @@ public class RotationHandler implements Listener {
 									baseloc.setDirection(dirBetweenLocations);
 									base.teleport(baseloc);
 								}
-					
-						
-
-							loc.setDirection(dirBetweenLocations);
+								loc.setDirection(dirBetweenLocations);
 							}
-						//	loc.setYaw(player.getLocation().getYaw());
+							//loc.setYaw(player.getLocation().getYaw());
 							//loc.setPitch(player.getLocation().getPitch());
 							
 							

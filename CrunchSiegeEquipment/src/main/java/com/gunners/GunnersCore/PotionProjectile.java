@@ -32,7 +32,7 @@ public class PotionProjectile implements GunnersProjectile {
 	
 	@Override
 	public void Shoot(Entity player, Entity entity, Location loc, Float velocity) {
-		// TODO Auto-generated method stub
+		//TODO Auto-generated method stub
 		int baseDelay = 0;
 		for (int i = 0; i < EntityCount; i++) {
 			if (DelayedFire) {
@@ -43,10 +43,8 @@ public class PotionProjectile implements GunnersProjectile {
 				}, (long) baseDelay);
 			}
 			else {
-
 				CreateEntity(entity, loc, velocity);
 			}
-	
 			//	}
 		}
 	}
@@ -56,8 +54,7 @@ public class PotionProjectile implements GunnersProjectile {
 
 		Entity arrow = world.spawnEntity(loc, EntityType.SPLASH_POTION);
 		if (Inaccuracy != 0f) {
-			arrow.setVelocity(loc.getDirection().multiply(velocity).add(Randomise())
-					.subtract(Randomise()));
+			arrow.setVelocity(loc.getDirection().multiply(velocity).add(Randomise()).subtract(Randomise()));
 		}
 		else {
 			arrow.setVelocity(loc.getDirection().multiply(velocity));
