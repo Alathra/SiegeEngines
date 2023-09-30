@@ -35,12 +35,12 @@ public class GunnerEquipment implements Cloneable  {
 	public Boolean Enabled = true;
 	public UUID EntityId;
 	public Entity Entity;
-	public Integer shotAmount = 3;
+	public Integer shotAmount = 1;
 
 	public HashMap<ItemStack, GunnersProjectile> Projectiles = new HashMap<ItemStack, GunnersProjectile>();
 
 	public String WorldName;
-	public String EquipmentName = "Basic Cannon";
+	public String EquipmentName = "Peckle Gun";
 	public int XOffset = 7;
 	public int YOffset = 0;
 	public int PitchOffset = 0;
@@ -199,14 +199,24 @@ public class GunnerEquipment implements Cloneable  {
 		this.WorldName = Entity.getWorld().getName();
 		this.NextShotTime = System.currentTimeMillis() + 1000;
 		for (int i = 0; i <= this.shotAmount /* range */; i+= 1) {
+			if (living == null || living.isDead()) {
+				return;
+			}
 			if (this.CycleThroughModelsBeforeFiring) {
 
 				this.TaskNumber = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(GunnersCore.plugin, () -> {
+					if (living == null || living.isDead()) {
+						Bukkit.getServer().getScheduler().cancelTask(this.TaskNumber);
+						return;
+					}
 
 					if (this.HasFired) {
 						Bukkit.getServer().getScheduler().cancelTask(this.TaskNumber);
 						this.TaskNumber = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(GunnersCore.plugin, () -> {
-
+							if (living == null || living.isDead()) {
+								Bukkit.getServer().getScheduler().cancelTask(this.TaskNumber);
+								return;
+							}
 							//	player.sendMessage("§etask");
 							if (this.HasReloaded) {
 								Bukkit.getServer().getScheduler().cancelTask(this.TaskNumber);
@@ -252,9 +262,12 @@ public class GunnerEquipment implements Cloneable  {
 					}
 				}, 0, this.MillisecondsBetweenFiringStages);
 			} else {
-
-				this.TaskNumber = Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(GunnersCore.plugin, () -> {
+					this.TaskNumber = Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(GunnersCore.plugin, () -> {
 					//player.sendMessage("§etask");
+					if (living == null || living.isDead()) {
+						Bukkit.getServer().getScheduler().cancelTask(this.TaskNumber);
+						return;
+					}
 
 					Location loc = living.getEyeLocation();
 					Vector direction = Entity.getLocation().getDirection().multiply(XOffset);

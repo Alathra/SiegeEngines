@@ -210,6 +210,7 @@ public class GunnersCore extends JavaPlugin {
 
 		return timeLeftFormatted;
 	}
+	
 	public static GunnerEquipment CreateNewGun(String name, Integer XOffset, Integer YOffset, Integer fuelMax, Float fuelVelocityMod, Integer customModelId, HashMap<ItemStack,GunnersProjectile> projObj) {
 		GunnerEquipment equip = new GunnerEquipment();
 		if (customModelId == null || customModelId == 0)
@@ -261,6 +262,7 @@ public class GunnersCore extends JavaPlugin {
 		equip.VelocityPerFuel = 0.3f;
 		ExplosiveProjectile proj = new ExplosiveProjectile();
 		proj.ExplodePower = 2;
+		equip.shotAmount = 1;
 		equip.RotateStandHead = false;
 		equip.RotateSideways = true;
 		equip.FuelMaterial = new ItemStack(Material.STRING);
@@ -279,6 +281,7 @@ public class GunnersCore extends JavaPlugin {
 		equip.EquipmentName = "Naval Cannon";
 		equip.Projectiles.put(new ItemStack(Material.COBBLESTONE), proj);
 		equip.PlacementOffsetY = -1;
+		equip.shotAmount = 1;
 		equip.ReadyModelNumber = 142;
 		equip.ModelNumberToFireAt = 142;
 		equip.FiringModelNumbers = new ArrayList<Integer>();
@@ -306,6 +309,7 @@ public class GunnersCore extends JavaPlugin {
 		equip.EquipmentName = "Siege Cannon";
 		proj.ExplodePower = 2;
 		equip.Projectiles.put(new ItemStack(Material.COBBLESTONE), proj);
+		equip.shotAmount = 1;
 		equip.PlacementOffsetY = -1;
 		equip.ReadyModelNumber = 141;
 		equip.ModelNumberToFireAt = 141;

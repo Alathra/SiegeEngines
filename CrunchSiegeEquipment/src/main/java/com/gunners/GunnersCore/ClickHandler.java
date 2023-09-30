@@ -181,6 +181,7 @@ public class ClickHandler implements Listener {
 	public void Shoot(Entity player, long delay) {
 		float actualDelay = delay;
 		Boolean FirstShot = true;
+		int counter = 0;
 		if (GunnersCore.TrackedStands.get(player.getUniqueId()) == null) {
 			for (Entity ent : player.getNearbyEntities(5, 5, 5)) {
 				if(ent instanceof ArmorStand) {
@@ -193,9 +194,14 @@ public class ClickHandler implements Listener {
 		}
 		if (GunnersCore.TrackedStands.get(player.getUniqueId()) == null)
 			return;
-		int counter = 0;
-		for (Entity ent : GunnersCore.TrackedStands.get(player.getUniqueId())){
+		List<Entity> entities = new ArrayList<>(GunnersCore.TrackedStands.get(player.getUniqueId()));
+		for (Entity ent : entities){
 			if (ent == null || ent.isDead()) {
+				GunnersCore.TrackedStands.get(player.getUniqueId()).remove(ent);
+				continue;
+			}
+			if (((LivingEntity) ent).getEquipment().getHelmet().getType() != Material.CARVED_PUMPKIN) {
+				GunnersCore.TrackedStands.get(player.getUniqueId()).remove(ent);
 				continue;
 			}
 			double distance = player.getLocation().distance(ent.getLocation());
@@ -204,15 +210,19 @@ public class ClickHandler implements Listener {
 			}
 			GunnerEquipment siege = GunnersCore.equipment.get(ent.getUniqueId());
 			if (counter > 4)
+				return;
+			if (ent == null || ent.isDead()) {
+				GunnersCore.TrackedStands.get(player.getUniqueId()).remove(ent);
 				continue;
+			}
 			if (siege.isLoaded()) {
-				counter++;
 				if (player instanceof Player) {
-					siege.Fire(player, actualDelay,0);
+					siege.Fire(player, actualDelay,1);
 					actualDelay += delay;
 				} else {
 					siege.Fire(player,15,1);
 				}
+				counter++;
 			}
 			else {
 				if (player instanceof Player) {}
