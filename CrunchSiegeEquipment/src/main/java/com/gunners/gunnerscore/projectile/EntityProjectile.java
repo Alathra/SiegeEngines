@@ -1,4 +1,4 @@
-package com.gunners.GunnersCore;
+package com.gunners.gunnerscore.projectile;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -8,10 +8,11 @@ import org.bukkit.World;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Fireball;
+
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
+
+import com.gunners.gunnerscore.GunnersCore;
 
 
 public class EntityProjectile implements GunnersProjectile{

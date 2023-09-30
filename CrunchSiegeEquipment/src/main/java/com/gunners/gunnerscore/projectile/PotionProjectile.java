@@ -1,4 +1,4 @@
-package com.gunners.GunnersCore;
+package com.gunners.gunnerscore.projectile;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -6,19 +6,17 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.World;
-import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.SplashPotion;
 import org.bukkit.entity.ThrownPotion;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
+
+import com.gunners.gunnerscore.GunnersCore;
 
 
 public class PotionProjectile implements GunnersProjectile {

@@ -1,14 +1,11 @@
-package com.gunners.GunnersCore;
+package com.gunners.gunnerscore.listeners;
 
-import java.awt.Color;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.Particle;
-import org.bukkit.block.Block;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -18,9 +15,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.util.BlockIterator;
 import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
+
+import com.gunners.gunnerscore.GunnerEquipment;
+import com.gunners.gunnerscore.GunnersCore;
 
 public class RotationHandler implements Listener {
 

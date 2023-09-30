@@ -1,5 +1,5 @@
 name: GunnersCore
-main: com.gunners.GunnersCore.GunnersCore
+main: com.gunners.gunnerscore.GunnersCore
 version: 0.3.0A
 api-version: 1.19
 commands:

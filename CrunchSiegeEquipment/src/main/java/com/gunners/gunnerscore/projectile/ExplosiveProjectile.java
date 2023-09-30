@@ -1,4 +1,4 @@
-package com.gunners.GunnersCore;
+package com.gunners.gunnerscore.projectile;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -9,10 +9,11 @@ import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.entity.Snowball;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
+
+import com.gunners.gunnerscore.GunnersCore;
+import com.gunners.gunnerscore.listeners.ClickHandler;
 
 //import me.libraryaddict.disguise.disguisetypes.DisguiseType;
 //import me.libraryaddict.disguise.disguisetypes.MiscDisguise;

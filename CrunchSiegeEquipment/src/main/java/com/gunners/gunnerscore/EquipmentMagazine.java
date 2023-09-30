@@ -1,4 +1,4 @@
-package com.gunners.GunnersCore;
+package com.gunners.gunnerscore;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;

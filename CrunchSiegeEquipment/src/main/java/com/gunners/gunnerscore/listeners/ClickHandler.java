@@ -1,4 +1,4 @@
-package com.gunners.GunnersCore;
+package com.gunners.gunnerscore.listeners;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,6 +52,11 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.EulerAngle;
+
+import com.gunners.gunnerscore.EquipmentMagazine;
+import com.gunners.gunnerscore.GunnerEquipment;
+import com.gunners.gunnerscore.GunnersCore;
+import com.gunners.gunnerscore.projectile.ExplosiveProjectile;
 
 //import com.palmergames.bukkit.towny.TownyAPI;
 //import com.palmergames.bukkit.towny.event.actions.TownyDestroyEvent;
