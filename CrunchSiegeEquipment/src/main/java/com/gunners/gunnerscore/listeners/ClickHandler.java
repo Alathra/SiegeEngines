@@ -193,9 +193,6 @@ public class ClickHandler implements Listener {
 					TakeControl(player,ent);
 				}
 			}
-			if (player instanceof Player) {
-				player.sendMessage("§eNow controlling nearby equipment.");
-			}
 		}
 		if (GunnersCore.TrackedStands.get(player.getUniqueId()) == null)
 			return;
@@ -695,6 +692,7 @@ public class ClickHandler implements Listener {
 						}
 					}
 					player.sendMessage("§eNow controlling nearby equipment.");
+					return;
 				}
 			}
 
@@ -713,7 +711,7 @@ public class ClickHandler implements Listener {
 		if (entity.getType() == EntityType.ARMOR_STAND){
 			TakeControl(player, entity);
 			if (GunnersCore.equipment.containsKey(entity.getUniqueId())) {
-				if (itemInHand.getType() == Material.RECOVERY_COMPASS) {
+				if (itemInHand.getType() == Material.CLOCK) {
 					if (player.isSneaking()) {
 						DoAimDown(entity, 1, player);
 					}

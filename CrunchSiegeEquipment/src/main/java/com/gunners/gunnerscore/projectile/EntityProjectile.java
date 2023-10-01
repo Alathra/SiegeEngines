@@ -8,13 +8,13 @@ import org.bukkit.World;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-
+import org.bukkit.entity.Fireball;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import com.gunners.gunnerscore.GunnersCore;
-
-
+import com.gunners.gunnerscore.listeners.ClickHandler;
 public class EntityProjectile implements GunnersProjectile{
 
 	public String ProjectileType = "Entity";
@@ -47,7 +47,7 @@ public class EntityProjectile implements GunnersProjectile{
 		}
 	}
 	private boolean PlaySound = true;
-	private void CreateEntity(Entity entity,  Location loc, Float velocity, Entity player) {
+	private void CreateEntity(Entity entity, Location loc, Float velocity, Entity player) {
 		World world = entity.getLocation().getWorld();
 		LivingEntity living = (LivingEntity) entity;
 
@@ -59,7 +59,13 @@ public class EntityProjectile implements GunnersProjectile{
 		else {
 			arrow.setVelocity(loc.getDirection().multiply(velocity));
 		}
+		arrow.setMetadata("isEntityProj",GunnersCore.addMetaDataValue("true"));
+		Bukkit.getServer().getPluginManager().callEvent(new org.bukkit.event.entity.ProjectileLaunchEvent(arrow));
 	
+		if (arrow instanceof org.bukkit.entity.Projectile) {
+			if (player instanceof org.bukkit.projectiles.ProjectileSource)
+				((org.bukkit.entity.Projectile)arrow).setShooter((org.bukkit.projectiles.ProjectileSource)player);
+		}
 		if (arrow instanceof Arrow) {
 			Arrow arr = (Arrow) arrow;
 			arr.setDamage(8);

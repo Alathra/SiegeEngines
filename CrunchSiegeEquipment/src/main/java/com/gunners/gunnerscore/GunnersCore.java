@@ -1,28 +1,48 @@
 package com.gunners.gunnerscore;
 
+import java.io.File;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
+import org.bukkit.World;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.ArmorStand.LockType;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Horse;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Mule;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Snowball;
+import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.event.inventory.InventoryType.SlotType;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -31,14 +51,18 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.util.Vector;
+import org.bukkit.metadata.MetadataValueAdapter;
+import org.bukkit.metadata.FixedMetadataValue;
 
+import com.comphenix.protocol.wrappers.EnumWrappers.Direction;
 //import com.palmergames.bukkit.towny.Towny;
+
 import com.gunners.gunnerscore.listeners.ClickHandler;
 import com.gunners.gunnerscore.listeners.RotationHandler;
 import com.gunners.gunnerscore.projectile.EntityProjectile;
 import com.gunners.gunnerscore.projectile.ExplosiveProjectile;
 import com.gunners.gunnerscore.projectile.GunnersProjectile;
-
 //import GunnersProjectiles.EntityProjectile;
 //import GunnersProjectiles.GunnersProjectile;
 //import GunnersProjectiles.ExplosiveProjectile;
@@ -46,7 +70,7 @@ import com.gunners.gunnerscore.projectile.GunnersProjectile;
 
 public class GunnersCore extends JavaPlugin {
 	public static Plugin plugin;
-
+	public static MetadataValueAdapter metadata;
 	public static Random random = new Random();
 	private static String Path;
 
@@ -85,9 +109,9 @@ public class GunnersCore extends JavaPlugin {
 		equipment.clear();
 		TrackedStands.clear();
 		DefinedEquipment.clear();
-		AddDefaults();
-		HashMap<ItemStack,GunnersProjectile> projObj = new HashMap<>();
-		GunnerEquipment equip = CreateNewGun(null, null, null, null, null, null, projObj);
+		//AddDefaults();
+		//HashMap<ItemStack,GunnersProjectile> projObj = new HashMap<>();
+		//GunnerEquipment equip = CreateNewGun(null, null, null, null, null, null, projObj);
 		for (GunnerEquipment i : DefinedEquipment.values()) {
 			System.out.println("§eEnabled Weapon : "+i.EquipmentName);
 			System.out.println("§eWeapon Propellant/\"Fuel\" ItemStacks : "+i.FuelMaterial);
@@ -95,6 +119,9 @@ public class GunnersCore extends JavaPlugin {
 				System.out.println("§eWeapon Projectile ItemStacks : "+proj);
 			}
 		}
+	}
+	public static FixedMetadataValue addMetaDataValue(Object value) {
+		return new FixedMetadataValue(Bukkit.getServer().getPluginManager().getPlugin("GunnersCore"),value);
 	}
 
 	public class GunnersCommand implements CommandExecutor {
@@ -199,7 +226,7 @@ public class GunnersCore extends JavaPlugin {
 		if (customModelId == null || customModelId == 0)
 			customModelId = 150;
 		if (name == null)
-			name = "Peckle Gun";
+			name = "Light Turret";
 		if (XOffset == null)
 			XOffset = 0;
 		if (YOffset == null)
@@ -220,11 +247,12 @@ public class GunnersCore extends JavaPlugin {
 		equip.VelocityPerFuel = fuelVelocityMod;
 		equip.FuelMaterial = new ItemStack(Material.GUNPOWDER);
 		equip.CycleThroughModelsBeforeFiring = false;
+		equip.AllowInvisibleStand = false;
 		equip.MaxFuel = fuelMax;
 		equip.shotAmount = 1;
 		equip.AmmoHolder.LoadedFuel = fuelMax;
 		EntityProjectile defaultProj = new EntityProjectile();
-		defaultProj.EntityCount = 6;
+		defaultProj.EntityCount = 2;
 		defaultProj.EntityTyp = EntityType.SHULKER_BULLET;
 		defaultProj.ParticleType = Particle.WHITE_ASH;
 		defaultProj.SoundType = Sound.ENTITY_BLAZE_SHOOT;

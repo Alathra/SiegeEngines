@@ -1,10 +1,10 @@
-/crunchsiege get - To get the items to sell in shops or etc use
-/crunchsiege reload - To reload configs
+/gunnerscore get - To get the items to sell in shops or etc use
+/gunnerscore reload - To reload configs
 
-crunchsiege.get
-crunchsiege.reload
+gunnerscore.get
+gunnerscore.reload
 
-For movecraft compatibility, add this to your craft files
+For Movecraft compatibility, add this to your craft files
 onlyMovePlayers: false
 
 Multi model capability for only 1 rotating part! :D

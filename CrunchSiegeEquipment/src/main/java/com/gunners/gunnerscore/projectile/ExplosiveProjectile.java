@@ -9,12 +9,13 @@ import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.entity.Snowball;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 import com.gunners.gunnerscore.GunnersCore;
 import com.gunners.gunnerscore.listeners.ClickHandler;
-
 //import me.libraryaddict.disguise.disguisetypes.DisguiseType;
 //import me.libraryaddict.disguise.disguisetypes.MiscDisguise;
 
@@ -68,6 +69,8 @@ public class ExplosiveProjectile implements GunnersProjectile {
 		else {
 			tnt.setVelocity(loc.getDirection().multiply(velocity));
 		}
+		tnt.setMetadata("isExplosiveProj",GunnersCore.addMetaDataValue("true"));
+		Bukkit.getServer().getPluginManager().callEvent(new org.bukkit.event.entity.ProjectileLaunchEvent(tnt));
 
 		if (PlaySound) {
 			world.playSound(loc, this.SoundType, 20, 2);
