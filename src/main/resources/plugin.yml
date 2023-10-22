@@ -3,9 +3,9 @@ main: "com.github.alathra.siegeengines.SiegeEngines"
 version: "${project.version}"
 api-version: "1.19"
 libraries:
-    - org.apache.commons:commons-math3:3.6.1
+  - org.apache.commons:commons-math3:3.6.1
 commands:
-    SiegeEngines:
-        description: "SiegeEngines Commands"
-        default: false
-        usage: "SiegeEngines"
+  SiegeEngines:
+    description: "SiegeEngines Commands"
+    default: false
+    usage: "SiegeEngines"
