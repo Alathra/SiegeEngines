@@ -1,5 +1,6 @@
-package com.gunners.gunnerscore.projectile;
+package com.github.alathra.siegeengines.projectile;
 
+import com.github.alathra.siegeengines.SiegeEngines;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -8,13 +9,9 @@ import org.bukkit.World;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Fireball;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import com.gunners.gunnerscore.GunnersCore;
-import com.gunners.gunnerscore.listeners.ClickHandler;
 public class EntityProjectile implements GunnersProjectile{
 
 	public String ProjectileType = "Entity";
@@ -33,7 +30,7 @@ public class EntityProjectile implements GunnersProjectile{
 		for (int i = 0; i < EntityCount; i++) {
 			if (DelayedFire) {
 				baseDelay += DelayTime;
-				Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(GunnersCore.plugin, () -> {
+				Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(SiegeEngines.plugin, () -> {
 					
 					CreateEntity(entity, FireLocation, velocity, player);
 				}, (long) baseDelay);
@@ -59,7 +56,7 @@ public class EntityProjectile implements GunnersProjectile{
 		else {
 			arrow.setVelocity(loc.getDirection().multiply(velocity));
 		}
-		arrow.setMetadata("isEntityProj",GunnersCore.addMetaDataValue("true"));
+		arrow.setMetadata("isEntityProj",SiegeEngines.addMetaDataValue("true"));
 		Bukkit.getServer().getPluginManager().callEvent(new org.bukkit.event.entity.ProjectileLaunchEvent(arrow));
 	
 		if (arrow instanceof org.bukkit.entity.Projectile) {
@@ -86,7 +83,7 @@ public class EntityProjectile implements GunnersProjectile{
 	}
 	
 	private Vector Randomise() {
-		return new Vector(GunnersCore.random.nextFloat() * (Inaccuracy - (Inaccuracy * -1)) + (Inaccuracy * -1),GunnersCore.random.nextFloat() * (Inaccuracy - (Inaccuracy * -1)) + (Inaccuracy * -1),GunnersCore.random.nextFloat() * (Inaccuracy - (Inaccuracy * -1)) + (Inaccuracy * -1));
+		return new Vector(SiegeEngines.random.nextFloat() * (Inaccuracy - (Inaccuracy * -1)) + (Inaccuracy * -1),SiegeEngines.random.nextFloat() * (Inaccuracy - (Inaccuracy * -1)) + (Inaccuracy * -1),SiegeEngines.random.nextFloat() * (Inaccuracy - (Inaccuracy * -1)) + (Inaccuracy * -1));
 	}
 }
 

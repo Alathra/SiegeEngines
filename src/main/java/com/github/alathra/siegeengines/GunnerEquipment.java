@@ -1,26 +1,20 @@
-package com.gunners.gunnerscore;
+package com.github.alathra.siegeengines;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 
+import com.github.alathra.siegeengines.projectile.GunnersProjectile;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
-import org.bukkit.Sound;
-import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Firework;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
-
-import com.gunners.gunnerscore.projectile.GunnersProjectile;
 
 //import GunnersProjectiles.GunnersProjectile;
 //import GunnersProjectiles.ExplosiveProjectile;
@@ -206,7 +200,7 @@ public class GunnerEquipment implements Cloneable  {
 			}
 			if (this.CycleThroughModelsBeforeFiring) {
 
-				this.TaskNumber = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(GunnersCore.plugin, () -> {
+				this.TaskNumber = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(SiegeEngines.plugin, () -> {
 					if (living == null || living.isDead()) {
 						Bukkit.getServer().getScheduler().cancelTask(this.TaskNumber);
 						return;
@@ -214,7 +208,7 @@ public class GunnerEquipment implements Cloneable  {
 
 					if (this.HasFired) {
 						Bukkit.getServer().getScheduler().cancelTask(this.TaskNumber);
-						this.TaskNumber = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(GunnersCore.plugin, () -> {
+						this.TaskNumber = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(SiegeEngines.plugin, () -> {
 							if (living == null || living.isDead()) {
 								Bukkit.getServer().getScheduler().cancelTask(this.TaskNumber);
 								return;
@@ -225,7 +219,7 @@ public class GunnerEquipment implements Cloneable  {
 								this.HasReloaded = false;
 								this.HasFired = false;
 								this.NextModelNumber = 0;
-								GunnersCore.UpdateEntityIdModel(this.Entity, this.ReadyModelNumber, this.WorldName);
+								SiegeEngines.UpdateEntityIdModel(this.Entity, this.ReadyModelNumber, this.WorldName);
 								this.TaskNumber = 0;
 							}
 							else {
@@ -233,7 +227,7 @@ public class GunnerEquipment implements Cloneable  {
 								if (this.NextModelNumber - 1 <= this.FiringModelNumbers.size() && this.NextModelNumber - 1 >= 0) {
 									int modelData = this.FiringModelNumbers.get(this.NextModelNumber - 1);
 									//	player.sendMessage("§e" + modelData);
-									GunnersCore.UpdateEntityIdModel(this.Entity, modelData, this.WorldName);
+									SiegeEngines.UpdateEntityIdModel(this.Entity, modelData, this.WorldName);
 									this.NextModelNumber -= 1;
 
 								}else {
@@ -250,7 +244,7 @@ public class GunnerEquipment implements Cloneable  {
 
 							int modelData = this.FiringModelNumbers.get(this.NextModelNumber);
 							//	player.sendMessage("§e" + modelData);
-							GunnersCore.UpdateEntityIdModel(this.Entity, modelData, this.WorldName);
+							SiegeEngines.UpdateEntityIdModel(this.Entity, modelData, this.WorldName);
 							if (modelData == this.ModelNumberToFireAt) {
 							//	player.sendMessage("§efiring" + modelData);
 								Projectiles.get(LoadedProjectile).Shoot(player, this.Entity, this.GetFireLocation(living),  loadedFuel * this.VelocityPerFuel);
@@ -264,7 +258,7 @@ public class GunnerEquipment implements Cloneable  {
 					}
 				}, 0, this.MillisecondsBetweenFiringStages);
 			} else {
-					this.TaskNumber = Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(GunnersCore.plugin, () -> {
+					this.TaskNumber = Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(SiegeEngines.plugin, () -> {
 					//player.sendMessage("§etask");
 					if (living == null || living.isDead()) {
 						Bukkit.getServer().getScheduler().cancelTask(this.TaskNumber);

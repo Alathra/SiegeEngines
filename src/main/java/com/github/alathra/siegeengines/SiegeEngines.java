@@ -1,17 +1,12 @@
-package com.gunners.gunnerscore;
+package com.github.alathra.siegeengines;
 
-import java.io.File;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -19,30 +14,16 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
-import org.bukkit.World;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.ArmorStand.LockType;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Horse;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Mule;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Snowball;
-import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.ProjectileHitEvent;
-import org.bukkit.event.inventory.InventoryType.SlotType;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -51,24 +32,22 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.util.Vector;
 import org.bukkit.metadata.MetadataValueAdapter;
 import org.bukkit.metadata.FixedMetadataValue;
 
-import com.comphenix.protocol.wrappers.EnumWrappers.Direction;
 //import com.palmergames.bukkit.towny.Towny;
 
-import com.gunners.gunnerscore.listeners.ClickHandler;
-import com.gunners.gunnerscore.listeners.RotationHandler;
-import com.gunners.gunnerscore.projectile.EntityProjectile;
-import com.gunners.gunnerscore.projectile.ExplosiveProjectile;
-import com.gunners.gunnerscore.projectile.GunnersProjectile;
+import com.github.alathra.siegeengines.listeners.ClickHandler;
+import com.github.alathra.siegeengines.listeners.RotationHandler;
+import com.github.alathra.siegeengines.projectile.EntityProjectile;
+import com.github.alathra.siegeengines.projectile.ExplosiveProjectile;
+import com.github.alathra.siegeengines.projectile.GunnersProjectile;
 //import GunnersProjectiles.EntityProjectile;
 //import GunnersProjectiles.GunnersProjectile;
 //import GunnersProjectiles.ExplosiveProjectile;
 //import GunnersProjectiles.PotionProjectile;
 
-public class GunnersCore extends JavaPlugin {
+public class SiegeEngines extends JavaPlugin {
 	public static Plugin plugin;
 	public static MetadataValueAdapter metadata;
 	public static Random random = new Random();
@@ -102,7 +81,7 @@ public class GunnersCore extends JavaPlugin {
 	public void onEnable() {
 		plugin = this;
 		Path = this.getDataFolder().getAbsolutePath();
-		this.getCommand("gunnerscore").setExecutor(new GunnersCommand());
+		this.getCommand("SiegeEngines").setExecutor(new GunnersCommand());
 		getServer().getPluginManager().registerEvents(new RotationHandler(), this);
 		getServer().getPluginManager().registerEvents(new ClickHandler(), this);
 		//StorageManager.setup(Path, plugin);
@@ -121,7 +100,7 @@ public class GunnersCore extends JavaPlugin {
 		}
 	}
 	public static FixedMetadataValue addMetaDataValue(Object value) {
-		return new FixedMetadataValue(Bukkit.getServer().getPluginManager().getPlugin("GunnersCore"),value);
+		return new FixedMetadataValue(Bukkit.getServer().getPluginManager().getPlugin("SiegeEngines"),value);
 	}
 
 	public class GunnersCommand implements CommandExecutor {
@@ -140,8 +119,8 @@ public class GunnersCore extends JavaPlugin {
 						sender.sendMessage("§eonly a player can use this command.");
 						return true;	
 					}
-					if (!sender.hasPermission("gunnerscore.get")) {
-						sender.sendMessage("§eNo perms to gunnerscore.get");
+					if (!sender.hasPermission("SiegeEngines.get")) {
+						sender.sendMessage("§eNo perms to SiegeEngines.get");
 						return true;
 					}
 					for (GunnerEquipment i : DefinedEquipment.values()) {
@@ -159,8 +138,8 @@ public class GunnersCore extends JavaPlugin {
 					}
 					break;
 				case "reload":
-					if (!sender.hasPermission("gunnerscore.reload")) {
-						sender.sendMessage("§eNo perms to gunnerscore.reload");
+					if (!sender.hasPermission("SiegeEngines.reload")) {
+						sender.sendMessage("§eNo perms to SiegeEngines.reload");
 						return true;
 					}
 					equipment.clear();
@@ -182,7 +161,7 @@ public class GunnersCore extends JavaPlugin {
 
 			}
 			else {
-				sender.sendMessage("§eIncorrect usage, /gunnerscore get, /gunnerscore reload");
+				sender.sendMessage("§eIncorrect usage, /SiegeEngines get, /SiegeEngines reload");
 			}
 			return true;
 		}
@@ -354,7 +333,7 @@ public class GunnersCore extends JavaPlugin {
 	public static Boolean CreateCannon(Entity player, int CustomModelData, Location l) {
 		//l.setY(l.getY() - 1);
 		l.add(0.5, 0, 0.5);
-		NamespacedKey key = new NamespacedKey(GunnersCore.plugin, "cannons");	
+		NamespacedKey key = new NamespacedKey(SiegeEngines.plugin, "cannons");	
 		GunnerEquipment equip = CreateClone(CustomModelData);
 		if (equip == null || !equip.Enabled) {
 			return false;

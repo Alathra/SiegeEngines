@@ -1,27 +1,21 @@
-package com.gunners.gunnerscore.projectile;
+package com.github.alathra.siegeengines.projectile;
 
+import com.github.alathra.siegeengines.SiegeEngines;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.World;
-import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.SplashPotion;
 import org.bukkit.entity.ThrownPotion;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
-
-import com.gunners.gunnerscore.GunnersCore;
-import com.gunners.gunnerscore.listeners.ClickHandler;
 
 public class PotionProjectile implements GunnersProjectile {
 	public String ProjectileType = "Potion";
@@ -39,7 +33,7 @@ public class PotionProjectile implements GunnersProjectile {
 		for (int i = 0; i < EntityCount; i++) {
 			if (DelayedFire) {
 				baseDelay += DelayTime;
-				Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(GunnersCore.plugin, () -> {
+				Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(SiegeEngines.plugin, () -> {
 			
 					CreateEntity(entity,loc, velocity);
 				}, (long) baseDelay);
@@ -61,7 +55,7 @@ public class PotionProjectile implements GunnersProjectile {
 		else {
 			arrow.setVelocity(loc.getDirection().multiply(velocity));
 		}
-		arrow.setMetadata("isExplosiveProj",GunnersCore.addMetaDataValue("true"));
+		arrow.setMetadata("isExplosiveProj",SiegeEngines.addMetaDataValue("true"));
 		Bukkit.getServer().getPluginManager().callEvent(new org.bukkit.event.entity.ProjectileLaunchEvent(arrow));
 		ItemStack itemStack = new ItemStack(Material.SPLASH_POTION);
 		PotionMeta potionMeta = (PotionMeta) itemStack.getItemMeta();
@@ -76,6 +70,6 @@ public class PotionProjectile implements GunnersProjectile {
 	}
 	
 	private Vector Randomise() {
-		return new Vector(GunnersCore.random.nextFloat() * (Inaccuracy - (Inaccuracy * -1)) + (Inaccuracy * -1),GunnersCore.random.nextFloat() * (Inaccuracy - (Inaccuracy * -1)) + (Inaccuracy * -1),GunnersCore.random.nextFloat() * (Inaccuracy - (Inaccuracy * -1)) + (Inaccuracy * -1));
+		return new Vector(SiegeEngines.random.nextFloat() * (Inaccuracy - (Inaccuracy * -1)) + (Inaccuracy * -1),SiegeEngines.random.nextFloat() * (Inaccuracy - (Inaccuracy * -1)) + (Inaccuracy * -1),SiegeEngines.random.nextFloat() * (Inaccuracy - (Inaccuracy * -1)) + (Inaccuracy * -1));
 	}
 }

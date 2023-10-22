@@ -1,21 +1,19 @@
-package com.gunners.gunnerscore.listeners;
+package com.github.alathra.siegeengines.listeners;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
+import com.github.alathra.siegeengines.EquipmentMagazine;
+import com.github.alathra.siegeengines.SiegeEngines;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
 import org.bukkit.block.Container;
 import org.bukkit.block.Sign;
 import org.bukkit.block.TileState;
@@ -37,26 +35,16 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.entity.ItemDisplay;
-import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.metadata.MetadataValue;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.EulerAngle;
 
-import com.gunners.gunnerscore.EquipmentMagazine;
-import com.gunners.gunnerscore.GunnerEquipment;
-import com.gunners.gunnerscore.GunnersCore;
-import com.gunners.gunnerscore.projectile.ExplosiveProjectile;
+import com.github.alathra.siegeengines.GunnerEquipment;
+import com.github.alathra.siegeengines.projectile.ExplosiveProjectile;
 
 //import com.palmergames.bukkit.towny.TownyAPI;
 //import com.palmergames.bukkit.towny.event.actions.TownyDestroyEvent;
@@ -74,7 +62,7 @@ public class ClickHandler implements Listener {
 		for (Entity entity : e.getEntity().getNearbyEntities(e.getYield() + 1, e.getYield()+ 1, e.getYield()+ 1)) {
 			if(entity instanceof ArmorStand) {
 				ArmorStand stand = (ArmorStand) entity;
-				/*if (GunnersCore.towny != null) {
+				/*if (SiegeEngines.towny != null) {
 					TownBlock block = TownyAPI.getInstance().getTownBlock(stand.getLocation());
 					if (block != null) {
 						if (block.hasTown()) {
@@ -111,7 +99,7 @@ public class ClickHandler implements Listener {
 				TNTPrimed tntEnt = (TNTPrimed) tnt;
 				tntEnt.setYield(0);
 				tntEnt.setFuseTicks(0);
-				/*if (GunnersCore.towny != null) {
+				/*if (SiegeEngines.towny != null) {
 					TownBlock block = TownyAPI.getInstance().getTownBlock(loc);
 					if (block != null) {
 						if (block.hasTown()) {
@@ -169,7 +157,7 @@ public class ClickHandler implements Listener {
 			ItemStack item = event.getPlayer().getInventory().getItemInMainHand();
 			if (item.getItemMeta() != null && item.getItemMeta().hasCustomModelData()) {
 				int customModel = item.getItemMeta().getCustomModelData();
-				Boolean created = GunnersCore.CreateCannon(thePlayer, customModel, event.getBlockAgainst().getLocation());
+				Boolean created = SiegeEngines.CreateCannon(thePlayer, customModel, event.getBlockAgainst().getLocation());
 				if (created) {
 					item.setAmount(item.getAmount() - 1);
 					thePlayer.getInventory().setItemInMainHand(item);
@@ -187,34 +175,34 @@ public class ClickHandler implements Listener {
 		float actualDelay = delay;
 		Boolean FirstShot = true;
 		int counter = 0;
-		if (GunnersCore.TrackedStands.get(player.getUniqueId()) == null) {
+		if (SiegeEngines.TrackedStands.get(player.getUniqueId()) == null) {
 			for (Entity ent : player.getNearbyEntities(5, 5, 5)) {
 				if(ent instanceof ArmorStand) {
 					TakeControl(player,ent);
 				}
 			}
 		}
-		if (GunnersCore.TrackedStands.get(player.getUniqueId()) == null)
+		if (SiegeEngines.TrackedStands.get(player.getUniqueId()) == null)
 			return;
-		List<Entity> entities = new ArrayList<>(GunnersCore.TrackedStands.get(player.getUniqueId()));
+		List<Entity> entities = new ArrayList<>(SiegeEngines.TrackedStands.get(player.getUniqueId()));
 		for (Entity ent : entities){
 			if (ent == null || ent.isDead()) {
-				GunnersCore.TrackedStands.get(player.getUniqueId()).remove(ent);
+				SiegeEngines.TrackedStands.get(player.getUniqueId()).remove(ent);
 				continue;
 			}
 			if (((LivingEntity) ent).getEquipment().getHelmet().getType() != Material.CARVED_PUMPKIN) {
-				GunnersCore.TrackedStands.get(player.getUniqueId()).remove(ent);
+				SiegeEngines.TrackedStands.get(player.getUniqueId()).remove(ent);
 				continue;
 			}
 			double distance = player.getLocation().distance(ent.getLocation());
 			if (distance >= 127) {
 				continue;
 			}
-			GunnerEquipment siege = GunnersCore.equipment.get(ent.getUniqueId());
+			GunnerEquipment siege = SiegeEngines.equipment.get(ent.getUniqueId());
 			if (counter > 4)
 				return;
 			if (ent == null || ent.isDead()) {
-				GunnersCore.TrackedStands.get(player.getUniqueId()).remove(ent);
+				SiegeEngines.TrackedStands.get(player.getUniqueId()).remove(ent);
 				continue;
 			}
 			if (siege.isLoaded()) {
@@ -267,7 +255,7 @@ public class ClickHandler implements Listener {
 		//		if (ItemInHand.getType() == Material.PAPER) {
 		//			ItemMeta meta = ItemInHand.getItemMeta();
 		//			if (meta.hasCustomModelData() && meta.getCustomModelData() == 505050505) {
-		//				GunnersCore.CreateCannon(player);
+		//				SiegeEngines.CreateCannon(player);
 		//				ItemInHand.setAmount(ItemInHand.getAmount() - 1);
 		//				return;
 		//			}
@@ -280,12 +268,12 @@ public class ClickHandler implements Listener {
 			}
 			if (!player.isSneaking())
 				Shoot((Entity)player, 7);
-			if (GunnersCore.TrackedStands.containsKey(player.getUniqueId())) {
-				List<Entity> entities = GunnersCore.TrackedStands.get(player.getUniqueId());
+			if (SiegeEngines.TrackedStands.containsKey(player.getUniqueId())) {
+				List<Entity> entities = SiegeEngines.TrackedStands.get(player.getUniqueId());
 				for (Entity entity : entities) {
 					boolean foundAmmo = false;
-					if (GunnersCore.equipment.containsKey(entity.getUniqueId())) {
-						GunnerEquipment equip = GunnersCore.equipment.get(entity.getUniqueId());
+					if (SiegeEngines.equipment.containsKey(entity.getUniqueId())) {
+						GunnerEquipment equip = SiegeEngines.equipment.get(entity.getUniqueId());
 						if (equip == null || !equip.Enabled) {
 							continue;
 						}
@@ -388,8 +376,8 @@ public class ClickHandler implements Listener {
 
 	public static void TakeControl(Entity player, Entity entity) {
 		LivingEntity living = (LivingEntity) entity;
-		if (GunnersCore.TrackedStands.containsKey(player.getUniqueId())) {
-			List<Entity> entities = GunnersCore.TrackedStands.get(player.getUniqueId());
+		if (SiegeEngines.TrackedStands.containsKey(player.getUniqueId())) {
+			List<Entity> entities = SiegeEngines.TrackedStands.get(player.getUniqueId());
 			if (entities.contains(entity)) {
 				return;
 			}
@@ -408,14 +396,14 @@ public class ClickHandler implements Listener {
 			stand.addEquipmentLock(EquipmentSlot.FEET, LockType.ADDING_OR_CHANGING);
 			stand.setBasePlate(false);
 
-			if (GunnersCore.equipment.containsKey(entity.getUniqueId())) {
-				equip = GunnersCore.equipment.get(entity.getUniqueId());
+			if (SiegeEngines.equipment.containsKey(entity.getUniqueId())) {
+				equip = SiegeEngines.equipment.get(entity.getUniqueId());
 				if (equip == null || !equip.Enabled) {
 					return;
 				}
 			}
 			else {
-				equip = GunnersCore.CreateClone(living.getEquipment().getHelmet().getItemMeta().getCustomModelData());
+				equip = SiegeEngines.CreateClone(living.getEquipment().getHelmet().getItemMeta().getCustomModelData());
 				if (equip == null || !equip.Enabled) {
 					return;
 				}
@@ -428,33 +416,33 @@ public class ClickHandler implements Listener {
 			stand.addEquipmentLock(EquipmentSlot.CHEST, LockType.ADDING_OR_CHANGING);
 			stand.addEquipmentLock(EquipmentSlot.FEET, LockType.ADDING_OR_CHANGING);
 			stand.setBasePlate(false);
-			if (GunnersCore.TrackedStands.containsKey(player.getUniqueId())) {
-				List<Entity> entities = GunnersCore.TrackedStands.get(player.getUniqueId());
+			if (SiegeEngines.TrackedStands.containsKey(player.getUniqueId())) {
+				List<Entity> entities = SiegeEngines.TrackedStands.get(player.getUniqueId());
 				entities.add(entity);
-				GunnersCore.TrackedStands.put(player.getUniqueId(), entities);
+				SiegeEngines.TrackedStands.put(player.getUniqueId(), entities);
 			}
 			else {
 				List<Entity> newList = new ArrayList<Entity>();
 				newList.add(entity);
-				GunnersCore.TrackedStands.put(player.getUniqueId(), newList);
+				SiegeEngines.TrackedStands.put(player.getUniqueId(), newList);
 			}
-			GunnersCore.equipment.put(entity.getUniqueId(), equip);
+			SiegeEngines.equipment.put(entity.getUniqueId(), equip);
 			//player.sendMessage("§eNow controlling the equipment.");
 		}
 	}
 
 	public void SaveCannons(Player player, Block block) {
 		List<String> Ids = new ArrayList<String>();
-		if (!GunnersCore.TrackedStands.containsKey(player.getUniqueId())) {
+		if (!SiegeEngines.TrackedStands.containsKey(player.getUniqueId())) {
 			return;
 		}
-		for (Entity ent : GunnersCore.TrackedStands.get(player.getUniqueId())) {
+		for (Entity ent : SiegeEngines.TrackedStands.get(player.getUniqueId())) {
 			Ids.add(ent.getUniqueId().toString());
 		}
 		TileState state = ((TileState) block.getState());
-		NamespacedKey key = new NamespacedKey(GunnersCore.plugin, "cannons");		
+		NamespacedKey key = new NamespacedKey(SiegeEngines.plugin, "cannons");		
 
-		for (Entity ent : GunnersCore.TrackedStands.get(player.getUniqueId())) {
+		for (Entity ent : SiegeEngines.TrackedStands.get(player.getUniqueId())) {
 			if (ent.isDead()) {
 				continue;
 			}
@@ -470,7 +458,7 @@ public class ClickHandler implements Listener {
 			return;
 		}
 		loc.setPitch((float) (loc.getPitch() - amount));
-		GunnerEquipment equipment = GunnersCore.equipment.get(ent.getUniqueId());
+		GunnerEquipment equipment = SiegeEngines.equipment.get(ent.getUniqueId());
 		if (equipment != null) {
 			if (player instanceof Player)
 				equipment.ShowFireLocation(player);   
@@ -489,7 +477,7 @@ public class ClickHandler implements Listener {
 			return;
 		}
 		loc.setPitch((float) (loc.getPitch() - amount));
-		GunnerEquipment equipment = GunnersCore.equipment.get(ent.getUniqueId());
+		GunnerEquipment equipment = SiegeEngines.equipment.get(ent.getUniqueId());
 		if (equipment != null) {
 			if (player instanceof Player)
 				equipment.ShowFireLocation(player);   
@@ -507,7 +495,7 @@ public class ClickHandler implements Listener {
 		if (loc.getPitch() == 85 || loc.getPitch() + amount > 85) {
 			return;
 		}
-		GunnerEquipment equipment = GunnersCore.equipment.get(ent.getUniqueId());
+		GunnerEquipment equipment = SiegeEngines.equipment.get(ent.getUniqueId());
 		if (equipment != null) {
 			if (player instanceof Player) {
 				equipment.ShowFireLocation((Player)player); 
@@ -521,7 +509,7 @@ public class ClickHandler implements Listener {
 
 		ent.teleport(loc);
 	}
-	NamespacedKey key = new NamespacedKey(GunnersCore.plugin, "cannons");	
+	NamespacedKey key = new NamespacedKey(SiegeEngines.plugin, "cannons");	
 
 	@EventHandler
 	public void DeathEvent(EntityDeathEvent event) {
@@ -532,13 +520,13 @@ public class ClickHandler implements Listener {
 				Entity base = Bukkit.getEntity(UUID.fromString(event.getEntity().getPersistentDataContainer().get(key, PersistentDataType.STRING)));
 				base.remove();
 			}
-			if (GunnersCore.equipment.containsKey(event.getEntity().getUniqueId())) {
+			if (SiegeEngines.equipment.containsKey(event.getEntity().getUniqueId())) {
 				removeStands = true;
 			}
 			else {
 				for (ItemStack i : items) {
 					if (i.getType() == Material.CARVED_PUMPKIN && i.hasItemMeta() && i.getItemMeta().hasCustomModelData()) {
-						if (GunnersCore.DefinedEquipment.containsKey(i.getItemMeta().getCustomModelData())) {
+						if (SiegeEngines.DefinedEquipment.containsKey(i.getItemMeta().getCustomModelData())) {
 							removeStands = true;
 							break;
 						}
@@ -559,7 +547,7 @@ public class ClickHandler implements Listener {
 
 	public void AimUp(Entity player, float amount) {
 
-		for (Entity ent : GunnersCore.TrackedStands.get(player.getUniqueId())) {
+		for (Entity ent : SiegeEngines.TrackedStands.get(player.getUniqueId())) {
 			if (ent.isDead()) {
 				continue;
 			}
@@ -569,7 +557,7 @@ public class ClickHandler implements Listener {
 
 	public void AimDown(Entity player, float amount) {
 
-		for (Entity ent : GunnersCore.TrackedStands.get(player.getUniqueId())) {
+		for (Entity ent : SiegeEngines.TrackedStands.get(player.getUniqueId())) {
 			if (ent.isDead()) {
 				continue;
 			}
@@ -578,12 +566,12 @@ public class ClickHandler implements Listener {
 	}
 
 	public void LoadCannonsWithPowder(Entity player) {
-		for (Entity ent : GunnersCore.TrackedStands.get(player.getUniqueId())) {
+		for (Entity ent : SiegeEngines.TrackedStands.get(player.getUniqueId())) {
 			if (ent.isDead()) {
 				continue;
 			}
 
-			GunnerEquipment equipment = GunnersCore.equipment.get(ent.getUniqueId());
+			GunnerEquipment equipment = SiegeEngines.equipment.get(ent.getUniqueId());
 			if (equipment != null) {
 				equipment.LoadFuel(player);
 			}
@@ -591,11 +579,11 @@ public class ClickHandler implements Listener {
 	}
 
 	public void LoadCannonsWithProjectile(Entity player, ItemStack projectile) {
-		for (Entity ent : GunnersCore.TrackedStands.get(player.getUniqueId())) {
+		for (Entity ent : SiegeEngines.TrackedStands.get(player.getUniqueId())) {
 			if (ent.isDead()) {
 				continue;
 			}
-			GunnerEquipment equipment = GunnersCore.equipment.get(ent.getUniqueId());
+			GunnerEquipment equipment = SiegeEngines.equipment.get(ent.getUniqueId());
 			if (equipment != null) {
 				equipment.LoadProjectile(player, projectile);
 			}
@@ -608,7 +596,7 @@ public class ClickHandler implements Listener {
 		if(event.getClickedBlock() != null && event.getClickedBlock().getType().toString().contains("SIGN")){
 			Sign sign = (Sign) event.getClickedBlock().getState();
 			if(sign.getLine(0).equalsIgnoreCase( "[Fire]") && event.getAction() == Action.RIGHT_CLICK_BLOCK){
-				if (!GunnersCore.TrackedStands.containsKey(player.getUniqueId())) {
+				if (!SiegeEngines.TrackedStands.containsKey(player.getUniqueId())) {
 					return;
 				}
 				try {
@@ -641,7 +629,7 @@ public class ClickHandler implements Listener {
 			}
 
 			if(sign.getLine(0).equalsIgnoreCase( "[Aim]")){
-				if (!GunnersCore.TrackedStands.containsKey(player.getUniqueId())) {
+				if (!SiegeEngines.TrackedStands.containsKey(player.getUniqueId())) {
 					return;
 				}
 				float amount;
@@ -662,7 +650,7 @@ public class ClickHandler implements Listener {
 
 			if(sign.getLine(0).equalsIgnoreCase( "[Cannon]")){
 				if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
-					GunnersCore.TrackedStands.remove(player.getUniqueId());
+					SiegeEngines.TrackedStands.remove(player.getUniqueId());
 					player.sendMessage("§eReleasing the equipment!");
 					return;
 				}
@@ -673,9 +661,9 @@ public class ClickHandler implements Listener {
 						return;
 					}
 
-					NamespacedKey key = new NamespacedKey(GunnersCore.plugin, "cannons");		
+					NamespacedKey key = new NamespacedKey(SiegeEngines.plugin, "cannons");		
 					TileState state = (TileState)  sign.getBlock().getState();
-					GunnersCore.TrackedStands.remove(player.getUniqueId());
+					SiegeEngines.TrackedStands.remove(player.getUniqueId());
 					List<UUID> temp = new ArrayList<UUID>();
 					if (!state.getPersistentDataContainer().has(key,  PersistentDataType.STRING)) {
 						return;
@@ -710,7 +698,7 @@ public class ClickHandler implements Listener {
 		}
 		if (entity.getType() == EntityType.ARMOR_STAND){
 			TakeControl(player, entity);
-			if (GunnersCore.equipment.containsKey(entity.getUniqueId())) {
+			if (SiegeEngines.equipment.containsKey(entity.getUniqueId())) {
 				if (itemInHand.getType() == Material.CLOCK) {
 					if (player.isSneaking()) {
 						DoAimDown(entity, 1, player);
@@ -721,7 +709,7 @@ public class ClickHandler implements Listener {
 					return;
 				}
 			
-				GunnerEquipment equipment = GunnersCore.equipment.get(entity.getUniqueId());
+				GunnerEquipment equipment = SiegeEngines.equipment.get(entity.getUniqueId());
 				event.setCancelled(true);
 		
 				if (itemInHand == null || itemInHand.getType() == Material.AIR) {

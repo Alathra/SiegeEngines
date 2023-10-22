@@ -1,4 +1,4 @@
-package com.gunners.gunnerscore;
+package com.github.alathra.siegeengines;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;

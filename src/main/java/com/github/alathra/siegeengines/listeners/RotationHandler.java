@@ -1,14 +1,12 @@
-package com.gunners.gunnerscore.listeners;
+package com.github.alathra.siegeengines.listeners;
 
-import java.awt.Color;
 import java.util.UUID;
 
+import com.github.alathra.siegeengines.SiegeEngines;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.Particle;
-import org.bukkit.block.Block;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -18,22 +16,18 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.util.BlockIterator;
 import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
 
-import com.gunners.gunnerscore.EquipmentMagazine;
-import com.gunners.gunnerscore.GunnerEquipment;
-import com.gunners.gunnerscore.GunnersCore;
-import com.gunners.gunnerscore.projectile.ExplosiveProjectile;
+import com.github.alathra.siegeengines.GunnerEquipment;
 
 public class RotationHandler implements Listener {
 
 	@EventHandler
 	public void playerMove(PlayerMoveEvent event) {
 		Player player = event.getPlayer();
-		NamespacedKey key = new NamespacedKey(GunnersCore.plugin, "cannons");	
-		if (GunnersCore.TrackedStands.containsKey(player.getUniqueId())) {
+		NamespacedKey key = new NamespacedKey(SiegeEngines.plugin, "cannons");
+		if (SiegeEngines.TrackedStands.containsKey(player.getUniqueId())) {
 			ItemStack itemInHand = player.getInventory().getItemInMainHand();
 			if (itemInHand != null) {
 				if (itemInHand.getType() != Material.COMPASS) {
@@ -41,9 +35,9 @@ public class RotationHandler implements Listener {
 
 					return;
 				}
-				for (Entity ent : GunnersCore.TrackedStands.get(player.getUniqueId())) {
+				for (Entity ent : SiegeEngines.TrackedStands.get(player.getUniqueId())) {
 					if (ent != null) {
-						GunnerEquipment equipment = GunnersCore.equipment.get(ent.getUniqueId());
+						GunnerEquipment equipment = SiegeEngines.equipment.get(ent.getUniqueId());
 						if (ent.isDead()) {
 							continue;
 						}
