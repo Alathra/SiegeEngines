@@ -24,10 +24,11 @@ All commit messages should adhere to the [Conventional Commits specification](ht
 - `style` Commits, that do not affect the meaning (white-space, formatting, missing semi-colons, etc)
 - `test` Commits, that add or correct existing tests
 - `docs` Commits, that affect documentation only
-- `chore` Miscellaneous commits without production code change, e.g. modifying `.gitignore`
 - Tooling relevant changes
     * `build` Commits, that affect build components like build tool, dependencies, project version, ...
     * `ci` Commits, that affect CI configuration files and scripts
+- `revert` Commits, that revert previous commits
+- `chore` Miscellaneous commits without production code change, e.g. modifying `.gitignore`
 
 ### Versioning
 
