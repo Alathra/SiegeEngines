@@ -30,6 +30,7 @@ public class SiegeEnginesCommand {
             .withShortDescription("Example command.")
             .withPermission("siegeengines.command")
             .withSubcommands(
+                commandGet(),
                 commandGetAll(),
                 commandReload()
             )
@@ -39,6 +40,22 @@ public class SiegeEnginesCommand {
 
     private void onExecute(CommandSender sender, CommandArguments args) {
         sender.sendMessage(ColorParser.of("<yellow>Incorrect usage, /SiegeEngines get, /SiegeEngines reload").build());
+    }
+
+    private CommandAPICommand commandGet() {
+        return new CommandAPICommand("get")
+            .withPermission("siegeengines.command.get")
+            .withArguments(
+                new StringArgument("equipmentid")
+                    .replaceSuggestions(
+                        ArgumentSuggestions.strings(
+                            DefinedEquipment.values().stream().map(gunnerEquipment -> gunnerEquipment.EquipmentId).toList()
+                        )
+                    ),
+                new PlayerArgument("target")
+                    .setOptional(true)
+            )
+            .executesPlayer(this::onGet);
     }
 
     private CommandAPICommand commandGetAll() {
@@ -51,6 +68,20 @@ public class SiegeEnginesCommand {
         return new CommandAPICommand("reload")
             .withPermission("siegeengines.command.reload")
             .executesPlayer(this::onReload);
+    }
+
+    private void onGet(CommandSender sender, CommandArguments args) throws WrapperCommandSyntaxException {
+        if (!(args.get("equipmentid") instanceof String equipmentId))
+            throw CommandAPIBukkit.failWithAdventureComponent(ColorParser.of("<red>Invalid equipment id specified.").build());
+
+        Player player = (Player) args.getOptional("target").orElse(sender);
+
+        for (GunnerEquipment gunnerEquipment : DefinedEquipment.values()) {
+            if (gunnerEquipment.equals(equipmentId)) {
+                giveEquipment(player, gunnerEquipment);
+                break;
+            }
+        }
     }
 
     private void onGetAll(CommandSender sender, CommandArguments args) throws WrapperCommandSyntaxException {
