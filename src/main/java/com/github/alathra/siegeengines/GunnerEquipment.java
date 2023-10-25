@@ -29,6 +29,10 @@ public class GunnerEquipment implements Cloneable {
         return (GunnerEquipment) super.clone();
     }
 
+    public boolean equals(String EquipmentId) {
+        return this.EquipmentId.equals(EquipmentId);
+    }
+
     public Boolean Enabled = true;
     public UUID EntityId;
     public Entity Entity;
@@ -38,6 +42,7 @@ public class GunnerEquipment implements Cloneable {
 
     public String WorldName;
     public String EquipmentName = "Peckle Gun";
+    public String EquipmentId = this.EquipmentName.replaceAll(" ", "_").toLowerCase();
     public int XOffset = 7;
     public int YOffset = 0;
     public int PitchOffset = 0;

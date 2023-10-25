@@ -6,7 +6,7 @@
 
     <groupId>com.github.alathra</groupId>
     <artifactId>SiegeEngines</artifactId>
-    <version>0.3.0</version>
+    <version>0.4.0</version>
 
     <packaging>jar</packaging>
     <name>SiegeEngines</name>
@@ -63,6 +63,30 @@
             <version>5.0.0</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>dev.jorel</groupId>
+            <artifactId>commandapi-bukkit-shade</artifactId>
+            <version>9.2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.milkdrinkers</groupId>
+            <artifactId>colorparser</artifactId>
+            <version>2.0.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.intellij.lang.annotations</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.jetbrains.lang.annotations</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>net.kyori</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
     </dependencies>
 
     <build>
@@ -84,6 +108,7 @@
                 <version>3.5.0</version>
                 <executions>
                     <execution>
+                        <id>shade</id>
                         <phase>package</phase>
                         <goals>
                             <goal>shade</goal>
@@ -101,6 +126,16 @@
                             </excludes>
                         </filter>
                     </filters>
+                    <relocations>
+                        <relocation>
+                            <pattern>dev.jorel.commandapi</pattern>
+                            <shadedPattern>${project.groupId}.siegeengines.libs.commandapi</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>com.github.milkdrinkers.colorparser</pattern>
+                            <shadedPattern>${project.groupId}.siegeengines.libs.colorparser</shadedPattern>
+                        </relocation>
+                    </relocations>
                 </configuration>
             </plugin>
         </plugins>
