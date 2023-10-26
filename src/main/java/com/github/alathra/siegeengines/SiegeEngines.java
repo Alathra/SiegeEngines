@@ -8,6 +8,7 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import com.github.alathra.siegeengines.command.CommandHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -52,34 +53,19 @@ public class SiegeEngines extends JavaPlugin {
     public static MetadataValueAdapter metadata;
     public static Random random = new Random();
     private static String Path;
-
+    private CommandHandler commandHandler;
     //public static Towny towny;
 
-    @SuppressWarnings("deprecation")
     @Override
-    public void onDisable() {
-        for (GunnerEquipment equip : equipment.values()) {
-            if (equip.Entity != null) {
-                ItemStack item = new ItemStack(Material.CARVED_PUMPKIN);
-                ItemMeta meta = item.getItemMeta();
-                equip.AmmoHolder = new EquipmentMagazine();
-
-                meta.setCustomModelData(equip.ReadyModelNumber);
-                meta.setDisplayName("§e" + equip.EquipmentName + " Item");
-                List<String> Lore = new ArrayList<String>();
-                Lore.add("§ePlace as a block to spawn a " + equip.EquipmentName + " or put on an Armor Stand.");
-                meta.setLore(Lore);
-                item.setItemMeta(meta);
-
-                ((LivingEntity) equip.Entity).getEquipment().setHelmet(item);
-            }
-        }
+    public void onLoad() {
+        plugin = this;
+        commandHandler = new CommandHandler(this);
+        commandHandler.onLoad();
     }
 
     @SuppressWarnings("deprecation")
     @Override
     public void onEnable() {
-        plugin = this;
         Path = this.getDataFolder().getAbsolutePath();
         this.getCommand("SiegeEngines").setExecutor(new GunnersCommand());
         getServer().getPluginManager().registerEvents(new RotationHandler(), this);
@@ -96,6 +82,29 @@ public class SiegeEngines extends JavaPlugin {
             System.out.println("§eWeapon Propellant/\"Fuel\" ItemStacks : " + i.FuelMaterial);
             for (ItemStack proj : i.Projectiles.keySet()) {
                 System.out.println("§eWeapon Projectile ItemStacks : " + proj);
+            }
+        }
+        commandHandler.onEnable();
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public void onDisable() {
+        commandHandler.onDisable();
+        for (GunnerEquipment equip : equipment.values()) {
+            if (equip.Entity != null) {
+                ItemStack item = new ItemStack(Material.CARVED_PUMPKIN);
+                ItemMeta meta = item.getItemMeta();
+                equip.AmmoHolder = new EquipmentMagazine();
+
+                meta.setCustomModelData(equip.ReadyModelNumber);
+                meta.setDisplayName("§e" + equip.EquipmentName + " Item");
+                List<String> Lore = new ArrayList<String>();
+                Lore.add("§ePlace as a block to spawn a " + equip.EquipmentName + " or put on an Armor Stand.");
+                meta.setLore(Lore);
+                item.setItemMeta(meta);
+
+                ((LivingEntity) equip.Entity).getEquipment().setHelmet(item);
             }
         }
     }
@@ -215,6 +224,7 @@ public class SiegeEngines extends JavaPlugin {
         if (fuelVelocityMod == null)
             fuelVelocityMod = 0.95f;
         equip.EquipmentName = name;
+        equip.EquipmentId = equip.EquipmentName.replaceAll(" ", "_").toLowerCase();
         equip.XOffset = XOffset;
         equip.YOffset = YOffset;
         equip.RotateStandHead = true;
