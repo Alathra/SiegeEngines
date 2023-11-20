@@ -198,7 +198,7 @@ public class GunnerEquipment implements Cloneable {
 
         this.WorldName = Entity.getWorld().getName();
         this.NextShotTime = System.currentTimeMillis() + 1000;
-        for (int i = 0; i <= this.shotAmount /* range */; i += 1) {
+        //for (int i = 0; i <= this.shotAmount /* range */; i += 1) {
             if (living == null || living.isDead()) {
                 return;
             }
@@ -279,6 +279,6 @@ public class GunnerEquipment implements Cloneable {
 
             }
         }
-    }
+    //}
 
 }
