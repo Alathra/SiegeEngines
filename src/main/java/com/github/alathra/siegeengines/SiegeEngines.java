@@ -67,7 +67,7 @@ public class SiegeEngines extends JavaPlugin {
     @Override
     public void onEnable() {
         Path = this.getDataFolder().getAbsolutePath();
-        this.getCommand("SiegeEngines").setExecutor(new GunnersCommand());
+        //this.getCommand("SiegeEngines").setExecutor(new GunnersCommand()); // Fixed Start-up
         getServer().getPluginManager().registerEvents(new RotationHandler(), this);
         getServer().getPluginManager().registerEvents(new ClickHandler(), this);
         //StorageManager.setup(Path, plugin);
