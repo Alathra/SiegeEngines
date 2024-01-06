@@ -43,12 +43,12 @@ public class SiegeEquipment implements Cloneable {
     public String WorldName;
     public String EquipmentName = "Peckle Gun";
     public String EquipmentId = this.EquipmentName.replaceAll(" ", "_").toLowerCase();
-    public int XOffset = 7;
+    public int XOffset = 2;
     public int YOffset = 0;
     public int PitchOffset = 0;
     public int MaxFuel = 5;
     public double PlacementOffsetY = 0;
-    public float VelocityPerFuel = 1.75f;
+    public float VelocityPerFuel = 1.0125f;
     public ItemStack FuelMaterial = new ItemStack(Material.GUNPOWDER);
     public long NextShotTime = System.currentTimeMillis();
 
@@ -64,7 +64,7 @@ public class SiegeEquipment implements Cloneable {
     public Boolean HasFired = false;
     public Boolean HasReloaded = false;
     public Boolean AllowInvisibleStand = false;
-    public Boolean HaseBaseStand = false;
+    public Boolean HasBaseStand = false;
     public double BaseStandOffset = 0;
     public int BaseStandModelNumber = 147;
     public int TaskNumber;
@@ -99,7 +99,7 @@ public class SiegeEquipment implements Cloneable {
         if (((Player) player).getInventory().containsAtLeast(fuelItem, 1) || fuelItem.getType() == Material.AIR) {
             if (CanLoadFuel()) {
                 this.AmmoHolder.LoadedFuel += 1;
-                SaveState();
+                //SaveState();
                 ((Player) player).getInventory().removeItem(fuelItem);
                 ((Player) player).sendMessage("§eLoaded " + this.AmmoHolder.LoadedFuel + "/" + this.MaxFuel);
                 return true;
@@ -125,19 +125,21 @@ public class SiegeEquipment implements Cloneable {
         if (this.Projectiles.containsKey(itemInHand.getType()) && this.AmmoHolder.LoadedProjectile == 0) {
             this.AmmoHolder.LoadedProjectile = 1;
             this.AmmoHolder.MaterialName = itemInHand;
-            ((Player) player).sendMessage("§eAdding Ammo to Weapon");
+            ((Player) player).sendMessage("§eAdding Ammunition to Weapon");
             itemInHand.setAmount(itemInHand.getAmount() - 1);
             return true;
         }
         return false;
     }
 
-    public void SaveState() {
+    //public void SaveState() {
 
-    }
+    //}
 
 
     public Location GetFireLocation(LivingEntity living) {
+        if (living == null)
+            return null;
         Location loc = living.getEyeLocation();
         Vector direction = living.getLocation().getDirection().multiply(XOffset);
         loc.add(direction);
@@ -176,12 +178,12 @@ public class SiegeEquipment implements Cloneable {
             return;
         }
         if (this.AmmoHolder.LoadedFuel <= 0)
-            this.AmmoHolder.LoadedFuel = 3;
+            this.AmmoHolder.LoadedFuel = 0;
         float loadedFuel = this.AmmoHolder.LoadedFuel;
         ItemStack LoadedProjectile = this.AmmoHolder.MaterialName;
 
 
-        LivingEntity living = (LivingEntity) Entity;
+        LivingEntity living = (LivingEntity) this.Entity;
         if (living == null || living.getEquipment() == null || living.getEquipment().getHelmet() == null || living.getEquipment().getHelmet().getItemMeta() == null) {
             return;
         }
@@ -249,7 +251,11 @@ public class SiegeEquipment implements Cloneable {
                             SiegeEngines.UpdateEntityIdModel(this.Entity, modelData, this.WorldName);
                             if (modelData == this.ModelNumberToFireAt) {
                                 //	player.sendMessage("§efiring" + modelData);
-                                Projectiles.get(LoadedProjectile).Shoot(player, this.Entity, this.GetFireLocation(living), loadedFuel * this.VelocityPerFuel);
+                                if (LoadedProjectile == null) return;
+                                if (LoadedProjectile.getType() == Material.AIR) return;
+                                GunnersProjectile projType = Projectiles.get(LoadedProjectile);
+                                if (projType == null) return;
+                                projType.Shoot(player, this.Entity, this.GetFireLocation(living), loadedFuel * this.VelocityPerFuel);
                             }
                             this.NextModelNumber += 1;
 
@@ -273,8 +279,11 @@ public class SiegeEquipment implements Cloneable {
                     loc.add(direction);
 
                     this.NextModelNumber = 0;
-
-                    Projectiles.get(LoadedProjectile).Shoot(player, this.Entity, this.GetFireLocation(living), loadedFuel * this.VelocityPerFuel);
+                    if (LoadedProjectile == null) return;
+                    if (LoadedProjectile.getType() == Material.AIR) return;
+                    GunnersProjectile projType = Projectiles.get(LoadedProjectile);
+                    if (projType == null) return;
+                    projType.Shoot(player, this.Entity, this.GetFireLocation(living), loadedFuel * this.VelocityPerFuel);
                 }, (long) delay);
 
             }
