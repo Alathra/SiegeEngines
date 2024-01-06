@@ -1,6 +1,7 @@
 package com.github.alathra.siegeengines.command;
 
-import com.github.alathra.siegeengines.GunnerEquipment;
+import com.github.alathra.siegeengines.SiegeEquipment;
+import com.github.alathra.siegeengines.config.Config;
 import com.github.alathra.siegeengines.projectile.GunnersProjectile;
 import com.github.milkdrinkers.colorparser.ColorParser;
 import dev.jorel.commandapi.CommandAPIBukkit;
@@ -76,7 +77,7 @@ public class SiegeEnginesCommand {
 
         Player player = (Player) args.getOptional("target").orElse(sender);
 
-        for (GunnerEquipment gunnerEquipment : DefinedEquipment.values()) {
+        for (SiegeEquipment gunnerEquipment : DefinedEquipment.values()) {
             if (gunnerEquipment.equals(equipmentId)) {
                 giveEquipment(player, gunnerEquipment);
                 break;
@@ -88,7 +89,7 @@ public class SiegeEnginesCommand {
         if (!(sender instanceof Player player))
             throw CommandAPIBukkit.failWithAdventureComponent(ColorParser.of("<red>Only players can use this command.").build());
 
-        for (GunnerEquipment i : DefinedEquipment.values()) {
+        for (SiegeEquipment i : DefinedEquipment.values()) {
             giveEquipment(player, i);
         }
     }
@@ -102,18 +103,19 @@ public class SiegeEnginesCommand {
         DefinedEquipment.clear();
         AddDefaults();
         HashMap<ItemStack, GunnersProjectile> projObj = new HashMap<>();
-        GunnerEquipment equip = CreateNewGun(null, null, null, null, null, null, projObj);
-        for (GunnerEquipment i : DefinedEquipment.values()) {
+        SiegeEquipment equip = CreateNewGun(null, null, null, null, null, null, projObj);
+        for (SiegeEquipment i : DefinedEquipment.values()) {
             sender.sendMessage(ColorParser.of("<yellow>Enabled Weapon : %s".formatted(i.EquipmentName)).build());
             sender.sendMessage(ColorParser.of("<yellow>Weapon Propellant/\"Fuel\" ItemStacks : %s".formatted(i.FuelMaterial)).build());
             for (ItemStack proj : i.Projectiles.keySet()) {
                 sender.sendMessage(ColorParser.of("<yellow>Weapon Projectile ItemStacks : %s".formatted(proj)).build());
             }
         }
+        Config.reload();
         sender.sendMessage("<yellow>Gunners Core configs reloaded");
     }
 
-    private void giveEquipment(Player player, GunnerEquipment gunnerEquipment) {
+    private void giveEquipment(Player player, SiegeEquipment gunnerEquipment) {
         ItemStack item = new ItemStack(Material.CARVED_PUMPKIN);
         ItemMeta meta = item.getItemMeta();
         meta.setCustomModelData(gunnerEquipment.ReadyModelNumber);

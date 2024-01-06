@@ -22,11 +22,11 @@ import org.bukkit.util.Vector;
 //import me.libraryaddict.disguise.disguisetypes.DisguiseType;
 //import me.libraryaddict.disguise.disguisetypes.MiscDisguise;
 
-public class GunnerEquipment implements Cloneable {
+public class SiegeEquipment implements Cloneable {
 
     @Override
-    public GunnerEquipment clone() throws CloneNotSupportedException {
-        return (GunnerEquipment) super.clone();
+    public SiegeEquipment clone() throws CloneNotSupportedException {
+        return (SiegeEquipment) super.clone();
     }
 
     public boolean equals(String EquipmentId) {

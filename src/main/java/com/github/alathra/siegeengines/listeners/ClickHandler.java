@@ -43,7 +43,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.EulerAngle;
 
-import com.github.alathra.siegeengines.GunnerEquipment;
+import com.github.alathra.siegeengines.SiegeEquipment;
 import com.github.alathra.siegeengines.projectile.ExplosiveProjectile;
 
 //import com.palmergames.bukkit.towny.TownyAPI;
@@ -197,7 +197,7 @@ public class ClickHandler implements Listener {
             if (distance >= 127) {
                 continue;
             }
-            GunnerEquipment siege = SiegeEngines.equipment.get(ent.getUniqueId());
+            SiegeEquipment siege = SiegeEngines.equipment.get(ent.getUniqueId());
             if (counter > 4)
                 return;
             if (ent == null || ent.isDead()) {
@@ -285,7 +285,7 @@ public class ClickHandler implements Listener {
                 for (Entity entity : entities) {
                     boolean foundAmmo = false;
                     if (SiegeEngines.equipment.containsKey(entity.getUniqueId())) {
-                        GunnerEquipment equip = SiegeEngines.equipment.get(entity.getUniqueId());
+                        SiegeEquipment equip = SiegeEngines.equipment.get(entity.getUniqueId());
                         if (equip == null || !equip.Enabled) {
                             continue;
                         }
@@ -367,7 +367,7 @@ public class ClickHandler implements Listener {
                 for (Entity entity : entities) {
                     boolean foundAmmo = false;
                     if (SiegeEngines.equipment.containsKey(entity.getUniqueId())) {
-                        GunnerEquipment equip = SiegeEngines.equipment.get(entity.getUniqueId());
+                        SiegeEquipment equip = SiegeEngines.equipment.get(entity.getUniqueId());
                         if (equip == null || !equip.Enabled) {
                             continue;
                         }
@@ -480,7 +480,7 @@ public class ClickHandler implements Listener {
             }
 
             ArmorStand stand = (ArmorStand) entity;
-            GunnerEquipment equip;
+            SiegeEquipment equip;
             stand.addEquipmentLock(EquipmentSlot.HEAD, LockType.REMOVING_OR_CHANGING);
             stand.addEquipmentLock(EquipmentSlot.LEGS, LockType.ADDING_OR_CHANGING);
             stand.addEquipmentLock(EquipmentSlot.CHEST, LockType.ADDING_OR_CHANGING);
@@ -547,7 +547,7 @@ public class ClickHandler implements Listener {
             return;
         }
         loc.setPitch((float) (loc.getPitch() - amount));
-        GunnerEquipment equipment = SiegeEngines.equipment.get(ent.getUniqueId());
+        SiegeEquipment equipment = SiegeEngines.equipment.get(ent.getUniqueId());
         if (equipment != null) {
             if (player instanceof Player)
                 equipment.ShowFireLocation(player);
@@ -566,7 +566,7 @@ public class ClickHandler implements Listener {
             return;
         }
         loc.setPitch((float) (loc.getPitch() - amount));
-        GunnerEquipment equipment = SiegeEngines.equipment.get(ent.getUniqueId());
+        SiegeEquipment equipment = SiegeEngines.equipment.get(ent.getUniqueId());
         if (equipment != null) {
             if (player instanceof Player)
                 equipment.ShowFireLocation(player);
@@ -584,7 +584,7 @@ public class ClickHandler implements Listener {
         if (loc.getPitch() == 85 || loc.getPitch() + amount > 85) {
             return;
         }
-        GunnerEquipment equipment = SiegeEngines.equipment.get(ent.getUniqueId());
+        SiegeEquipment equipment = SiegeEngines.equipment.get(ent.getUniqueId());
         if (equipment != null) {
             if (player instanceof Player) {
                 equipment.ShowFireLocation((Player) player);
@@ -660,7 +660,7 @@ public class ClickHandler implements Listener {
                 continue;
             }
 
-            GunnerEquipment equipment = SiegeEngines.equipment.get(ent.getUniqueId());
+            SiegeEquipment equipment = SiegeEngines.equipment.get(ent.getUniqueId());
             if (equipment != null) {
                 equipment.LoadFuel(player);
             }
@@ -672,7 +672,7 @@ public class ClickHandler implements Listener {
             if (ent.isDead()) {
                 continue;
             }
-            GunnerEquipment equipment = SiegeEngines.equipment.get(ent.getUniqueId());
+            SiegeEquipment equipment = SiegeEngines.equipment.get(ent.getUniqueId());
             if (equipment != null) {
                 equipment.LoadProjectile(player, projectile);
             }
@@ -797,7 +797,7 @@ public class ClickHandler implements Listener {
                     return;
                 }
 
-                GunnerEquipment equipment = SiegeEngines.equipment.get(entity.getUniqueId());
+                SiegeEquipment equipment = SiegeEngines.equipment.get(entity.getUniqueId());
                 event.setCancelled(true);
 
                 if (itemInHand == null || itemInHand.getType() == Material.AIR) {

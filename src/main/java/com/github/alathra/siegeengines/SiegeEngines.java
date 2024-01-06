@@ -48,14 +48,23 @@ import com.github.alathra.siegeengines.projectile.GunnersProjectile;
 //import GunnersProjectiles.ExplosiveProjectile;
 //import GunnersProjectiles.PotionProjectile;
 
+
 public class SiegeEngines extends JavaPlugin {
+	
+	public static SiegeEngines instance;
+	
     public static Plugin plugin;
     public static MetadataValueAdapter metadata;
     public static Random random = new Random();
     private static String Path;
     private CommandHandler commandHandler;
     //public static Towny towny;
+   
 
+	public static SiegeEngines getInstance() {
+		return instance;
+	}
+	
     @Override
     public void onLoad() {
         plugin = this;
@@ -77,7 +86,7 @@ public class SiegeEngines extends JavaPlugin {
         //AddDefaults();
         //HashMap<ItemStack,GunnersProjectile> projObj = new HashMap<>();
         //GunnerEquipment equip = CreateNewGun(null, null, null, null, null, null, projObj);
-        for (GunnerEquipment i : DefinedEquipment.values()) {
+        for (SiegeEquipment i : DefinedEquipment.values()) {
             System.out.println("§eEnabled Weapon : " + i.EquipmentName);
             System.out.println("§eWeapon Propellant/\"Fuel\" ItemStacks : " + i.FuelMaterial);
             for (ItemStack proj : i.Projectiles.keySet()) {
@@ -91,7 +100,7 @@ public class SiegeEngines extends JavaPlugin {
     @Override
     public void onDisable() {
         commandHandler.onDisable();
-        for (GunnerEquipment equip : equipment.values()) {
+        for (SiegeEquipment equip : equipment.values()) {
             if (equip.Entity != null) {
                 ItemStack item = new ItemStack(Material.CARVED_PUMPKIN);
                 ItemMeta meta = item.getItemMeta();
@@ -133,7 +142,7 @@ public class SiegeEngines extends JavaPlugin {
                             sender.sendMessage("§eNo perms to SiegeEngines.get");
                             return true;
                         }
-                        for (GunnerEquipment i : DefinedEquipment.values()) {
+                        for (SiegeEquipment i : DefinedEquipment.values()) {
                             ItemStack item = new ItemStack(Material.CARVED_PUMPKIN);
                             ItemMeta meta = item.getItemMeta();
                             meta.setCustomModelData(i.ReadyModelNumber);
@@ -157,8 +166,8 @@ public class SiegeEngines extends JavaPlugin {
                         DefinedEquipment.clear();
                         AddDefaults();
                         HashMap<ItemStack, GunnersProjectile> projObj = new HashMap<>();
-                        GunnerEquipment equip = CreateNewGun(null, null, null, null, null, null, projObj);
-                        for (GunnerEquipment i : DefinedEquipment.values()) {
+                        SiegeEquipment equip = CreateNewGun(null, null, null, null, null, null, projObj);
+                        for (SiegeEquipment i : DefinedEquipment.values()) {
                             sender.sendMessage("§eEnabled Weapon : " + i.EquipmentName);
                             sender.sendMessage("§eWeapon Propellant/\"Fuel\" ItemStacks : " + i.FuelMaterial);
                             for (ItemStack proj : i.Projectiles.keySet()) {
@@ -176,7 +185,7 @@ public class SiegeEngines extends JavaPlugin {
         }
     }
 
-    public static GunnerEquipment CreateClone(Integer ModelId) {
+    public static SiegeEquipment CreateClone(Integer ModelId) {
         try {
             return DefinedEquipment.get(ModelId).clone();
         } catch (CloneNotSupportedException e) {
@@ -186,11 +195,11 @@ public class SiegeEngines extends JavaPlugin {
         return null;
     }
 
-    public static HashMap<Integer, GunnerEquipment> DefinedEquipment = new HashMap<Integer, GunnerEquipment>();
+    public static HashMap<Integer, SiegeEquipment> DefinedEquipment = new HashMap<Integer, SiegeEquipment>();
 
     public static HashMap<UUID, List<Entity>> TrackedStands = new HashMap<UUID, List<Entity>>();
 
-    public static HashMap<UUID, GunnerEquipment> equipment = new HashMap<UUID, GunnerEquipment>();
+    public static HashMap<UUID, SiegeEquipment> equipment = new HashMap<UUID, SiegeEquipment>();
 
     public static String convertTime(long time) {
 
@@ -209,8 +218,8 @@ public class SiegeEngines extends JavaPlugin {
         return timeLeftFormatted;
     }
 
-    public static GunnerEquipment CreateNewGun(String name, Integer XOffset, Integer YOffset, Integer fuelMax, Float fuelVelocityMod, Integer customModelId, HashMap<ItemStack, GunnersProjectile> projObj) {
-        GunnerEquipment equip = new GunnerEquipment();
+    public static SiegeEquipment CreateNewGun(String name, Integer XOffset, Integer YOffset, Integer fuelMax, Float fuelVelocityMod, Integer customModelId, HashMap<ItemStack, GunnersProjectile> projObj) {
+        SiegeEquipment equip = new SiegeEquipment();
         if (customModelId == null || customModelId == 0)
             customModelId = 150;
         if (name == null)
@@ -255,7 +264,7 @@ public class SiegeEngines extends JavaPlugin {
     }
 
     public static void AddDefaults() {
-        GunnerEquipment equip = new GunnerEquipment();
+        SiegeEquipment equip = new SiegeEquipment();
         equip.EquipmentName = "Trebuchet";
         equip.XOffset = 5;
         equip.YOffset = 5;
@@ -277,7 +286,7 @@ public class SiegeEngines extends JavaPlugin {
         equip.CycleThroughModelsBeforeFiring = true;
         DefinedEquipment.put(equip.ReadyModelNumber, equip);
 
-        equip = new GunnerEquipment();
+        equip = new SiegeEquipment();
         equip.EquipmentName = "Naval Cannon";
         equip.Projectiles.put(new ItemStack(Material.COBBLESTONE), proj);
         equip.PlacementOffsetY = -1;
@@ -305,7 +314,7 @@ public class SiegeEngines extends JavaPlugin {
         fireProj.SoundType = Sound.ENTITY_BLAZE_SHOOT;
         equip.Projectiles.put(new ItemStack(Material.FIRE_CHARGE), fireProj);
         DefinedEquipment.put(equip.ReadyModelNumber, equip);
-        equip = new GunnerEquipment();
+        equip = new SiegeEquipment();
         equip.EquipmentName = "Siege Cannon";
         proj.ExplodePower = 2;
         equip.Projectiles.put(new ItemStack(Material.COBBLESTONE), proj);
@@ -344,7 +353,7 @@ public class SiegeEngines extends JavaPlugin {
         //l.setY(l.getY() - 1);
         l.add(0.5, 0, 0.5);
         NamespacedKey key = new NamespacedKey(SiegeEngines.plugin, "cannons");
-        GunnerEquipment equip = CreateClone(CustomModelData);
+        SiegeEquipment equip = CreateClone(CustomModelData);
         if (equip == null || !equip.Enabled) {
             return false;
         }

@@ -19,7 +19,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
 
-import com.github.alathra.siegeengines.GunnerEquipment;
+import com.github.alathra.siegeengines.SiegeEquipment;
 
 public class RotationHandler implements Listener {
 
@@ -37,7 +37,7 @@ public class RotationHandler implements Listener {
                 }
                 for (Entity ent : SiegeEngines.TrackedStands.get(player.getUniqueId())) {
                     if (ent != null) {
-                        GunnerEquipment equipment = SiegeEngines.equipment.get(ent.getUniqueId());
+                        SiegeEquipment equipment = SiegeEngines.equipment.get(ent.getUniqueId());
                         if (ent.isDead()) {
                             continue;
                         }
