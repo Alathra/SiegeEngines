@@ -157,7 +157,7 @@ public class ClickHandler implements Listener {
             ItemStack item = event.getPlayer().getInventory().getItemInMainHand();
             if (item.getItemMeta() != null && item.getItemMeta().hasCustomModelData()) {
                 int customModel = item.getItemMeta().getCustomModelData();
-                Boolean created = SiegeEngines.CreateCannon(thePlayer, customModel, event.getBlockAgainst().getLocation());
+                Boolean created = SiegeEngines.placeEquipment(thePlayer, customModel, event.getBlockAgainst().getLocation());
                 if (created) {
                     item.setAmount(item.getAmount() - 1);
                     thePlayer.getInventory().setItemInMainHand(item);
@@ -195,7 +195,7 @@ public class ClickHandler implements Listener {
                 continue;
             }
             double distance = player.getLocation().distance(ent.getLocation());
-            if (distance >= 64) {
+            if (distance >= Config.controlDistance) {
                 continue;
             }
             SiegeEquipment siege = SiegeEngines.equipment.get(ent.getUniqueId());
