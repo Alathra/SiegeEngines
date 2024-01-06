@@ -1,8 +1,12 @@
 package com.github.alathra.siegeengines.listeners;
 
+
+import java.util.HashSet;
+import java.util.EnumSet;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.Random;
 import java.util.UUID;
 
@@ -58,6 +62,7 @@ public class ClickHandler implements Listener {
     public float MinDelay = 5;
 
     public static HashMap<UUID, ExplosiveProjectile> projectiles = new HashMap<UUID, ExplosiveProjectile>();
+    public static EnumSet<Material> fluidMaterials = EnumSet.of(Material.WATER, Material.LAVA, Material.BUBBLE_COLUMN, Material.SEAGRASS, Material.TALL_SEAGRASS, Material.KELP, Material.KELP_PLANT, Material.SEA_PICKLE);
 
     @EventHandler
     public void onExplode(EntityExplodeEvent e) {
@@ -153,8 +158,12 @@ public class ClickHandler implements Listener {
         Player thePlayer = event.getPlayer();
         if (event.isCancelled())
             return;
-        if (event.isCancelled())
+        Material replaced = event.getBlockReplacedState().getType();
+        if (fluidMaterials.contains(replaced)) {
+            thePlayer.sendMessage("§eGunner Equipment cannot be spawned in Fluid Blocks.");
+            event.setCancelled(true);
             return;
+        }
         if (event.getPlayer().getInventory().getItemInMainHand().getType() == Material.CARVED_PUMPKIN) {
             ItemStack item = event.getPlayer().getInventory().getItemInMainHand();
             if (item.getItemMeta() != null && item.getItemMeta().hasCustomModelData()) {
