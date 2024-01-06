@@ -1,6 +1,8 @@
 package com.github.alathra.siegeengines.listeners;
 
 import java.util.UUID;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.github.alathra.siegeengines.SiegeEngines;
 import org.bukkit.Bukkit;
@@ -35,7 +37,8 @@ public class RotationHandler implements Listener {
 
                     return;
                 }
-                for (Entity ent : SiegeEngines.TrackedStands.get(player.getUniqueId())) {
+                final List<Entity> list = new ArrayList<>(SiegeEngines.TrackedStands.get(player.getUniqueId()));
+                for (Entity ent : list) {
                     if (ent != null) {
                         SiegeEquipment equipment = SiegeEngines.equipment.get(ent.getUniqueId());
                         if (ent.isDead()) {
