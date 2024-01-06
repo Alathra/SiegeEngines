@@ -5,7 +5,6 @@ import java.util.UUID;
 import com.github.alathra.siegeengines.SiegeEngines;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
@@ -20,6 +19,7 @@ import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
 
 import com.github.alathra.siegeengines.SiegeEquipment;
+import com.github.alathra.siegeengines.config.Config;
 
 public class RotationHandler implements Listener {
 
@@ -30,7 +30,7 @@ public class RotationHandler implements Listener {
         if (SiegeEngines.TrackedStands.containsKey(player.getUniqueId())) {
             ItemStack itemInHand = player.getInventory().getItemInMainHand();
             if (itemInHand != null) {
-                if (itemInHand.getType() != Material.COMPASS) {
+                if (itemInHand.getType() != Config.controlItem) {
                     //	TrackedStands.remove(player.getUniqueId());
 
                     return;

@@ -75,6 +75,7 @@ public class SiegeEngines extends JavaPlugin {
     @SuppressWarnings("deprecation")
     @Override
     public void onEnable() {
+    	instance = this;
         Path = this.getDataFolder().getAbsolutePath();
         //this.getCommand("SiegeEngines").setExecutor(new GunnersCommand()); // Fixed Start-up
         getServer().getPluginManager().registerEvents(new RotationHandler(), this);
@@ -120,69 +121,6 @@ public class SiegeEngines extends JavaPlugin {
 
     public static FixedMetadataValue addMetaDataValue(Object value) {
         return new FixedMetadataValue(Bukkit.getServer().getPluginManager().getPlugin("SiegeEngines"), value);
-    }
-
-    public class GunnersCommand implements CommandExecutor {
-        @Override
-        @EventHandler
-        public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-            Player player = null;
-            if (sender instanceof Player) {
-                player = (Player) sender;
-            }
-            if (args != null && args.length > 0) {
-
-                switch (args[0].toLowerCase()) {
-                    case "get":
-                        if (player == null) {
-                            sender.sendMessage("§eonly a player can use this command.");
-                            return true;
-                        }
-                        if (!sender.hasPermission("SiegeEngines.get")) {
-                            sender.sendMessage("§eNo perms to SiegeEngines.get");
-                            return true;
-                        }
-                        for (SiegeEquipment i : DefinedEquipment.values()) {
-                            ItemStack item = new ItemStack(Material.CARVED_PUMPKIN);
-                            ItemMeta meta = item.getItemMeta();
-                            meta.setCustomModelData(i.ReadyModelNumber);
-                            meta.setDisplayName("§e" + i.EquipmentName + " Item");
-                            List<String> Lore = new ArrayList<String>();
-                            Lore.add("§ePlace as a block to spawn a " + i.EquipmentName);
-                            Lore.add("§eor put on an Armor Stand.");
-                            Lore.add("§eRight click to toggle visibility of stand.");
-                            meta.setLore(Lore);
-                            item.setItemMeta(meta);
-                            player.getInventory().addItem(item);
-                        }
-                        break;
-                    case "reload":
-                        if (!sender.hasPermission("SiegeEngines.reload")) {
-                            sender.sendMessage("§eNo perms to SiegeEngines.reload");
-                            return true;
-                        }
-                        equipment.clear();
-                        TrackedStands.clear();
-                        DefinedEquipment.clear();
-                        AddDefaults();
-                        HashMap<ItemStack, GunnersProjectile> projObj = new HashMap<>();
-                        SiegeEquipment equip = CreateNewGun(null, null, null, null, null, null, projObj);
-                        for (SiegeEquipment i : DefinedEquipment.values()) {
-                            sender.sendMessage("§eEnabled Weapon : " + i.EquipmentName);
-                            sender.sendMessage("§eWeapon Propellant/\"Fuel\" ItemStacks : " + i.FuelMaterial);
-                            for (ItemStack proj : i.Projectiles.keySet()) {
-                                sender.sendMessage("§eWeapon Projectile ItemStacks : " + proj);
-                            }
-                        }
-                        sender.sendMessage("§eGunners Core configs reloaded");
-                        break;
-                }
-
-            } else {
-                sender.sendMessage("§eIncorrect usage, /SiegeEngines get, /SiegeEngines reload");
-            }
-            return true;
-        }
     }
 
     public static SiegeEquipment CreateClone(Integer ModelId) {

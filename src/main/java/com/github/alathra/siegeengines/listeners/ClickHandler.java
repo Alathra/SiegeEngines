@@ -44,6 +44,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.EulerAngle;
 
 import com.github.alathra.siegeengines.SiegeEquipment;
+import com.github.alathra.siegeengines.config.Config;
 import com.github.alathra.siegeengines.projectile.ExplosiveProjectile;
 
 //import com.palmergames.bukkit.towny.TownyAPI;
@@ -275,7 +276,7 @@ public class ClickHandler implements Listener {
 
 
         if (event.getAction() == Action.RIGHT_CLICK_AIR) {
-            if (ItemInHand.getType() != Material.COMPASS) {
+            if (ItemInHand.getType() != Config.controlItem) {
                 return;
             }
             if (!player.isSneaking())

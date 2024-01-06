@@ -10,3 +10,6 @@ config-version: 1
 # |         GENERAL SETTINGS          |
 # =====================================
 
+# The item used to aim and fire siege engines
+# Must be a valid material. See https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
+ControlItem: COMPASS
