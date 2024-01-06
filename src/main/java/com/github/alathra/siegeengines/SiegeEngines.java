@@ -84,7 +84,7 @@ public class SiegeEngines extends JavaPlugin {
         equipment.clear();
         TrackedStands.clear();
         DefinedEquipment.clear();
-        //AddDefaults();
+        AddDefaults();
         //HashMap<ItemStack,GunnersProjectile> projObj = new HashMap<>();
         //GunnerEquipment equip = CreateNewGun(null, null, null, null, null, null, projObj);
         for (SiegeEquipment i : DefinedEquipment.values()) {
