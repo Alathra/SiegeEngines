@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
+import com.github.alathra.siegeengines.config.Config;
 import com.github.alathra.siegeengines.EquipmentMagazine;
 import com.github.alathra.siegeengines.SiegeEngines;
 import org.bukkit.Bukkit;
@@ -44,7 +45,6 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.EulerAngle;
 
 import com.github.alathra.siegeengines.SiegeEquipment;
-import com.github.alathra.siegeengines.config.Config;
 import com.github.alathra.siegeengines.projectile.ExplosiveProjectile;
 
 //import com.palmergames.bukkit.towny.TownyAPI;
@@ -195,7 +195,7 @@ public class ClickHandler implements Listener {
                 continue;
             }
             double distance = player.getLocation().distance(ent.getLocation());
-            if (distance >= 127) {
+            if (distance >= 64) {
                 continue;
             }
             SiegeEquipment siege = SiegeEngines.equipment.get(ent.getUniqueId());
@@ -228,7 +228,6 @@ public class ClickHandler implements Listener {
         for (int i = 0; i < contents.length; i++) {
             if (contents[i] == null) continue;
             if (contents[i].isSimilar(m)) {
-                System.out.println(m.toString());
                 int amountInInv = contents[i].getAmount();
                 if (toRemove >= amountInInv) {
                     contents[i].setType(Material.AIR);
@@ -249,7 +248,6 @@ public class ClickHandler implements Listener {
 			for(int i = 0; i < contents.length; i++) {
 					if(contents[i] == null) continue;
 					if(contents[i].isSimilar(m)) {
-							System.out.println(m.toString());
 							return true;
 					}
 			}
@@ -279,12 +277,23 @@ public class ClickHandler implements Listener {
             if (ItemInHand.getType() != Config.controlItem) {
                 return;
             }
-            if (!player.isSneaking())
-                Shoot((Entity) player, 7);
-            if (SiegeEngines.TrackedStands.containsKey(player.getUniqueId())) {
+            if (!player.isSneaking()) {
                 List<Entity> entities = SiegeEngines.TrackedStands.get(player.getUniqueId());
                 for (Entity entity : entities) {
+                    if (SiegeEngines.equipment.containsKey(entity.getUniqueId())) {
+                        SiegeEquipment equip = SiegeEngines.equipment.get(entity.getUniqueId());
+                        if (equip != null && equip.Enabled && !(entity.isDead())) {
+                            equip.Fire(player,10f,1);
+                        }
+                    }
+                }
+            }
+            if (SiegeEngines.TrackedStands.containsKey(player.getUniqueId())) {
+                List<Entity> entities = SiegeEngines.TrackedStands.get(player.getUniqueId());
+                player.sendMessage("§eReloading Ammunition");
+                for (Entity entity : entities) {
                     boolean foundAmmo = false;
+                    if ((entity.isDead())) continue;
                     if (SiegeEngines.equipment.containsKey(entity.getUniqueId())) {
                         SiegeEquipment equip = SiegeEngines.equipment.get(entity.getUniqueId());
                         if (equip == null || !equip.Enabled) {
@@ -364,9 +373,10 @@ public class ClickHandler implements Listener {
                         }
                     }
                 }
-                player.sendMessage("§eReloading Ammunition");
+                player.sendMessage("§eReloading Propellant");
                 for (Entity entity : entities) {
                     boolean foundAmmo = false;
+                    if ((entity.isDead())) continue;
                     if (SiegeEngines.equipment.containsKey(entity.getUniqueId())) {
                         SiegeEquipment equip = SiegeEngines.equipment.get(entity.getUniqueId());
                         if (equip == null || !equip.Enabled) {
@@ -383,7 +393,6 @@ public class ClickHandler implements Listener {
                             state.getInventory().removeItem(stack);//setStorageContents(updateContents(state.getInventory(),stack,1));
                             //state.update(true,true);
                             equip.AmmoHolder.LoadedFuel += 1;
-                            equip.AmmoHolder.MaterialName = stack;
                             foundAmmo = true;
                             //state.update(true,true);
                         }
@@ -398,7 +407,6 @@ public class ClickHandler implements Listener {
                             state.getInventory().removeItem(stack);//setStorageContents(updateContents(state.getInventory(),stack,1));
                             //state.update(true,true);
                             equip.AmmoHolder.LoadedFuel += 1;
-                            equip.AmmoHolder.MaterialName = stack;
                             foundAmmo = true;
                             //state.update(true,true);
                         }
@@ -413,7 +421,6 @@ public class ClickHandler implements Listener {
                             state.getInventory().removeItem(stack);//setStorageContents(updateContents(state.getInventory(),stack,1));
                             //state.update(true,true);
                             equip.AmmoHolder.LoadedFuel += 1;
-                            equip.AmmoHolder.MaterialName = stack;
                             foundAmmo = true;
                             //state.update(true,true);
                         }
@@ -436,7 +443,6 @@ public class ClickHandler implements Listener {
                         }
                     }
                 }
-                player.sendMessage("§eReloading Propellant");
                 return;
             }
 
@@ -449,7 +455,7 @@ public class ClickHandler implements Listener {
         if (topline == null) topline = "";
         Player player = event.getPlayer();
         String toplinetrimmed = topline.trim();
-        if (toplinetrimmed.equals("[Cannon]")) {
+        if (toplinetrimmed.equalsIgnoreCase("[Cannon]")) {
             SaveCannons(player, event.getBlock());
         }
 
@@ -527,6 +533,9 @@ public class ClickHandler implements Listener {
             return;
         }
         for (Entity ent : SiegeEngines.TrackedStands.get(player.getUniqueId())) {
+            if (ent.isDead()) {
+                continue;
+            }
             Ids.add(ent.getUniqueId().toString());
         }
         TileState state = ((TileState) block.getState());
@@ -787,7 +796,13 @@ public class ClickHandler implements Listener {
             return;
         }
         if (entity.getType() == EntityType.ARMOR_STAND) {
-            TakeControl(player, entity);
+            if (itemInHand.getType() != Config.controlItem) {
+                SiegeEngines.TrackedStands.get(player.getUniqueId()).remove(entity);
+                player.sendMessage("§eThis Equipment is no longer commanded by you.");
+                return;
+            } else {
+                TakeControl(player, entity);
+            }
             if (SiegeEngines.equipment.containsKey(entity.getUniqueId())) {
                 if (itemInHand.getType() == Material.CLOCK) {
                     if (player.isSneaking()) {

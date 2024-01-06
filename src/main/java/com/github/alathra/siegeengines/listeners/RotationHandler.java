@@ -42,7 +42,7 @@ public class RotationHandler implements Listener {
                             continue;
                         }
                         double distance = player.getLocation().distance(ent.getLocation());
-                        if (distance <= 250) {
+                        if (distance <= 32) {
                             //	player.sendMessage("§egot id");
                             LivingEntity living = (LivingEntity) ent;
                             Location loc = ent.getLocation();
@@ -81,6 +81,9 @@ public class RotationHandler implements Listener {
 
                             living.teleport(loc);
                             equipment.ShowFireLocation(player);
+                        } else {
+                            SiegeEngines.TrackedStands.get(player.getUniqueId()).remove(ent);
+                            continue;
                         }
                     }
                 }
@@ -88,7 +91,7 @@ public class RotationHandler implements Listener {
         }
     }
 
-    Vector getDirectionBetweenLocations(Location Start, Location End) {
+    public Vector getDirectionBetweenLocations(Location Start, Location End) {
         Vector from = Start.toVector();
         Vector to = End.toVector();
         return to.subtract(from);

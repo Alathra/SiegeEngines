@@ -161,7 +161,7 @@ public class SiegeEngines extends JavaPlugin {
         if (customModelId == null || customModelId == 0)
             customModelId = 150;
         if (name == null)
-            name = "Light Turret";
+            name = "Unnamed Cannon";
         if (XOffset == null)
             XOffset = 0;
         if (YOffset == null)
@@ -208,8 +208,8 @@ public class SiegeEngines extends JavaPlugin {
         equip.YOffset = 5;
         equip.VelocityPerFuel = 0.3f;
         ExplosiveProjectile proj = new ExplosiveProjectile();
-        proj.ExplodePower = 2;
-        equip.shotAmount = 1;
+        proj.ExplodePower = 1;
+        equip.shotAmount = 2;
         equip.RotateStandHead = false;
         equip.RotateSideways = true;
         equip.FuelMaterial = new ItemStack(Material.STRING);
@@ -236,20 +236,21 @@ public class SiegeEngines extends JavaPlugin {
         equip.RotateSideways = false;
         proj = new ExplosiveProjectile();
         proj.ExplodePower = 1;
-        proj.ProjectilesCount = 3;
+        proj.ProjectilesCount = 5;
         proj.DelayedFire = true;
         proj.Inaccuracy = 0.75f;
         equip.Projectiles.put(new ItemStack(Material.TNT), proj);
         proj = new ExplosiveProjectile();
-        proj.ExplodePower = 4;
+        proj.ExplodePower = 3;
         proj.ProjectilesCount = 1;
-        equip.Projectiles.put(new ItemStack(Material.COPPER_BLOCK), proj);
+        equip.Projectiles.put(new ItemStack(Material.IRON_BLOCK), proj);
 
         EntityProjectile fireProj = new EntityProjectile();
-        fireProj.EntityCount = 2;
+        fireProj.EntityCount = 4;
         fireProj.EntityTyp = EntityType.SMALL_FIREBALL;
         fireProj.ParticleType = Particle.WHITE_ASH;
         fireProj.SoundType = Sound.ENTITY_BLAZE_SHOOT;
+        fireProj.Inaccuracy = 0.75f;
         equip.Projectiles.put(new ItemStack(Material.FIRE_CHARGE), fireProj);
         DefinedEquipment.put(equip.ReadyModelNumber, equip);
         equip = new SiegeEquipment();
@@ -264,16 +265,21 @@ public class SiegeEngines extends JavaPlugin {
         equip.RotateStandHead = true;
         equip.RotateSideways = true;
         proj = new ExplosiveProjectile();
-        proj.ExplodePower = 1;
+        proj.ExplodePower = 2;
         proj.ProjectilesCount = 3;
         proj.DelayedFire = true;
-        proj.Inaccuracy = 0.5f;
+        proj.Inaccuracy = 0.75f;
         equip.Projectiles.put(new ItemStack(Material.TNT), proj);
         proj = new ExplosiveProjectile();
-        proj.ExplodePower = 4;
+        proj.ExplodePower = 3;
         proj.ProjectilesCount = 1;
-        equip.Projectiles.put(new ItemStack(Material.COPPER_BLOCK), proj);
-        equip.Projectiles.put(new ItemStack(Material.GRAVEL), new EntityProjectile());
+        equip.Projectiles.put(new ItemStack(Material.IRON_BLOCK), proj);
+        EntityProjectile scatterShot = new EntityProjectile();
+        scatterShot.Inaccuracy = 0.5f;
+        scatterShot.EntityCount = 24;
+        scatterShot.ParticleType = Particle.ELECTRIC_SPARK;
+        scatterShot.SoundType = Sound.ITEM_CROSSBOW_SHOOT;
+        equip.Projectiles.put(new ItemStack(Material.GRAVEL), scatterShot);
         DefinedEquipment.put(equip.ReadyModelNumber, equip);
 //		EntityProjectile pig = new EntityProjectile();
 //		pig.EntityCount = 100;
