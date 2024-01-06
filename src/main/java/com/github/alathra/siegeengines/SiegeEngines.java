@@ -303,13 +303,12 @@ public class SiegeEngines extends JavaPlugin {
         }
         l.setY(l.getY() + 1);
         int maxNearby = 0;
-
         l.setDirection(player.getFacing().getDirection());
         ItemStack item = new ItemStack(Material.CARVED_PUMPKIN);
         ItemMeta meta = item.getItemMeta();
         String id = "";
         equip.AmmoHolder = new EquipmentMagazine();
-        if (equip.HaseBaseStand) {
+        if (equip.HasBaseStand) {
 
             Location l2 = l;
             l2.setY(l.getY() + equip.BaseStandOffset);
@@ -352,14 +351,6 @@ public class SiegeEngines extends JavaPlugin {
         LivingEntity ent = (LivingEntity) entity2;
         ArmorStand stand = (ArmorStand) ent;
         equip.Entity = entity2;
-        for (Entity le : l.getNearbyEntities(5, 5, 5)) {
-            if (maxNearby >= 4) {
-                ent.damage(100.0d, player);
-                return false;
-            }
-            if (le instanceof ArmorStand)
-                maxNearby++;
-        }
 
         equip.EntityId = entity2.getUniqueId();
         stand.addEquipmentLock(EquipmentSlot.HEAD, LockType.REMOVING_OR_CHANGING);
@@ -371,12 +362,9 @@ public class SiegeEngines extends JavaPlugin {
         stand.addEquipmentLock(EquipmentSlot.HAND, LockType.REMOVING_OR_CHANGING);
         stand.addEquipmentLock(EquipmentSlot.OFF_HAND, LockType.REMOVING_OR_CHANGING);
         stand.setInvisible(equip.AllowInvisibleStand);
-        stand.setBasePlate(false);
-        ent.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 2000000, 1));
-        //	stand.setSmall(true);
+        stand.setBasePlate(true);
 
         stand.setGravity(false);
-        //stand.setSmall(true);
         ent.getEquipment().setHelmet(item);
         if (TrackedStands.containsKey(player.getUniqueId())) {
             List<Entity> entities = TrackedStands.get(player.getUniqueId());
