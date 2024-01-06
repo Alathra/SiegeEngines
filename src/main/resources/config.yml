@@ -13,3 +13,9 @@ config-version: 1
 # The item used to aim and fire siege engines
 # Must be a valid material. See https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
 ControlItem: COMPASS
+
+# The maxmimum distance the player can be away from the siege engine before total control is terminated
+ControlDistance: 64
+
+# The maximum distance the player can be away from the siege engine before rotation control is terminated
+RotateDistance: 32

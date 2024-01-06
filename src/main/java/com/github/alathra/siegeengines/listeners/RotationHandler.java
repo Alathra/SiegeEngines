@@ -42,7 +42,7 @@ public class RotationHandler implements Listener {
                             continue;
                         }
                         double distance = player.getLocation().distance(ent.getLocation());
-                        if (distance <= 32) {
+                        if (distance <= Config.rotateDistance) {
                             //	player.sendMessage("§egot id");
                             LivingEntity living = (LivingEntity) ent;
                             Location loc = ent.getLocation();

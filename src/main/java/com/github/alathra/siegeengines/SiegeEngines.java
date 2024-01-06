@@ -15,16 +15,11 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.ArmorStand.LockType;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -36,17 +31,11 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.metadata.MetadataValueAdapter;
 import org.bukkit.metadata.FixedMetadataValue;
 
-//import com.palmergames.bukkit.towny.Towny;
-
 import com.github.alathra.siegeengines.listeners.ClickHandler;
 import com.github.alathra.siegeengines.listeners.RotationHandler;
 import com.github.alathra.siegeengines.projectile.EntityProjectile;
 import com.github.alathra.siegeengines.projectile.ExplosiveProjectile;
 import com.github.alathra.siegeengines.projectile.GunnersProjectile;
-//import GunnersProjectiles.EntityProjectile;
-//import GunnersProjectiles.GunnersProjectile;
-//import GunnersProjectiles.ExplosiveProjectile;
-//import GunnersProjectiles.PotionProjectile;
 
 
 public class SiegeEngines extends JavaPlugin {
@@ -58,7 +47,6 @@ public class SiegeEngines extends JavaPlugin {
     public static Random random = new Random();
     private static String Path;
     private CommandHandler commandHandler;
-    //public static Towny towny;
    
 
 	public static SiegeEngines getInstance() {
@@ -77,16 +65,12 @@ public class SiegeEngines extends JavaPlugin {
     public void onEnable() {
     	instance = this;
         Path = this.getDataFolder().getAbsolutePath();
-        //this.getCommand("SiegeEngines").setExecutor(new GunnersCommand()); // Fixed Start-up
         getServer().getPluginManager().registerEvents(new RotationHandler(), this);
         getServer().getPluginManager().registerEvents(new ClickHandler(), this);
-        //StorageManager.setup(Path, plugin);
         equipment.clear();
         TrackedStands.clear();
         DefinedEquipment.clear();
         AddDefaults();
-        //HashMap<ItemStack,GunnersProjectile> projObj = new HashMap<>();
-        //GunnerEquipment equip = CreateNewGun(null, null, null, null, null, null, projObj);
         for (SiegeEquipment i : DefinedEquipment.values()) {
             System.out.println("§eEnabled Weapon : " + i.EquipmentName);
             System.out.println("§eWeapon Propellant/\"Fuel\" ItemStacks : " + i.FuelMaterial);
@@ -281,20 +265,9 @@ public class SiegeEngines extends JavaPlugin {
         scatterShot.SoundType = Sound.ITEM_CROSSBOW_SHOOT;
         equip.Projectiles.put(new ItemStack(Material.GRAVEL), scatterShot);
         DefinedEquipment.put(equip.ReadyModelNumber, equip);
-//		EntityProjectile pig = new EntityProjectile();
-//		pig.EntityCount = 100;
-//		pig.DelayedFire = true;
-//		pig.DelayTime = 3;
-//		pig.EntityTyp = EntityType.ARROW;
-//		pig.SoundType = Sound.ITEM_CROSSBOW_SHOOT;
-//		pig.ParticleType = Particle.GLOW;
-//		equip.Projectiles.put(Material.PORKCHOP, pig);
-//	  equip.Projectiles.put(Material.BONE, new PotionProjectile());
-
     }
 
-    public static Boolean CreateCannon(Entity player, int CustomModelData, Location l) {
-        //l.setY(l.getY() - 1);
+    public static Boolean placeEquipment(Entity player, int CustomModelData, Location l) {
         l.add(0.5, 0, 0.5);
         NamespacedKey key = new NamespacedKey(SiegeEngines.plugin, "cannons");
         SiegeEquipment equip = CreateClone(CustomModelData);
@@ -373,10 +346,8 @@ public class SiegeEngines extends JavaPlugin {
         stand.setInvisible(equip.AllowInvisibleStand);
         stand.setBasePlate(false);
         ent.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 2000000, 1));
-        //	stand.setSmall(true);
 
         stand.setGravity(false);
-        //stand.setSmall(true);
         ent.getEquipment().setHelmet(item);
         if (TrackedStands.containsKey(player.getUniqueId())) {
             List<Entity> entities = TrackedStands.get(player.getUniqueId());
@@ -400,7 +371,6 @@ public class SiegeEngines extends JavaPlugin {
                 meta.setCustomModelData(modelNumber);
                 Helmet.setItemMeta(meta);
                 liv.getEquipment().setHelmet(Helmet);
-                //	plugin.getLogger().log(Level.INFO, "Updating stand?");
             }
         }
     }
