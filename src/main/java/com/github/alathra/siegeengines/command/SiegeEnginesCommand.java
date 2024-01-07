@@ -96,7 +96,7 @@ public class SiegeEnginesCommand {
             throw CommandAPIBukkit.failWithAdventureComponent(ColorParser.of("<red>Only players can use this command.").build());
 
         activeSiegeEngines.clear();
-        trackedStands.clear();
+        siegeEngineEntitiesPerPlayer.clear();
         definedSiegeEngines.clear();
         AddDefaults();
         for (SiegeEngine i : definedSiegeEngines.values()) {
