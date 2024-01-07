@@ -34,9 +34,12 @@ public class SiegeEngines extends JavaPlugin {
     public static MetadataValueAdapter metadata;
     public static Random random = new Random();
     
+    // model id, defined seige engine types
     public static HashMap<Integer, SiegeEngine> definedSiegeEngines = new HashMap<Integer, SiegeEngine>();
+    // siege engine entity, siege engine object
     public static HashMap<UUID, SiegeEngine> activeSiegeEngines = new HashMap<UUID, SiegeEngine>();
-    public static HashMap<UUID, List<Entity>> trackedStands = new HashMap<UUID, List<Entity>>();
+    // Player UUID, siege engine entity
+    public static HashMap<UUID, List<Entity>> siegeEngineEntitiesPerPlayer = new HashMap<UUID, List<Entity>>();
    
 
 	public static SiegeEngines getInstance() {
@@ -55,7 +58,7 @@ public class SiegeEngines extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new RotationHandler(), this);
         getServer().getPluginManager().registerEvents(new ClickHandler(), this);
         activeSiegeEngines.clear();
-        trackedStands.clear();
+        siegeEngineEntitiesPerPlayer.clear();
         definedSiegeEngines.clear();
         AddDefaults();
         for (SiegeEngine i : definedSiegeEngines.values()) {

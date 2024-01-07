@@ -29,7 +29,7 @@ public class RotationHandler implements Listener {
     public void playerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
         NamespacedKey key = new NamespacedKey(SiegeEngines.getInstance(), "cannons");
-        if (SiegeEngines.trackedStands.containsKey(player.getUniqueId())) {
+        if (SiegeEngines.siegeEngineEntitiesPerPlayer.containsKey(player.getUniqueId())) {
             ItemStack itemInHand = player.getInventory().getItemInMainHand();
             if (itemInHand != null) {
                 if (itemInHand.getType() != Config.controlItem) {
@@ -37,7 +37,7 @@ public class RotationHandler implements Listener {
 
                     return;
                 }
-                final List<Entity> list = new ArrayList<>(SiegeEngines.trackedStands.get(player.getUniqueId()));
+                final List<Entity> list = new ArrayList<>(SiegeEngines.siegeEngineEntitiesPerPlayer.get(player.getUniqueId()));
                 for (Entity ent : list) {
                     if (ent != null) {
                         SiegeEngine equipment = SiegeEngines.activeSiegeEngines.get(ent.getUniqueId());
@@ -85,7 +85,7 @@ public class RotationHandler implements Listener {
                             living.teleport(loc);
                             equipment.ShowFireLocation(player);
                         } else {
-                            SiegeEngines.trackedStands.get(player.getUniqueId()).remove(ent);
+                            SiegeEngines.siegeEngineEntitiesPerPlayer.get(player.getUniqueId()).remove(ent);
                             continue;
                         }
                     }

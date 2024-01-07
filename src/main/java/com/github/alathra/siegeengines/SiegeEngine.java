@@ -80,7 +80,6 @@ public class SiegeEngine implements Cloneable {
     }
     
     public SiegeEngine(@NotNull String name, @NotNull HashMap<ItemStack, GunnersProjectile> projectiles, @NotNull ItemStack fuelItem, int customModelID) {
-    	//String name, Integer XOffset, Integer YOffset, Integer fuelMax, Float fuelVelocityMod, Integer customModelId, HashMap<ItemStack, GunnersProjectile> projObj
         
         // Default custom model data id if it is passes as null
         if (customModelID == 0) {
@@ -141,17 +140,23 @@ public class SiegeEngine implements Cloneable {
         return id.equals(EquipmentId);
     }
 
-    public Boolean isLoaded() {
-        if (this.maxFuel <= 0 && ammoHolder.loadedProjectile >= 1)
-            return true;
-        return (ammoHolder.loadedFuel > 0 && ammoHolder.loadedProjectile >= 1);
+    public boolean isLoaded() {
+        return hasPropellant() && hasAmmunition();
+    }
+    
+    public boolean hasPropellant() {
+    	return ammoHolder.loadedFuel > 0;
+    }
+    
+    public boolean hasAmmunition() {
+    	return ammoHolder.loadedProjectile >= 1;
     }
 
-    public Boolean CanLoadFuel() {
+    public boolean canLoadFuel() {
         return ammoHolder.loadedFuel < maxFuel;
     }
 
-    public Boolean LoadFuel(Entity player) {
+    public boolean loadFuel(Entity player) {
         if (ammoHolder.loadedFuel == maxFuel) {
             return true;
         }
@@ -160,7 +165,7 @@ public class SiegeEngine implements Cloneable {
             return true;
         }
         if (((Player) player).getInventory().containsAtLeast(fuelItem, 1) || fuelItem.getType() == Material.AIR) {
-            if (CanLoadFuel()) {
+            if (canLoadFuel()) {
                 this.ammoHolder.loadedFuel += 1;
                 //SaveState();
                 ((Player) player).getInventory().removeItem(fuelItem);
@@ -175,7 +180,7 @@ public class SiegeEngine implements Cloneable {
 
     }
 
-    public Boolean LoadProjectile(Entity player, ItemStack itemInHand) {
+    public boolean LoadProjectile(Entity player, ItemStack itemInHand) {
         if (itemInHand.getAmount() <= 0) {
             return false;
         }
@@ -379,7 +384,6 @@ public class SiegeEngine implements Cloneable {
             stand.addEquipmentLock(EquipmentSlot.HAND, LockType.REMOVING_OR_CHANGING);
             stand.addEquipmentLock(EquipmentSlot.OFF_HAND, LockType.REMOVING_OR_CHANGING);
             stand.setBasePlate(false);
-            //	stand.setSmall(true);
             item.setItemMeta(meta);
             stand.setInvisible(this.allowInvisibleStand);
             ent.getEquipment().setHelmet(item);
@@ -418,14 +422,14 @@ public class SiegeEngine implements Cloneable {
 
         stand.setGravity(false);
         ent.getEquipment().setHelmet(item);
-        if (SiegeEngines.trackedStands.containsKey(player.getUniqueId())) {
-            List<Entity> entities = SiegeEngines.trackedStands.get(player.getUniqueId());
+        if (SiegeEngines.siegeEngineEntitiesPerPlayer.containsKey(player.getUniqueId())) {
+            List<Entity> entities = SiegeEngines.siegeEngineEntitiesPerPlayer.get(player.getUniqueId());
             entities.add(entity2);
-            SiegeEngines.trackedStands.put(player.getUniqueId(), entities);
+            SiegeEngines.siegeEngineEntitiesPerPlayer.put(player.getUniqueId(), entities);
         } else {
             List<Entity> newList = new ArrayList<Entity>();
             newList.add(entity2);
-            SiegeEngines.trackedStands.put(player.getUniqueId(), newList);
+            SiegeEngines.siegeEngineEntitiesPerPlayer.put(player.getUniqueId(), newList);
         }
         SiegeEngines.activeSiegeEngines.put(entity2.getUniqueId(), this);
         return true;
