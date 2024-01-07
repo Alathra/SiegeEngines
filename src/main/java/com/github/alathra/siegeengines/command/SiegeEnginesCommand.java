@@ -1,6 +1,6 @@
 package com.github.alathra.siegeengines.command;
 
-import com.github.alathra.siegeengines.SiegeEquipment;
+import com.github.alathra.siegeengines.SiegeEngine;
 import com.github.alathra.siegeengines.projectile.GunnersProjectile;
 import com.github.milkdrinkers.colorparser.ColorParser;
 import dev.jorel.commandapi.CommandAPIBukkit;
@@ -49,7 +49,7 @@ public class SiegeEnginesCommand {
                 new StringArgument("equipmentid")
                     .replaceSuggestions(
                         ArgumentSuggestions.strings(
-                            DefinedEquipment.values().stream().map(SiegeEquipment -> SiegeEquipment.EquipmentId).toList()
+                            DefinedEquipment.values().stream().map(SiegeEquipment -> SiegeEquipment.id).toList()
                         )
                     ),
                 new PlayerArgument("target")
@@ -76,7 +76,7 @@ public class SiegeEnginesCommand {
 
         Player player = (Player) args.getOptional("target").orElse(sender);
 
-        for (SiegeEquipment SiegeEquipment : DefinedEquipment.values()) {
+        for (SiegeEngine SiegeEquipment : DefinedEquipment.values()) {
             if (SiegeEquipment.equals(equipmentId)) {
                 giveEquipment(player, SiegeEquipment);
                 break;
@@ -88,7 +88,7 @@ public class SiegeEnginesCommand {
         if (!(sender instanceof Player player))
             throw CommandAPIBukkit.failWithAdventureComponent(ColorParser.of("<red>Only players can use this command.").build());
 
-        for (SiegeEquipment i : DefinedEquipment.values()) {
+        for (SiegeEngine i : DefinedEquipment.values()) {
             giveEquipment(player, i);
         }
     }
@@ -103,23 +103,23 @@ public class SiegeEnginesCommand {
         AddDefaults();
         HashMap<ItemStack, GunnersProjectile> projObj = new HashMap<>();
         //SiegeEquipment equip = CreateNewGun(null, null, null, null, null, null, projObj);
-        for (SiegeEquipment i : DefinedEquipment.values()) {
-            sender.sendMessage(ColorParser.of("<yellow>Enabled Weapon : %s".formatted(i.EquipmentName)).build());
-            sender.sendMessage(ColorParser.of("<yellow>Weapon Propellant/\"Fuel\" ItemStacks : %s".formatted(i.FuelMaterial)).build());
-            for (ItemStack proj : i.Projectiles.keySet()) {
+        for (SiegeEngine i : DefinedEquipment.values()) {
+            sender.sendMessage(ColorParser.of("<yellow>Enabled Weapon : %s".formatted(i.name)).build());
+            sender.sendMessage(ColorParser.of("<yellow>Weapon Propellant/\"Fuel\" ItemStacks : %s".formatted(i.fuelItem)).build());
+            for (ItemStack proj : i.projectiles.keySet()) {
                 sender.sendMessage(ColorParser.of("<yellow>Weapon Projectile ItemStacks : %s".formatted(proj)).build());
             }
         }
         sender.sendMessage("<yellow>Gunners Core configs reloaded");
     }
 
-    private void giveEquipment(Player player, SiegeEquipment SiegeEquipment) {
+    private void giveEquipment(Player player, SiegeEngine SiegeEquipment) {
         ItemStack item = new ItemStack(Material.CARVED_PUMPKIN);
         ItemMeta meta = item.getItemMeta();
-        meta.setCustomModelData(SiegeEquipment.ReadyModelNumber);
-        meta.displayName(ColorParser.of("<yellow>%s Item".formatted(SiegeEquipment.EquipmentName)).build());
+        meta.setCustomModelData(SiegeEquipment.readyModelNumber);
+        meta.displayName(ColorParser.of("<yellow>%s Item".formatted(SiegeEquipment.name)).build());
         List<Component> lore = new ArrayList<>();
-        lore.add(ColorParser.of("<yellow>Place as a block to spawn a '%s'".formatted(SiegeEquipment.EquipmentName)).build());
+        lore.add(ColorParser.of("<yellow>Place as a block to spawn a '%s'".formatted(SiegeEquipment.name)).build());
         lore.add(ColorParser.of("<yellow>or put on an Armor Stand.").build());
         lore.add(ColorParser.of("<yellow>Right click to toggle visibility of stand.").build());
         meta.lore(lore);

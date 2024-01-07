@@ -20,7 +20,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
 
-import com.github.alathra.siegeengines.SiegeEquipment;
+import com.github.alathra.siegeengines.SiegeEngine;
 import com.github.alathra.siegeengines.config.Config;
 
 public class RotationHandler implements Listener {
@@ -40,7 +40,7 @@ public class RotationHandler implements Listener {
                 final List<Entity> list = new ArrayList<>(SiegeEngines.TrackedStands.get(player.getUniqueId()));
                 for (Entity ent : list) {
                     if (ent != null) {
-                        SiegeEquipment equipment = SiegeEngines.equipment.get(ent.getUniqueId());
+                        SiegeEngine equipment = SiegeEngines.equipment.get(ent.getUniqueId());
                         if (ent.isDead()) {
                             continue;
                         }
@@ -50,7 +50,7 @@ public class RotationHandler implements Listener {
                             LivingEntity living = (LivingEntity) ent;
                             Location loc = ent.getLocation();
 
-                            if (equipment.RotateSideways) {
+                            if (equipment.rotateSideways) {
                                 Location direction = player.getLocation().add(player.getLocation().getDirection().multiply(50));
 
                                 Vector dirBetweenLocations = direction.toVector().subtract(loc.toVector());
@@ -68,7 +68,7 @@ public class RotationHandler implements Listener {
 
                             ArmorStand stand = (ArmorStand) living;
 
-                            if (equipment.RotateUpDown) {
+                            if (equipment.rotateUpDown) {
                                 loc.setPitch(player.getLocation().getPitch());
                                 if (loc.getPitch() < -85) {
                                     loc.setPitch(-85);
@@ -76,7 +76,7 @@ public class RotationHandler implements Listener {
                                 if (loc.getPitch() > 85) {
                                     loc.setPitch(85);
                                 }
-                                if (equipment.RotateStandHead) {
+                                if (equipment.rotateStandHead) {
                                     stand.setHeadPose(new EulerAngle(loc.getDirection().getY() * (-1), 0, 0));
                                 }
                             }
