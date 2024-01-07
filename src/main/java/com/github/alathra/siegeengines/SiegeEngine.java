@@ -10,13 +10,19 @@ import com.github.alathra.siegeengines.projectile.GunnersProjectile;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.ArmorStand.LockType;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
@@ -53,7 +59,7 @@ public class SiegeEngine implements Cloneable {
     public List<Integer> firingModelNumbers;
     public int readyModelNumber;
     public int nextModelNumber;
-    public EquipmentMagazine ammoHolder;
+    public SiegeEngineAmmoHolder ammoHolder;
     
     // Optional variables
     public boolean allowInvisibleStand;
@@ -92,12 +98,12 @@ public class SiegeEngine implements Cloneable {
         readyModelNumber = customModelID;
         modelNumberToFireAt = customModelID;
         firingModelNumbers = new ArrayList<Integer>();
-        ammoHolder = new EquipmentMagazine();
+        ammoHolder = new SiegeEngineAmmoHolder();
         //fuelItem = new ItemStack(Material.GUNPOWDER);
         cycleThroughModelsBeforeFiring = false;
         allowInvisibleStand = false;
         shotAmount = 1;
-        ammoHolder.LoadedFuel = maxFuel;
+        ammoHolder.loadedFuel = maxFuel;
         enabled = true;
         cycleThroughModelsBeforeFiring = false;
         rotateSideways = false;
@@ -134,29 +140,29 @@ public class SiegeEngine implements Cloneable {
     }
 
     public Boolean isLoaded() {
-        if (this.maxFuel <= 0 && ammoHolder.LoadedProjectile >= 1)
+        if (this.maxFuel <= 0 && ammoHolder.loadedProjectile >= 1)
             return true;
-        return (ammoHolder.LoadedFuel > 0 && ammoHolder.LoadedProjectile >= 1);
+        return (ammoHolder.loadedFuel > 0 && ammoHolder.loadedProjectile >= 1);
     }
 
     public Boolean CanLoadFuel() {
-        return ammoHolder.LoadedFuel < maxFuel;
+        return ammoHolder.loadedFuel < maxFuel;
     }
 
     public Boolean LoadFuel(Entity player) {
-        if (ammoHolder.LoadedFuel == maxFuel) {
+        if (ammoHolder.loadedFuel == maxFuel) {
             return true;
         }
         if (!(player instanceof Player)) {
-            ammoHolder.LoadedFuel = maxFuel;
+            ammoHolder.loadedFuel = maxFuel;
             return true;
         }
         if (((Player) player).getInventory().containsAtLeast(fuelItem, 1) || fuelItem.getType() == Material.AIR) {
             if (CanLoadFuel()) {
-                this.ammoHolder.LoadedFuel += 1;
+                this.ammoHolder.loadedFuel += 1;
                 //SaveState();
                 ((Player) player).getInventory().removeItem(fuelItem);
-                ((Player) player).sendMessage("§eLoaded " + ammoHolder.LoadedFuel + "/" + maxFuel);
+                ((Player) player).sendMessage("§eLoaded " + ammoHolder.loadedFuel + "/" + maxFuel);
                 return true;
             } else {
                 return false;
@@ -172,17 +178,19 @@ public class SiegeEngine implements Cloneable {
             return false;
         }
         if (!(player instanceof Player)) {
-            ammoHolder.LoadedProjectile = 1;
-            ammoHolder.LoadedFuel = maxFuel;
-            ammoHolder.MaterialName = itemInHand;
+            ammoHolder.loadedProjectile = 1;
+            ammoHolder.loadedFuel = maxFuel;
+            ammoHolder.materialName = itemInHand;
             return true;
         }
-        if (projectiles.containsKey(itemInHand.getType()) && ammoHolder.LoadedProjectile == 0) {
-            ammoHolder.LoadedProjectile = 1;
-            ammoHolder.MaterialName = itemInHand;
-            ((Player) player).sendMessage("§eAdding Ammunition to Weapon");
-            itemInHand.setAmount(itemInHand.getAmount() - 1);
-            return true;
+        for (ItemStack im : projectiles.keySet()) {
+        	if(im.getType().equals(itemInHand.getType()) && ammoHolder.loadedProjectile == 0) {
+        		ammoHolder.loadedProjectile = 1;
+                ammoHolder.materialName = itemInHand;
+                ((Player) player).sendMessage("§eAdding Ammunition to Weapon");
+                itemInHand.setAmount(itemInHand.getAmount() - 1);
+                return true;
+        	}
         }
         return false;
     }
@@ -209,8 +217,6 @@ public class SiegeEngine implements Cloneable {
                 Location origin = this.GetFireLocation(living);
                 Vector direction = origin.getDirection();
                 direction.multiply(5 /* the range */);
-                Location destination = origin.clone().add(direction);
-
                 direction.normalize();
                 for (int i = 0; i < 3 /* range */; i += 1) {
                     Location spawn = origin.add(direction);
@@ -227,10 +233,10 @@ public class SiegeEngine implements Cloneable {
         if (System.currentTimeMillis() < nextShotTime) {
             return;
         }
-        if (ammoHolder.LoadedFuel <= 0)
-            ammoHolder.LoadedFuel = 0;
-        float loadedFuel = ammoHolder.LoadedFuel;
-        ItemStack LoadedProjectile = ammoHolder.MaterialName;
+        if (ammoHolder.loadedFuel <= 0)
+            ammoHolder.loadedFuel = 0;
+        float loadedFuel = ammoHolder.loadedFuel;
+        ItemStack LoadedProjectile = ammoHolder.materialName;
 
 
         LivingEntity living = (LivingEntity) entity;
@@ -244,9 +250,9 @@ public class SiegeEngine implements Cloneable {
             }
             return;
         }
-        ammoHolder.LoadedFuel = 0;
-        ammoHolder.LoadedProjectile = 0;
-        ammoHolder.MaterialName = new ItemStack(Material.AIR, 1);
+        ammoHolder.loadedFuel = 0;
+        ammoHolder.loadedProjectile = 0;
+        ammoHolder.materialName = new ItemStack(Material.AIR, 1);
 
         worldName = entity.getWorld().getName();
         nextShotTime = System.currentTimeMillis() + 1000;
@@ -256,7 +262,7 @@ public class SiegeEngine implements Cloneable {
             }
             if (cycleThroughModelsBeforeFiring) {
 
-                this.taskNumber = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(SiegeEngines.plugin, () -> {
+                this.taskNumber = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(SiegeEngines.getInstance(), () -> {
                     if (living == null || living.isDead()) {
                         Bukkit.getServer().getScheduler().cancelTask(taskNumber);
                         return;
@@ -264,7 +270,7 @@ public class SiegeEngine implements Cloneable {
 
                     if (hasFired) {
                         Bukkit.getServer().getScheduler().cancelTask(taskNumber);
-                        taskNumber = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(SiegeEngines.plugin, () -> {
+                        taskNumber = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(SiegeEngines.getInstance(), () -> {
                             if (living == null || living.isDead()) {
                                 Bukkit.getServer().getScheduler().cancelTask(taskNumber);
                                 return;
@@ -275,14 +281,14 @@ public class SiegeEngine implements Cloneable {
                                 hasReloaded = false;
                                 hasFired = false;
                                 nextModelNumber = 0;
-                                SiegeEngines.UpdateEntityIdModel(entity, readyModelNumber, worldName);
+                                SiegeEnginesUtil.UpdateEntityIdModel(entity, readyModelNumber, worldName);
                                 taskNumber = 0;
                             } else {
                                 //firing stages
                                 if (nextModelNumber - 1 <= firingModelNumbers.size() && nextModelNumber - 1 >= 0) {
                                     int modelData = firingModelNumbers.get(nextModelNumber - 1);
                                     //	player.sendMessage("§e" + modelData);
-                                    SiegeEngines.UpdateEntityIdModel(entity, modelData, worldName);
+                                    SiegeEnginesUtil.UpdateEntityIdModel(entity, modelData, worldName);
                                     nextModelNumber -= 1;
 
                                 } else {
@@ -298,7 +304,7 @@ public class SiegeEngine implements Cloneable {
 
                             int modelData = firingModelNumbers.get(nextModelNumber);
                             //	player.sendMessage("§e" + modelData);
-                            SiegeEngines.UpdateEntityIdModel(entity, modelData, worldName);
+                            SiegeEnginesUtil.UpdateEntityIdModel(entity, modelData, worldName);
                             if (modelData == modelNumberToFireAt) {
                                 //	player.sendMessage("§efiring" + modelData);
                                 if (LoadedProjectile == null) return;
@@ -316,7 +322,7 @@ public class SiegeEngine implements Cloneable {
                     }
                 }, 0, millisecondsBetweenFiringStages);
             } else {
-                taskNumber = Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(SiegeEngines.plugin, () -> {
+                taskNumber = Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(SiegeEngines.getInstance(), () -> {
                     //player.sendMessage("§etask");
                     if (living == null || living.isDead()) {
                         Bukkit.getServer().getScheduler().cancelTask(taskNumber);
@@ -338,6 +344,88 @@ public class SiegeEngine implements Cloneable {
 
             }
         }
-    //}
+    
+    @SuppressWarnings("deprecation")
+	public Boolean place(Entity player, Location l) {
+        l.add(0.5, 0, 0.5);
+        NamespacedKey key = new NamespacedKey(SiegeEngines.getInstance(), "siege_engines");
+        if (this == null || !this.enabled) {
+            return false;
+        }
+        l.setY(l.getY() + 1);
+        l.setDirection(player.getFacing().getDirection());
+        ItemStack item = new ItemStack(Material.CARVED_PUMPKIN);
+        ItemMeta meta = item.getItemMeta();
+        String id = "";
+        this.ammoHolder = new SiegeEngineAmmoHolder();
+        if (this.hasBaseStand) {
 
+            Location l2 = l;
+            l2.setY(l.getY() + this.baseStandOffset);
+            Entity entity3 = player.getWorld().spawnEntity(l, EntityType.ARMOR_STAND);
+
+            LivingEntity ent = (LivingEntity) entity3;
+            ArmorStand stand = (ArmorStand) ent;
+            id = entity3.getUniqueId().toString();
+            meta.setCustomModelData(this.baseStandModelNumber);
+            stand.addEquipmentLock(EquipmentSlot.HEAD, LockType.REMOVING_OR_CHANGING);
+            stand.addEquipmentLock(EquipmentSlot.LEGS, LockType.ADDING_OR_CHANGING);
+            stand.addEquipmentLock(EquipmentSlot.CHEST, LockType.ADDING_OR_CHANGING);
+            stand.addEquipmentLock(EquipmentSlot.FEET, LockType.ADDING_OR_CHANGING);
+            stand.addEquipmentLock(EquipmentSlot.HAND, LockType.REMOVING_OR_CHANGING);
+            stand.addEquipmentLock(EquipmentSlot.OFF_HAND, LockType.ADDING_OR_CHANGING);
+            stand.addEquipmentLock(EquipmentSlot.HAND, LockType.REMOVING_OR_CHANGING);
+            stand.addEquipmentLock(EquipmentSlot.OFF_HAND, LockType.REMOVING_OR_CHANGING);
+            stand.setBasePlate(false);
+            //	stand.setSmall(true);
+            item.setItemMeta(meta);
+            stand.setInvisible(this.allowInvisibleStand);
+            ent.getEquipment().setHelmet(item);
+            stand.setGravity(false);
+            stand.setMarker(true);
+        }
+        l.setY(l.getY() + this.placementOffsetY);
+        Entity entity2 = player.getWorld().spawnEntity(l, EntityType.ARMOR_STAND);
+        if (id != "") {
+            entity2.getPersistentDataContainer().set(key, PersistentDataType.STRING, id);
+        }
+        meta.setCustomModelData(this.readyModelNumber);
+        meta.setDisplayName("§e" + this.name + " Item");
+        List<String> Lore = new ArrayList<String>();
+        Lore.add("§ePlace as a block to spawn a " + this.name + " or put on an Armor Stand.");
+        meta.setLore(Lore);
+        item.setItemMeta(meta);
+
+        //	entity3.addPassenger(entity2);
+
+        LivingEntity ent = (LivingEntity) entity2;
+        ArmorStand stand = (ArmorStand) ent;
+        this.entity = entity2;
+
+        this.entityId = entity2.getUniqueId();
+        stand.addEquipmentLock(EquipmentSlot.HEAD, LockType.REMOVING_OR_CHANGING);
+        stand.addEquipmentLock(EquipmentSlot.LEGS, LockType.ADDING_OR_CHANGING);
+        stand.addEquipmentLock(EquipmentSlot.CHEST, LockType.ADDING_OR_CHANGING);
+        stand.addEquipmentLock(EquipmentSlot.FEET, LockType.ADDING_OR_CHANGING);
+        stand.addEquipmentLock(EquipmentSlot.HAND, LockType.REMOVING_OR_CHANGING);
+        stand.addEquipmentLock(EquipmentSlot.OFF_HAND, LockType.ADDING_OR_CHANGING);
+        stand.addEquipmentLock(EquipmentSlot.HAND, LockType.REMOVING_OR_CHANGING);
+        stand.addEquipmentLock(EquipmentSlot.OFF_HAND, LockType.REMOVING_OR_CHANGING);
+        stand.setInvisible(this.allowInvisibleStand);
+        stand.setBasePlate(true);
+
+        stand.setGravity(false);
+        ent.getEquipment().setHelmet(item);
+        if (SiegeEngines.trackedStands.containsKey(player.getUniqueId())) {
+            List<Entity> entities = SiegeEngines.trackedStands.get(player.getUniqueId());
+            entities.add(entity2);
+            SiegeEngines.trackedStands.put(player.getUniqueId(), entities);
+        } else {
+            List<Entity> newList = new ArrayList<Entity>();
+            newList.add(entity2);
+            SiegeEngines.trackedStands.put(player.getUniqueId(), newList);
+        }
+        SiegeEngines.activeSiegeEngines.put(entity2.getUniqueId(), this);
+        return true;
+    }
 }

@@ -1,6 +1,8 @@
 package com.github.alathra.siegeengines.projectile;
 
 import com.github.alathra.siegeengines.SiegeEngines;
+import com.github.alathra.siegeengines.SiegeEnginesUtil;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -9,7 +11,6 @@ import org.bukkit.World;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.util.Vector;
 
 public class EntityProjectile implements GunnersProjectile {
@@ -31,7 +32,7 @@ public class EntityProjectile implements GunnersProjectile {
         for (int i = 0; i < EntityCount; i++) {
             if (DelayedFire) {
                 baseDelay += DelayTime;
-                Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(SiegeEngines.plugin, () -> {
+                Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(SiegeEngines.getInstance(), () -> {
 
                     CreateEntity(entity, FireLocation, velocity, player);
                 }, (long) baseDelay);
@@ -39,8 +40,6 @@ public class EntityProjectile implements GunnersProjectile {
 
                 CreateEntity(entity, FireLocation, velocity, player);
             }
-
-            //	}
         }
     }
 
@@ -48,8 +47,7 @@ public class EntityProjectile implements GunnersProjectile {
 
     private void CreateEntity(Entity entity, Location loc, Float velocity, Entity player) {
         World world = entity.getLocation().getWorld();
-        LivingEntity living = (LivingEntity) entity;
-
+        
         Entity arrow = world.spawnEntity(loc, EntityTyp);
         if (Inaccuracy != 0f) {
             arrow.setVelocity(loc.getDirection().multiply(velocity).add(Randomise())
@@ -57,7 +55,7 @@ public class EntityProjectile implements GunnersProjectile {
         } else {
             arrow.setVelocity(loc.getDirection().multiply(velocity));
         }
-        arrow.setMetadata("isEntityProj", SiegeEngines.addMetaDataValue("true"));
+        arrow.setMetadata("isEntityProj", SiegeEnginesUtil.addMetaDataValue("true"));
         Bukkit.getServer().getPluginManager().callEvent(new org.bukkit.event.entity.ProjectileLaunchEvent(arrow));
 
         if (arrow instanceof org.bukkit.entity.Projectile) {
@@ -69,10 +67,7 @@ public class EntityProjectile implements GunnersProjectile {
             arr.setDamage(8);
             if (player instanceof org.bukkit.projectiles.ProjectileSource)
                 arr.setShooter((org.bukkit.projectiles.ProjectileSource) player);
-            //arr.setBasePotionData(arg0);
         }
-        //				MiscDisguise miscDisguise = new MiscDisguise(DisguiseType.DROPPED_ITEM, Material.IRON_NUGGET);
-        //				DisguiseAPI.disguiseEntity(arrow, miscDisguise);
         if (PlaySound) {
             world.playSound(loc, this.SoundType, 20, 2);
             world.spawnParticle(this.ParticleType, loc.getX(), loc.getY(), loc.getZ(), 0);

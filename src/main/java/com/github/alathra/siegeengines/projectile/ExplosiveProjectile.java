@@ -1,6 +1,7 @@
 package com.github.alathra.siegeengines.projectile;
 
 import com.github.alathra.siegeengines.SiegeEngines;
+import com.github.alathra.siegeengines.SiegeEnginesUtil;
 import com.github.alathra.siegeengines.listeners.ClickHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -10,11 +11,8 @@ import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Snowball;
 import org.bukkit.util.Vector;
-//import me.libraryaddict.disguise.disguisetypes.DisguiseType;
-//import me.libraryaddict.disguise.disguisetypes.MiscDisguise;
 
 public class ExplosiveProjectile implements GunnersProjectile {
 
@@ -39,19 +37,16 @@ public class ExplosiveProjectile implements GunnersProjectile {
         for (int i = 0; i < ProjectilesCount; i++) {
             if (DelayedFire) {
                 baseDelay += DelayTime;
-                Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(SiegeEngines.plugin, () -> {
+                Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(SiegeEngines.getInstance(), () -> {
                     CreateEntity(entity, loc, velocity, player);
                 }, (long) baseDelay);
             } else {
                 CreateEntity(entity, loc, velocity, player);
             }
-
-            //	}
         }
     }
 
     private void CreateEntity(Entity entity, Location loc, Float velocity, Entity player) {
-        LivingEntity living = (LivingEntity) entity;
         World world = entity.getLocation().getWorld();
         Entity tnt = world.spawnEntity(loc, EntityType.SNOWBALL);
         Snowball ball = (Snowball) tnt;
@@ -65,7 +60,7 @@ public class ExplosiveProjectile implements GunnersProjectile {
         } else {
             tnt.setVelocity(loc.getDirection().multiply(velocity));
         }
-        tnt.setMetadata("isExplosiveProj", SiegeEngines.addMetaDataValue("true"));
+        tnt.setMetadata("isExplosiveProj", SiegeEnginesUtil.addMetaDataValue("true"));
         Bukkit.getServer().getPluginManager().callEvent(new org.bukkit.event.entity.ProjectileLaunchEvent(tnt));
 
         if (PlaySound) {
@@ -75,9 +70,6 @@ public class ExplosiveProjectile implements GunnersProjectile {
                 PlaySound = false;
             }
         }
-//		MiscDisguise miscDisguise = new MiscDisguise(DisguiseType.ARROW);
-//		miscDisguise.setEntity(tnt);
-//		miscDisguise.startDisguise();
 
     }
 

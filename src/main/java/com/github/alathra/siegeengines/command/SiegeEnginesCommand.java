@@ -1,7 +1,6 @@
 package com.github.alathra.siegeengines.command;
 
 import com.github.alathra.siegeengines.SiegeEngine;
-import com.github.alathra.siegeengines.projectile.GunnersProjectile;
 import com.github.milkdrinkers.colorparser.ColorParser;
 import dev.jorel.commandapi.CommandAPIBukkit;
 import dev.jorel.commandapi.CommandAPICommand;
@@ -18,7 +17,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import static com.github.alathra.siegeengines.SiegeEngines.*;
@@ -49,7 +47,7 @@ public class SiegeEnginesCommand {
                 new StringArgument("equipmentid")
                     .replaceSuggestions(
                         ArgumentSuggestions.strings(
-                            DefinedEquipment.values().stream().map(SiegeEquipment -> SiegeEquipment.id).toList()
+                        	definedSiegeEngines.values().stream().map(SiegeEquipment -> SiegeEquipment.id).toList()
                         )
                     ),
                 new PlayerArgument("target")
@@ -76,7 +74,7 @@ public class SiegeEnginesCommand {
 
         Player player = (Player) args.getOptional("target").orElse(sender);
 
-        for (SiegeEngine SiegeEquipment : DefinedEquipment.values()) {
+        for (SiegeEngine SiegeEquipment : definedSiegeEngines.values()) {
             if (SiegeEquipment.equals(equipmentId)) {
                 giveEquipment(player, SiegeEquipment);
                 break;
@@ -88,7 +86,7 @@ public class SiegeEnginesCommand {
         if (!(sender instanceof Player player))
             throw CommandAPIBukkit.failWithAdventureComponent(ColorParser.of("<red>Only players can use this command.").build());
 
-        for (SiegeEngine i : DefinedEquipment.values()) {
+        for (SiegeEngine i : definedSiegeEngines.values()) {
             giveEquipment(player, i);
         }
     }
@@ -97,13 +95,11 @@ public class SiegeEnginesCommand {
         if (!(sender instanceof Player))
             throw CommandAPIBukkit.failWithAdventureComponent(ColorParser.of("<red>Only players can use this command.").build());
 
-        equipment.clear();
-        TrackedStands.clear();
-        DefinedEquipment.clear();
+        activeSiegeEngines.clear();
+        trackedStands.clear();
+        definedSiegeEngines.clear();
         AddDefaults();
-        HashMap<ItemStack, GunnersProjectile> projObj = new HashMap<>();
-        //SiegeEquipment equip = CreateNewGun(null, null, null, null, null, null, projObj);
-        for (SiegeEngine i : DefinedEquipment.values()) {
+        for (SiegeEngine i : definedSiegeEngines.values()) {
             sender.sendMessage(ColorParser.of("<yellow>Enabled Weapon : %s".formatted(i.name)).build());
             sender.sendMessage(ColorParser.of("<yellow>Weapon Propellant/\"Fuel\" ItemStacks : %s".formatted(i.fuelItem)).build());
             for (ItemStack proj : i.projectiles.keySet()) {
