@@ -88,7 +88,7 @@ public class SiegeEngine implements Cloneable {
     	
     	// Set Default values
         xOffset = 0;
-        yOffset = 0;
+        yOffset = 2;
         maxFuel = 5;
         velocityPerFuel = 1.0125f;
         id = name.replaceAll(" ", "_").toLowerCase();
@@ -121,18 +121,19 @@ public class SiegeEngine implements Cloneable {
         defaultProj.EntityTyp = EntityType.SHULKER_BULLET;
         defaultProj.ParticleType = Particle.WHITE_ASH;
         defaultProj.SoundType = Sound.ENTITY_BLAZE_SHOOT;
-        if (projectiles.keySet().isEmpty() || projectiles.isEmpty())
-        	projectiles.put(new ItemStack(Material.GUNPOWDER), defaultProj);
-        for (ItemStack mat : projectiles.keySet()) {
-        	projectiles.put(mat, projectiles.get(mat));
-        }
         
         // set passed parameters as object variables
-        
         this.name = name;
-    	this.projectiles = projectiles;
     	this.fuelItem = fuelItem;
     	this.customModelID = customModelID;
+    	
+        // set projectiles
+        if (projectiles.keySet().isEmpty() || projectiles.isEmpty()) {
+        	this.projectiles.put(new ItemStack(Material.GUNPOWDER), defaultProj);
+        } else {
+        	this.projectiles = projectiles;
+        }
+        
     }
 
     public boolean equals(String EquipmentId) {
