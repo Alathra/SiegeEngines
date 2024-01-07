@@ -42,7 +42,7 @@ public class Config {
 		initConfigVals();
 	}
 	
-	private FileConfiguration getConfig() {
+	public FileConfiguration getConfig() {
 		return config;
 	}
 

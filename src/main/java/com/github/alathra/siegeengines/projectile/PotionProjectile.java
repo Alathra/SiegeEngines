@@ -1,6 +1,8 @@
 package com.github.alathra.siegeengines.projectile;
 
 import com.github.alathra.siegeengines.SiegeEngines;
+import com.github.alathra.siegeengines.SiegeEnginesUtil;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -9,7 +11,6 @@ import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.ThrownPotion;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
@@ -33,20 +34,18 @@ public class PotionProjectile implements GunnersProjectile {
         for (int i = 0; i < EntityCount; i++) {
             if (DelayedFire) {
                 baseDelay += DelayTime;
-                Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(SiegeEngines.plugin, () -> {
+                Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(SiegeEngines.getInstance(), () -> {
 
                     CreateEntity(entity, loc, velocity);
                 }, (long) baseDelay);
             } else {
                 CreateEntity(entity, loc, velocity);
             }
-            //	}
         }
     }
 
     private void CreateEntity(Entity entity, Location loc, Float velocity) {
         World world = entity.getLocation().getWorld();
-        LivingEntity living = (LivingEntity) entity;
 
         Entity arrow = world.spawnEntity(loc, EntityType.SPLASH_POTION);
         if (Inaccuracy != 0f) {
@@ -54,7 +53,7 @@ public class PotionProjectile implements GunnersProjectile {
         } else {
             arrow.setVelocity(loc.getDirection().multiply(velocity));
         }
-        arrow.setMetadata("isExplosiveProj", SiegeEngines.addMetaDataValue("true"));
+        arrow.setMetadata("isExplosiveProj", SiegeEnginesUtil.addMetaDataValue("true"));
         Bukkit.getServer().getPluginManager().callEvent(new org.bukkit.event.entity.ProjectileLaunchEvent(arrow));
         ItemStack itemStack = new ItemStack(Material.SPLASH_POTION);
         PotionMeta potionMeta = (PotionMeta) itemStack.getItemMeta();
@@ -62,8 +61,6 @@ public class PotionProjectile implements GunnersProjectile {
         itemStack.setItemMeta(potionMeta);
         ThrownPotion potion = (ThrownPotion) arrow;
         potion.setItem(itemStack);
-        //				MiscDisguise miscDisguise = new MiscDisguise(DisguiseType.DROPPED_ITEM, Material.IRON_NUGGET);
-        //				DisguiseAPI.disguiseEntity(arrow, miscDisguise);
         world.playSound(loc, this.SoundType, 20, 2);
         world.spawnParticle(this.ParticleType, loc.getX(), loc.getY(), loc.getZ(), 0);
     }
