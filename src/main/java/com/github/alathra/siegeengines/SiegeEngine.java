@@ -1,8 +1,8 @@
 package com.github.alathra.siegeengines;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.HashMap;
 import java.util.UUID;
 
 import com.github.alathra.siegeengines.projectile.EntityProjectile;
@@ -71,6 +71,7 @@ public class SiegeEngine implements Cloneable {
     public String name = "Unnammed Siege Engine";
     public ItemStack fuelItem = new ItemStack(Material.GUNPOWDER);
     public HashMap<ItemStack, GunnersProjectile> projectiles;
+	
     public int customModelID = 150;
     
     @Override
@@ -80,15 +81,15 @@ public class SiegeEngine implements Cloneable {
     
     public SiegeEngine(@NotNull String name, @NotNull HashMap<ItemStack, GunnersProjectile> projectiles, @NotNull ItemStack fuelItem, int customModelID) {
     	//String name, Integer XOffset, Integer YOffset, Integer fuelMax, Float fuelVelocityMod, Integer customModelId, HashMap<ItemStack, GunnersProjectile> projObj
-    	
-    	// Default custom model data id if it is passes as null
-    	if (customModelID == 0) {
-    		customModelID = 150;
-    	}
-    	
+        
+        // Default custom model data id if it is passes as null
+        if (customModelID == 0) {
+            customModelID = 150;
+        }
+        
     	// Set Default values
         xOffset = 0;
-        yOffset = 2;
+        yOffset = 0;
         maxFuel = 5;
         velocityPerFuel = 1.0125f;
         id = name.replaceAll(" ", "_").toLowerCase();
