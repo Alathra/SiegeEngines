@@ -16,6 +16,10 @@ public class Config {
 	
 	public static Material controlItem  = Material.COMPASS;
 	
+	public static int controlDistance = 64;
+	
+	public static int rotateDistance = 32;
+	
 	public static void initConfigVals() {
 		// init config
 		config = SiegeEngines.getInstance().getConfig();
@@ -28,6 +32,9 @@ public class Config {
 			controlItem = Material.COMPASS;
 		}
 		
+		controlDistance = config.getInt("ControlDistance");
+		
+		rotateDistance = config.getInt("RotateDistance");
 	}
 	
 	public static void reload() {
@@ -35,7 +42,7 @@ public class Config {
 		initConfigVals();
 	}
 	
-	private FileConfiguration getConfig() {
+	public FileConfiguration getConfig() {
 		return config;
 	}
 
