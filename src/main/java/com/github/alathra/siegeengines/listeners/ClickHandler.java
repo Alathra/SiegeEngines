@@ -156,14 +156,13 @@ public class ClickHandler implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void BlockPlaceEvent(org.bukkit.event.block.BlockPlaceEvent event) {
         Player thePlayer = event.getPlayer();
-        if (event.isCancelled())
-            return;
-        Material replaced = event.getBlockReplacedState().getType();
         if (fluidMaterials.contains(replaced)) {
             thePlayer.sendMessage("§eGunner Equipment cannot be spawned in Fluid Blocks.");
             event.setCancelled(true);
-            return;
         }
+        if (event.isCancelled())
+            return;
+        Material replaced = event.getBlockReplacedState().getType();
         if (event.getPlayer().getInventory().getItemInMainHand().getType() == Material.CARVED_PUMPKIN) {
             ItemStack item = event.getPlayer().getInventory().getItemInMainHand();
             if (item.getItemMeta() != null && item.getItemMeta().hasCustomModelData()) {
