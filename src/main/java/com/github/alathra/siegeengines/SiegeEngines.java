@@ -9,10 +9,7 @@ import java.util.UUID;
 
 import com.github.alathra.siegeengines.command.CommandHandler;
 import org.bukkit.Material;
-import org.bukkit.Particle;
-import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -23,7 +20,7 @@ import com.github.alathra.siegeengines.listeners.ClickHandler;
 import com.github.alathra.siegeengines.listeners.RotationHandler;
 import com.github.alathra.siegeengines.projectile.EntityProjectile;
 import com.github.alathra.siegeengines.projectile.ExplosiveProjectile;
-import com.github.alathra.siegeengines.projectile.GunnersProjectile;
+import com.github.alathra.siegeengines.projectile.SiegeEngineProjectile;
 
 
 public class SiegeEngines extends JavaPlugin {
@@ -94,22 +91,21 @@ public class SiegeEngines extends JavaPlugin {
     }
 
     public static void AddDefaults() {
-
-        HashMap<ItemStack, GunnersProjectile> projectileMap =  new HashMap<>();
-
-        EntityProjectile fireProj = new EntityProjectile();
-        fireProj.EntityCount = 4;
-        fireProj.EntityTyp = EntityType.SMALL_FIREBALL;
-        fireProj.ParticleType = Particle.WHITE_ASH;
-        fireProj.SoundType = Sound.ENTITY_BLAZE_SHOOT;
-        fireProj.Inaccuracy = 0.75f;
-        projectileMap.put(new ItemStack(Material.FIRE_CHARGE), fireProj);
-
-        ExplosiveProjectile proj = new ExplosiveProjectile();
-        proj.ExplodePower = 1;
-        projectileMap.put(new ItemStack(Material.COBBLESTONE), proj);
-
-    	SiegeEngine trebuchet = new SiegeEngine("Trebuchet", projectileMap, new ItemStack(Material.GUNPOWDER), 122);
+        
+        // Predefined projectiles with default values
+        SiegeEngineProjectile fireballShot = EntityProjectile.getDefaultFireballShot();
+        SiegeEngineProjectile stoneShot = ExplosiveProjectile.getDefaultStoneShot();
+        SiegeEngineProjectile repeatingShot = ExplosiveProjectile.getDefaultRepeatingShot();
+        SiegeEngineProjectile breachShot = ExplosiveProjectile.getDefaultBreachShot();
+        SiegeEngineProjectile scatterShot = EntityProjectile.getDefaultScatterShot();
+        
+        // Trebuchet
+        HashMap<ItemStack, SiegeEngineProjectile> trebuchetProjectiles = new HashMap<>();
+        trebuchetProjectiles.put(stoneShot.getAmmuinitionItem(), stoneShot);
+        trebuchetProjectiles.put(fireballShot.getAmmuinitionItem(), fireballShot);
+        trebuchetProjectiles.put(breachShot.getAmmuinitionItem(), breachShot);
+        
+    	SiegeEngine trebuchet = new SiegeEngine("Trebuchet", trebuchetProjectiles, new ItemStack(Material.STRING), 122);
     	trebuchet.xOffset = 3;
     	trebuchet.yOffset = 3;
         trebuchet.placementOffsetY = 0.0;
@@ -117,7 +113,6 @@ public class SiegeEngines extends JavaPlugin {
         trebuchet.shotAmount = 1;
         trebuchet.rotateStandHead = false;
         trebuchet.rotateSideways = true;
-        trebuchet.fuelItem = new ItemStack(Material.STRING);
         trebuchet.readyModelNumber = 122;
         trebuchet.modelNumberToFireAt = 135;
         trebuchet.millisecondsBetweenFiringStages = 2;
@@ -126,37 +121,17 @@ public class SiegeEngines extends JavaPlugin {
             123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139
         ));
         trebuchet.cycleThroughModelsBeforeFiring = true;
-
         definedSiegeEngines.put(trebuchet.readyModelNumber, trebuchet);
-
-
-        ExplosiveProjectile tntProj = new ExplosiveProjectile();
-        tntProj.ExplodePower = 1;
-        tntProj.ProjectilesCount = 5;
-        tntProj.DelayedFire = true;
-        tntProj.Inaccuracy = 0.75f;
-        projectileMap.put(new ItemStack(Material.TNT), tntProj);
-
-        ExplosiveProjectile breachShot = new ExplosiveProjectile();
-        breachShot.ExplodePower = 3;
-        breachShot.ProjectilesCount = 1;
-        projectileMap.put(new ItemStack(Material.IRON_BLOCK), breachShot);
-
-        EntityProjectile scatterShot = new EntityProjectile();
-        scatterShot.Inaccuracy = 0.5f;
-        scatterShot.EntityCount = 24;
-        scatterShot.ParticleType = Particle.ELECTRIC_SPARK;
-        scatterShot.SoundType = Sound.ITEM_CROSSBOW_SHOOT;
-        projectileMap.put(new ItemStack(Material.GRAVEL), scatterShot);
-
-        ExplosiveProjectile repeatingShot = new ExplosiveProjectile();
-        repeatingShot.ExplodePower = 2;
-        repeatingShot.ProjectilesCount = 3;
-        repeatingShot.DelayedFire = true;
-        repeatingShot.Inaccuracy = 0.35f;
-        projectileMap.put(new ItemStack(Material.TNT), repeatingShot);
         
-        SiegeEngine siegeCannon = new SiegeEngine("Siege Cannon", projectileMap, new ItemStack(Material.GUNPOWDER), 141);
+        // Siege Cannon
+        HashMap<ItemStack, SiegeEngineProjectile> siegeCannonProjectiles = new HashMap<>();
+        siegeCannonProjectiles.put(stoneShot.getAmmuinitionItem(), stoneShot);
+        siegeCannonProjectiles.put(fireballShot.getAmmuinitionItem(), fireballShot);
+        siegeCannonProjectiles.put(breachShot.getAmmuinitionItem(), breachShot);
+        siegeCannonProjectiles.put(repeatingShot.getAmmuinitionItem(), repeatingShot);
+        siegeCannonProjectiles.put(scatterShot.getAmmuinitionItem(), scatterShot);
+        
+        SiegeEngine siegeCannon = new SiegeEngine("Siege Cannon", siegeCannonProjectiles, new ItemStack(Material.GUNPOWDER), 141);
         siegeCannon.shotAmount = 1;
         siegeCannon.placementOffsetY = -1;
         siegeCannon.readyModelNumber = 141;
@@ -166,8 +141,15 @@ public class SiegeEngines extends JavaPlugin {
         siegeCannon.rotateSideways = true;
         definedSiegeEngines.put(siegeCannon.readyModelNumber, siegeCannon);
 
-        SiegeEngine navalCannon = new SiegeEngine("Naval Cannon", projectileMap, new ItemStack(Material.GUNPOWDER), 142);
-        navalCannon.projectiles.put(new ItemStack(Material.COBBLESTONE), proj);
+        // Naval Cannon
+        HashMap<ItemStack, SiegeEngineProjectile> navalCannonProjectiles = new HashMap<>();
+        siegeCannonProjectiles.put(stoneShot.getAmmuinitionItem(), stoneShot);
+        siegeCannonProjectiles.put(fireballShot.getAmmuinitionItem(), fireballShot);
+        siegeCannonProjectiles.put(breachShot.getAmmuinitionItem(), breachShot);
+        siegeCannonProjectiles.put(repeatingShot.getAmmuinitionItem(), repeatingShot);
+        siegeCannonProjectiles.put(scatterShot.getAmmuinitionItem(), scatterShot);
+        
+        SiegeEngine navalCannon = new SiegeEngine("Naval Cannon", navalCannonProjectiles, new ItemStack(Material.GUNPOWDER), 142);
         navalCannon.placementOffsetY = -1;
         navalCannon.shotAmount = 1;
         navalCannon.readyModelNumber = 142;

@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.UUID;
 
 import com.github.alathra.siegeengines.projectile.EntityProjectile;
-import com.github.alathra.siegeengines.projectile.GunnersProjectile;
+import com.github.alathra.siegeengines.projectile.SiegeEngineProjectile;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -70,7 +70,7 @@ public class SiegeEngine implements Cloneable {
     // Passed parameters
     public String name = "Unnammed Siege Engine";
     public ItemStack fuelItem = new ItemStack(Material.GUNPOWDER);
-    public HashMap<ItemStack, GunnersProjectile> projectiles;
+    public HashMap<ItemStack, SiegeEngineProjectile> projectiles;
 	
     public int customModelID = 150;
     
@@ -79,7 +79,7 @@ public class SiegeEngine implements Cloneable {
         return (SiegeEngine) super.clone();
     }
     
-    public SiegeEngine(@NotNull String name, @NotNull HashMap<ItemStack, GunnersProjectile> projectiles, @NotNull ItemStack fuelItem, int customModelID) {
+    public SiegeEngine(@NotNull String name, @NotNull HashMap<ItemStack, SiegeEngineProjectile> projectiles, @NotNull ItemStack fuelItem, int customModelID) {
         
         // Default custom model data id if it is passes as null
         if (customModelID == 0) {
@@ -116,11 +116,12 @@ public class SiegeEngine implements Cloneable {
         baseStandOffset = 0;
         baseStandModelNumber = 147;
         nextShotTime = System.currentTimeMillis();
-        EntityProjectile defaultProj = new EntityProjectile();
-        defaultProj.EntityCount = 2;
-        defaultProj.EntityTyp = EntityType.SHULKER_BULLET;
-        defaultProj.ParticleType = Particle.WHITE_ASH;
-        defaultProj.SoundType = Sound.ENTITY_BLAZE_SHOOT;
+        // PLACEHOLDER. SHOULD BE WE-WRITTEN
+        EntityProjectile defaultProj = new EntityProjectile(new ItemStack(Material.GRASS_BLOCK));
+        defaultProj.entityCount = 2;
+        defaultProj.entityType = EntityType.SHULKER_BULLET;
+        defaultProj.particleType = Particle.WHITE_ASH;
+        defaultProj.soundType = Sound.ENTITY_BLAZE_SHOOT;
         
         // set passed parameters as object variables
         this.name = name;
@@ -316,7 +317,7 @@ public class SiegeEngine implements Cloneable {
                                 //	player.sendMessage("§efiring" + modelData);
                                 if (LoadedProjectile == null) return;
                                 if (LoadedProjectile.getType() == Material.AIR) return;
-                                GunnersProjectile projType = projectiles.get(LoadedProjectile);
+                                SiegeEngineProjectile projType = projectiles.get(LoadedProjectile);
                                 if (projType == null) return;
                                 projType.Shoot(player, entity, this.GetFireLocation(living), loadedFuel * velocityPerFuel);
                             }
@@ -344,7 +345,7 @@ public class SiegeEngine implements Cloneable {
                     nextModelNumber = 0;
                     if (LoadedProjectile == null) return;
                     if (LoadedProjectile.getType() == Material.AIR) return;
-                    GunnersProjectile projType = projectiles.get(LoadedProjectile);
+                    SiegeEngineProjectile projType = projectiles.get(LoadedProjectile);
                     if (projType == null) return;
                     projType.Shoot(player, entity, this.GetFireLocation(living), loadedFuel * velocityPerFuel);
                 }, (long) delay);

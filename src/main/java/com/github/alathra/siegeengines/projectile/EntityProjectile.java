@@ -5,51 +5,77 @@ import com.github.alathra.siegeengines.SiegeEnginesUtil;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-public class EntityProjectile implements GunnersProjectile {
-
-    public String ProjectileType = "Entity";
-    public int EntityCount = 20;
-    public int ArrowOnlyDamage = 6;
-    public Boolean DelayedFire = false;
-    public int DelayTime = 6;
-    public EntityType EntityTyp = EntityType.ARROW;
-    public float Inaccuracy = 0.2f;
-    public Particle ParticleType = Particle.EXPLOSION_LARGE;
-    public Sound SoundType = Sound.ENTITY_GENERIC_EXPLODE;
+public class EntityProjectile extends SiegeEngineProjectile {
+	
+	// Defaults 
+	public int entityCount = 20;
+    public int arrowOnlyDamage = 6;
+    public Boolean delayedFire = false;
+    public int delayTime = 6;
+    public EntityType entityType = EntityType.ARROW;
+    public float inaccuracy = 0.2f;
+    public Particle particleType = Particle.EXPLOSION_LARGE;
+    public Sound soundType = Sound.ENTITY_GENERIC_EXPLODE;
+    
+    private boolean playSound = true;
+    
+    public EntityProjectile(ItemStack ammunitionItem) {
+		super(ProjectileType.ENTITY, ammunitionItem);
+		
+		// Defaults
+	}
+    
+    public static EntityProjectile getDefaultFireballShot() {
+    	EntityProjectile fireProj = new EntityProjectile(new ItemStack(Material.FIRE_CHARGE));
+        fireProj.entityCount = 4;
+        fireProj.entityType = EntityType.SMALL_FIREBALL;
+        fireProj.particleType = Particle.WHITE_ASH;
+        fireProj.soundType = Sound.ENTITY_BLAZE_SHOOT;
+        fireProj.inaccuracy = 0.75f;
+        return fireProj;
+    }
+    
+    public static EntityProjectile getDefaultScatterShot() {
+    	EntityProjectile scatterProj = new EntityProjectile(new ItemStack(Material.TNT));
+    	scatterProj.inaccuracy = 0.5f;
+    	scatterProj.entityCount = 24;
+    	scatterProj.particleType = Particle.ELECTRIC_SPARK;
+    	scatterProj.soundType = Sound.ITEM_CROSSBOW_SHOOT;
+        return scatterProj;
+    }
 
     @Override
     public void Shoot(Entity player, Entity entity, Location FireLocation, Float velocity) {
-        PlaySound = true;
+        playSound = true;
         int baseDelay = 0;
-        for (int i = 0; i < EntityCount; i++) {
-            if (DelayedFire) {
-                baseDelay += DelayTime;
+        for (int i = 0; i < entityCount; i++) {
+            if (delayedFire) {
+                baseDelay += delayTime;
                 Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(SiegeEngines.getInstance(), () -> {
 
                     CreateEntity(entity, FireLocation, velocity, player);
                 }, (long) baseDelay);
             } else {
-
                 CreateEntity(entity, FireLocation, velocity, player);
             }
         }
     }
 
-    private boolean PlaySound = true;
-
     private void CreateEntity(Entity entity, Location loc, Float velocity, Entity player) {
         World world = entity.getLocation().getWorld();
         
-        Entity arrow = world.spawnEntity(loc, EntityTyp);
-        if (Inaccuracy != 0f) {
+        Entity arrow = world.spawnEntity(loc, entityType);
+        if (inaccuracy != 0f) {
             arrow.setVelocity(loc.getDirection().multiply(velocity).add(Randomise())
                 .subtract(Randomise()));
         } else {
@@ -68,18 +94,22 @@ public class EntityProjectile implements GunnersProjectile {
             if (player instanceof org.bukkit.projectiles.ProjectileSource)
                 arr.setShooter((org.bukkit.projectiles.ProjectileSource) player);
         }
-        if (PlaySound) {
-            world.playSound(loc, this.SoundType, 20, 2);
-            world.spawnParticle(this.ParticleType, loc.getX(), loc.getY(), loc.getZ(), 0);
-            if (!DelayedFire) {
-                PlaySound = false;
+        if (playSound) {
+            world.playSound(loc, this.soundType, 20, 2);
+            world.spawnParticle(this.particleType, loc.getX(), loc.getY(), loc.getZ(), 0);
+            if (!delayedFire) {
+                playSound = false;
             }
         }
 
     }
 
     private Vector Randomise() {
-        return new Vector(SiegeEngines.random.nextFloat() * (Inaccuracy - (Inaccuracy * -1)) + (Inaccuracy * -1), SiegeEngines.random.nextFloat() * (Inaccuracy - (Inaccuracy * -1)) + (Inaccuracy * -1), SiegeEngines.random.nextFloat() * (Inaccuracy - (Inaccuracy * -1)) + (Inaccuracy * -1));
+        return new Vector(SiegeEngines.random.nextFloat() * (inaccuracy - (inaccuracy * -1)) + (inaccuracy * -1), SiegeEngines.random.nextFloat() * (inaccuracy - (inaccuracy * -1)) + (inaccuracy * -1), SiegeEngines.random.nextFloat() * (inaccuracy - (inaccuracy * -1)) + (inaccuracy * -1));
     }
+
+	public ProjectileType getProjectileType() {
+		return projectileType;
+	}
 }
 

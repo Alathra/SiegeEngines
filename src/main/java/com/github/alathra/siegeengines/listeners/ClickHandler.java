@@ -84,20 +84,20 @@ public class ClickHandler implements Listener {
 
 			projectiles.remove(event.getEntity().getUniqueId());
 
-			if (proj.PlaceBlocks) {
+			if (proj.placeBlocks) {
 				TNTPrimed tntEnt = (TNTPrimed) tnt;
 				tntEnt.setYield(0);
 				tntEnt.setFuseTicks(0);
 				if (event.getHitBlock() != null) {
-					List<Block> Blocks = sphere(event.getHitBlock().getLocation(), (int) proj.ExplodePower);
-					for (int i = 0; i < proj.BlocksToPlaceAmount; i++) {
+					List<Block> Blocks = sphere(event.getHitBlock().getLocation(), (int) proj.explodePower);
+					for (int i = 0; i < proj.blocksToPlaceAmount; i++) {
 						Block replace = getRandomElement(Blocks);
-						replace.setType(proj.BlockToPlace);
+						replace.setType(proj.blockToPlace);
 					}
 				}
 			} else {
 				TNTPrimed tntEnt = (TNTPrimed) tnt;
-				tntEnt.setYield(proj.ExplodePower);
+				tntEnt.setYield(proj.explodePower);
 				tntEnt.setFuseTicks(0);
 			}
 		}

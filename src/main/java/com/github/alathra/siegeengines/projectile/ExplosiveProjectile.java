@@ -12,31 +12,60 @@ import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Snowball;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-public class ExplosiveProjectile implements GunnersProjectile {
+public class ExplosiveProjectile extends SiegeEngineProjectile {
 
-    public String ProjectileType = "Explosive";
-    public Boolean PlaceBlocks = false;
-    public Material BlockToPlace = Material.COBWEB;
-    public int BlocksToPlaceAmount = 3;
-    public float ExplodePower = 2;
-    public float Inaccuracy = 0.3f;
-    public int ProjectilesCount = 1;
-    public Boolean DelayedFire = false;
-    public int DelayTime = 6;
-    public Particle ParticleType = Particle.EXPLOSION_LARGE;
-    public Sound SoundType = Sound.ENTITY_GENERIC_EXPLODE;
-    private boolean PlaySound = true;
-    public Boolean AlertOnLanding = false;
-
+	
+	// Defaults
+    public Boolean placeBlocks = false;
+    public Material blockToPlace = Material.COBWEB;
+    public int blocksToPlaceAmount = 3;
+    public float explodePower = 2;
+    public float inaccuracy = 0.3f;
+    public int projectilesCount = 1;
+    public Boolean delayedFire = false;
+    public int delayTime = 6;
+    public Particle particleType = Particle.EXPLOSION_LARGE;
+    public Sound soundType = Sound.ENTITY_GENERIC_EXPLODE;
+    public Boolean alertOnLanding = false;
+    
+    private boolean playSound = true;
+    
+    public ExplosiveProjectile(ItemStack ammunitionItem) {
+		super(ProjectileType.EXPLOSIVE, ammunitionItem);
+	}
+    
+    public static ExplosiveProjectile getDefaultStoneShot() {
+    	ExplosiveProjectile stoneProj = new ExplosiveProjectile(new ItemStack(Material.COBBLESTONE));
+    	stoneProj.explodePower = 1;
+    	return stoneProj;
+    }
+    
+    public static ExplosiveProjectile getDefaultRepeatingShot() {
+    	ExplosiveProjectile repeatingProj = new ExplosiveProjectile(new ItemStack(Material.TNT));
+    	repeatingProj.explodePower = 1;
+    	repeatingProj.projectilesCount = 5;
+    	repeatingProj.delayedFire = true;
+    	repeatingProj.inaccuracy = 0.75f;
+    	return repeatingProj;
+    }
+    
+    public static ExplosiveProjectile getDefaultBreachShot() {
+    	ExplosiveProjectile breachProj = new ExplosiveProjectile(new ItemStack(Material.IRON_BLOCK));
+    	breachProj.explodePower = 3;
+    	breachProj.projectilesCount = 1;
+    	return breachProj;
+    }
+    
     @Override
     public void Shoot(Entity player, Entity entity, Location loc, Float velocity) {
-        PlaySound = true;
+        playSound = true;
         int baseDelay = 0;
-        for (int i = 0; i < ProjectilesCount; i++) {
-            if (DelayedFire) {
-                baseDelay += DelayTime;
+        for (int i = 0; i < projectilesCount; i++) {
+            if (delayedFire) {
+                baseDelay += delayTime;
                 Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(SiegeEngines.getInstance(), () -> {
                     CreateEntity(entity, loc, velocity, player);
                 }, (long) baseDelay);
@@ -54,7 +83,7 @@ public class ExplosiveProjectile implements GunnersProjectile {
             ball.setShooter((org.bukkit.projectiles.ProjectileSource) player);
         ClickHandler.projectiles.put(tnt.getUniqueId(), this);
 
-        if (Inaccuracy != 0f) {
+        if (inaccuracy != 0f) {
             tnt.setVelocity(loc.getDirection().multiply(velocity).add(Randomise())
                 .subtract(Randomise()));
         } else {
@@ -63,19 +92,23 @@ public class ExplosiveProjectile implements GunnersProjectile {
         tnt.setMetadata("isExplosiveProj", SiegeEnginesUtil.addMetaDataValue("true"));
         Bukkit.getServer().getPluginManager().callEvent(new org.bukkit.event.entity.ProjectileLaunchEvent(tnt));
 
-        if (PlaySound) {
-            world.playSound(loc, this.SoundType, 20, 2);
-            world.spawnParticle(this.ParticleType, loc.getX(), loc.getY(), loc.getZ(), 0);
-            if (!DelayedFire) {
-                PlaySound = false;
+        if (playSound) {
+            world.playSound(loc, this.soundType, 20, 2);
+            world.spawnParticle(this.particleType, loc.getX(), loc.getY(), loc.getZ(), 0);
+            if (!delayedFire) {
+                playSound = false;
             }
         }
 
     }
 
     private Vector Randomise() {
-        return new Vector(SiegeEngines.random.nextFloat() * (Inaccuracy - (Inaccuracy * -1)) + (Inaccuracy * -1), SiegeEngines.random.nextFloat() * (Inaccuracy - (Inaccuracy * -1)) + (Inaccuracy * -1), SiegeEngines.random.nextFloat() * (Inaccuracy - (Inaccuracy * -1)) + (Inaccuracy * -1));
+        return new Vector(SiegeEngines.random.nextFloat() * (inaccuracy - (inaccuracy * -1)) + (inaccuracy * -1), SiegeEngines.random.nextFloat() * (inaccuracy - (inaccuracy * -1)) + (inaccuracy * -1), SiegeEngines.random.nextFloat() * (inaccuracy - (inaccuracy * -1)) + (inaccuracy * -1));
     }
+
+	public ProjectileType getProjectileType() {
+		return projectileType;
+	}
 }
 
 

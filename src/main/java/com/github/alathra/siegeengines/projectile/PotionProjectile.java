@@ -18,15 +18,19 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-public class PotionProjectile implements GunnersProjectile {
-    public String ProjectileType = "Potion";
+public class PotionProjectile extends SiegeEngineProjectile {
+	
     public int EntityCount = 3;
     public Boolean DelayedFire = false;
     public int DelayTime = 6;
     public float Inaccuracy = 0.1f;
     public Particle ParticleType = Particle.EXPLOSION_LARGE;
     public Sound SoundType = Sound.ENTITY_GENERIC_EXPLODE;
-
+    
+    public PotionProjectile(ItemStack ammunitionItem) {
+		super(ProjectileType.POTION, ammunitionItem);
+	}
+    
     @Override
     public void Shoot(Entity player, Entity entity, Location loc, Float velocity) {
         //TODO Auto-generated method stub
@@ -68,4 +72,8 @@ public class PotionProjectile implements GunnersProjectile {
     private Vector Randomise() {
         return new Vector(SiegeEngines.random.nextFloat() * (Inaccuracy - (Inaccuracy * -1)) + (Inaccuracy * -1), SiegeEngines.random.nextFloat() * (Inaccuracy - (Inaccuracy * -1)) + (Inaccuracy * -1), SiegeEngines.random.nextFloat() * (Inaccuracy - (Inaccuracy * -1)) + (Inaccuracy * -1));
     }
+
+	public ProjectileType getProjectileType() {
+		return projectileType;
+	}
 }
