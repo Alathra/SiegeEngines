@@ -89,7 +89,7 @@ public class SiegeEngine implements Cloneable {
         
     	// Set Default values
         xOffset = 0;
-        yOffset = 2;
+        yOffset = 0;
         maxFuel = 5;
         velocityPerFuel = 1.0125f;
         id = name.replaceAll(" ", "_").toLowerCase();
