@@ -91,8 +91,10 @@ public class EntityProjectile extends SiegeEngineProjectile {
         if (arrow instanceof Arrow) {
             Arrow arr = (Arrow) arrow;
             arr.setDamage(8);
-            if (player instanceof org.bukkit.projectiles.ProjectileSource)
+            if (player instanceof org.bukkit.projectiles.ProjectileSource) {
                 arr.setShooter((org.bukkit.projectiles.ProjectileSource) player);
+                arr.setPickupStatus(org.bukkit.entity.AbstractArrow.PickupStatus.CREATIVE_ONLY);
+            }
         }
         if (playSound) {
             world.playSound(loc, this.soundType, 20, 2);
