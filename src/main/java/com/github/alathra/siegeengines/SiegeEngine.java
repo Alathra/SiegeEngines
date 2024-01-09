@@ -70,7 +70,7 @@ public class SiegeEngine implements Cloneable {
     // Passed parameters
     public String name = "Unnammed Siege Engine";
     public ItemStack fuelItem = new ItemStack(Material.GUNPOWDER);
-    public HashMap<ItemStack, SiegeEngineProjectile> projectiles;
+    public HashMap<ItemStack, SiegeEngineProjectile> projectiles = new HashMap<>();
 	
     public int customModelID = 150;
     
@@ -129,7 +129,7 @@ public class SiegeEngine implements Cloneable {
     	this.customModelID = customModelID;
     	
         // set projectiles
-        if (projectiles.keySet().isEmpty() || projectiles.isEmpty()) {
+        if (this.projectiles == null || projectiles.keySet().isEmpty() || projectiles.isEmpty()) {
         	this.projectiles.put(new ItemStack(Material.GUNPOWDER), defaultProj);
         } else {
         	this.projectiles = projectiles;
