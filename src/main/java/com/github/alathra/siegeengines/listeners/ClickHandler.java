@@ -271,7 +271,6 @@ public class ClickHandler implements Listener {
 					siegeEngine.projectiles.put(inventoryItem, new FireworkProjectile(inventoryItem.clone()));
 					return true;
 				}
-				continue;
 			}
 		}
 		return false;
@@ -377,6 +376,14 @@ public class ClickHandler implements Listener {
 		}
 		return false;
 	}
+	private void sendPropellantStatusMSG(Player player, SiegeEngine siegeEngine) {
+		player.sendMessage("§eReloaded propellant");
+		if (!siegeEngine.canLoadFuel()) {
+			player.sendMessage("§ePropellant is Full! Level: §6("+siegeEngine.ammoHolder.loadedFuel+"/"+siegeEngine.maxFuel+")");
+		} else {
+			player.sendMessage("§ePropellant level is: §6("+siegeEngine.ammoHolder.loadedFuel+"/"+siegeEngine.maxFuel+")");
+		}
+	}
 
 	@EventHandler
 	public void interact(PlayerInteractEvent event) {
@@ -434,17 +441,28 @@ public class ClickHandler implements Listener {
 						if(!pulledAmmoFromContainer(siegeEngine.entity.getLocation(), siegeEngine)) {
 							siegeEngine.ammoHolder.loadedProjectile = 1;
 							continue;
+						} else {
+							player.sendMessage("§eReloaded ammunition!");
 						}
 						if(!pulledAmmoFromContainer(siegeEngine.entity.getLocation().getBlock().getRelative(0, -1, 0).getLocation(), siegeEngine)) {
 							siegeEngine.ammoHolder.loadedProjectile = 1;
 							continue;
+						} else {
+							player.sendMessage("§eReloaded ammunition!");
 						}
 						if(!pulledAmmoFromContainer(siegeEngine.entity.getLocation().getBlock().getRelative(0, 1, 0).getLocation(), siegeEngine)) {
 							continue;
+						} else {
+							player.sendMessage("§eReloaded ammunition!");
 						}
 						// Search player's inv for ammo because it was not found in a nearby container
 						if (!pulledAmmoFromPlayer(player,siegeEngine)) {
 							continue;
+						} else {
+							player.sendMessage("§eReloaded ammunition!");
+						}
+						if (!siegeEngine.hasAmmunition()) {
+							player.sendMessage("§eCould not reload ammunition.");
 						}
 							// Old Non-Firework Compatible
 
@@ -464,11 +482,6 @@ public class ClickHandler implements Listener {
 									}
 								}
 							}*/
-						if (!siegeEngine.hasAmmunition()) {
-							player.sendMessage("§eCould not reload ammunition.");
-						} else {
-							player.sendMessage("§eReloaded ammunition!");
-						}
 					}
 				}
 
@@ -483,12 +496,18 @@ public class ClickHandler implements Listener {
 						// Checks for propellant in nearby container and loads if found
 						if(!pulledPropellantFromContainer(siegeEngine.entity.getLocation(), siegeEngine)) {
 							continue;
+						} else {
+							sendPropellantStatusMSG(player,siegeEngine);
 						}
 						if(!pulledPropellantFromContainer(siegeEngine.entity.getLocation().getBlock().getRelative(0, -1, 0).getLocation(), siegeEngine)) {
 							continue;
+						} else {
+							sendPropellantStatusMSG(player,siegeEngine);
 						}
 						if(!pulledPropellantFromContainer(siegeEngine.entity.getLocation().getBlock().getRelative(0, 1, 0).getLocation(), siegeEngine)) {
 							continue;
+						} else {
+							sendPropellantStatusMSG(player,siegeEngine);
 						}
 						// Check player's inv for propellant 
 						if (siegeEngine.canLoadFuel()) {
@@ -499,18 +518,12 @@ public class ClickHandler implements Listener {
 								siegeEngine.ammoHolder.loadedFuel += 1;
 								stack.setAmount(1);
 								event.getPlayer().getInventory().removeItem(stack);
-								break;
 							}
 						}
 						if (!siegeEngine.hasPropellant()) {
 							player.sendMessage("§eCould not load propellant.");
 						} else {
-							player.sendMessage("§eReloaded propellant");
-							if (!siegeEngine.canLoadFuel()) {
-								player.sendMessage("§ePropellant is Full! Level: §6("+siegeEngine.ammoHolder.loadedFuel+"/"+siegeEngine.maxFuel+")");
-							} else {
-								player.sendMessage("§ePropellant level is: §6("+siegeEngine.ammoHolder.loadedFuel+"/"+siegeEngine.maxFuel+")");
-							}
+							continue;
 						}
 					}
 				}
