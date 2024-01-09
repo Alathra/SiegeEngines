@@ -46,7 +46,7 @@ public class EntityProjectile extends SiegeEngineProjectile {
     }
     
     public static EntityProjectile getDefaultScatterShot() {
-    	EntityProjectile scatterProj = new EntityProjectile(new ItemStack(Material.TNT));
+    	EntityProjectile scatterProj = new EntityProjectile(new ItemStack(Material.GRAVEL));
     	scatterProj.inaccuracy = 0.5f;
     	scatterProj.entityCount = 24;
     	scatterProj.particleType = Particle.ELECTRIC_SPARK;
