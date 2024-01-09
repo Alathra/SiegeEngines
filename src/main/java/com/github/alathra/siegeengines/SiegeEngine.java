@@ -129,12 +129,11 @@ public class SiegeEngine implements Cloneable {
     	this.customModelID = customModelID;
     	
         // set projectiles
-        if (this.projectiles == null || projectiles.keySet().isEmpty() || projectiles.isEmpty()) {
+        if (this.projectiles == null || this.projectiles.isEmpty()) {
         	this.projectiles.put(new ItemStack(Material.GUNPOWDER), defaultProj);
         } else {
         	this.projectiles = projectiles;
         }
-        
     }
 
     public boolean equals(String EquipmentId) {
@@ -192,13 +191,13 @@ public class SiegeEngine implements Cloneable {
             return true;
         }
         for (ItemStack im : projectiles.keySet()) {
-        	if(im.getType().equals(itemInHand.getType()) && ammoHolder.loadedProjectile == 0) {
-        		ammoHolder.loadedProjectile = 1;
+            if(im.getType().equals(itemInHand.getType()) && ammoHolder.loadedProjectile == 0) {
+                ammoHolder.loadedProjectile = 1;
                 ammoHolder.materialName = itemInHand;
                 ((Player) player).sendMessage("§eAdding Ammunition to Weapon");
                 itemInHand.setAmount(itemInHand.getAmount() - 1);
                 return true;
-        	}
+            }
         }
         return false;
     }

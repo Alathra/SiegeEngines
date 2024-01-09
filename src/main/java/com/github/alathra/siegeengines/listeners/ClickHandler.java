@@ -12,6 +12,10 @@ import com.github.alathra.siegeengines.SiegeEngineAmmoHolder;
 import com.github.alathra.siegeengines.SiegeEngines;
 import com.github.alathra.siegeengines.SiegeEnginesUtil;
 
+import com.github.alathra.siegeengines.SiegeEngine;
+import com.github.alathra.siegeengines.projectile.ExplosiveProjectile;
+import com.github.alathra.siegeengines.projectile.FireworkProjectile;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -45,9 +49,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.EulerAngle;
-
-import com.github.alathra.siegeengines.SiegeEngine;
-import com.github.alathra.siegeengines.projectile.ExplosiveProjectile;
 
 public class ClickHandler implements Listener {
 
@@ -244,13 +245,21 @@ public class ClickHandler implements Listener {
 			Block inv = loc.getBlock();
 			Container state = ((Container) inv.getState());
 			for (ItemStack stack : siegeEngine.projectiles.keySet()) {
+				stack.setAmount(1);
 				if (siegeEngine.hasAmmunition()) {
 					return false;
 				}
-				if (!SiegeEnginesUtil.hasItem((Inventory) state.getInventory(), stack)) {
-					return false;
+				if (stack.getType() == Material.FIREWORK_ROCKET) {
+					if (((Inventory) state.getInventory()).first(Material.FIREWORK_ROCKET) < 0) {
+						continue;
+					}
+					((Inventory) state.getInventory()).setContents(updateContents((Inventory) state.getInventory(), stack, 1));
+				} else {
+					if (!SiegeEnginesUtil.hasItem((Inventory) state.getInventory(), stack)) {
+						continue;
+					}
+					state.getInventory().removeItem(stack);
 				}
-				state.getInventory().removeItem(stack);
 				siegeEngine.ammoHolder.loadedProjectile = 1;
 				siegeEngine.ammoHolder.materialName = stack;
 				return true;
@@ -263,6 +272,7 @@ public class ClickHandler implements Listener {
 		if (loc.getBlock().getType() == Material.BARREL
 				|| loc.getBlock().getType() == Material.CHEST) {
 			ItemStack stack = siegeEngine.fuelItem;
+			stack.setAmount(1);
 			Block inv = loc.getBlock();
 			Container state = ((Container) inv.getState());
 			if (!siegeEngine.canLoadFuel()) {
@@ -332,13 +342,13 @@ public class ClickHandler implements Listener {
 							continue;
 						}
 						// Checks for ammo in nearby container and loads if found
-						if(pulledAmmoFromContainer(siegeEngine.entity.getLocation(), siegeEngine)) {
+						if(!pulledAmmoFromContainer(siegeEngine.entity.getLocation(), siegeEngine)) {
 							continue;
 						}
-						if(pulledAmmoFromContainer(siegeEngine.entity.getLocation().getBlock().getRelative(0, -1, 0).getLocation(), siegeEngine)) {
+						if(!pulledAmmoFromContainer(siegeEngine.entity.getLocation().getBlock().getRelative(0, -1, 0).getLocation(), siegeEngine)) {
 							continue;
 						}
-						if(pulledAmmoFromContainer(siegeEngine.entity.getLocation().getBlock().getRelative(0, 1, 0).getLocation(), siegeEngine)) {
+						if(!pulledAmmoFromContainer(siegeEngine.entity.getLocation().getBlock().getRelative(0, 1, 0).getLocation(), siegeEngine)) {
 							continue;
 						}
 						// Search player's inv for ammo because it was not found in a nearby container
@@ -376,13 +386,13 @@ public class ClickHandler implements Listener {
 							continue;
 						}
 						// Checks for propellant in nearby container and loads if found
-						if(pulledPropellantFromContainer(siegeEngine.entity.getLocation(), siegeEngine)) {
+						if(!pulledPropellantFromContainer(siegeEngine.entity.getLocation(), siegeEngine)) {
 							continue;
 						}
-						if(pulledPropellantFromContainer(siegeEngine.entity.getLocation().getBlock().getRelative(0, -1, 0).getLocation(), siegeEngine)) {
+						if(!pulledPropellantFromContainer(siegeEngine.entity.getLocation().getBlock().getRelative(0, -1, 0).getLocation(), siegeEngine)) {
 							continue;
 						}
-						if(pulledPropellantFromContainer(siegeEngine.entity.getLocation().getBlock().getRelative(0, 1, 0).getLocation(), siegeEngine)) {
+						if(!pulledPropellantFromContainer(siegeEngine.entity.getLocation().getBlock().getRelative(0, 1, 0).getLocation(), siegeEngine)) {
 							continue;
 						}
 						// Check player's inv for propellant 
@@ -792,8 +802,8 @@ public class ClickHandler implements Listener {
 					return;
 				}
 				if (itemInHand.isSimilar(equipment.fuelItem)) {
-					if (!equipment.loadFuel(player)) {
-						player.sendMessage("§eCould not load Propellant.");
+					if (!equipment.canLoadFuel()) {
+						player.sendMessage("§eCould not load propellant.");
 						return;
 					}
 				}

@@ -12,46 +12,40 @@ import org.bukkit.World;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Firework;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.util.Vector;
 
-public class EntityProjectile extends SiegeEngineProjectile {
+public class FireworkProjectile extends SiegeEngineProjectile {
 	
 	// Defaults 
-	public int entityCount = 20;
+	public int entityCount = 1;
     public int arrowOnlyDamage = 6;
-    public Boolean delayedFire = false;
+    public Boolean delayedFire = true;
     public int delayTime = 6;
-    public EntityType entityType = EntityType.ARROW;
-    public float inaccuracy = 0.2f;
-    public Particle particleType = Particle.EXPLOSION_LARGE;
-    public Sound soundType = Sound.ENTITY_GENERIC_EXPLODE;
+    public EntityType entityType = EntityType.FIREWORK;
+    public float inaccuracy = 0.125f;
+    public Particle particleType = Particle.EXPLOSION_NORMAL;
+    public Sound soundType = Sound.ENTITY_FIREWORK_ROCKET_BLAST_FAR;
     
     private boolean playSound = true;
     
-    public EntityProjectile(ItemStack ammunitionItem) {
-		super(ProjectileType.ENTITY, ammunitionItem);
+    public FireworkProjectile(ItemStack ammunitionItem) {
+		super(ProjectileType.EXPLOSIVE, ammunitionItem);
 		
 		// Defaults
 	}
     
-    public static EntityProjectile getDefaultFireballShot() {
-    	EntityProjectile fireProj = new EntityProjectile(new ItemStack(Material.FIRE_CHARGE));
-        fireProj.entityCount = 4;
-        fireProj.entityType = EntityType.SMALL_FIREBALL;
+    public static FireworkProjectile getDefaultRocketShot() {
+    	FireworkProjectile fireProj = new FireworkProjectile(new ItemStack(Material.FIREWORK_ROCKET));
+        fireProj.entityCount = 1;
+        fireProj.entityType = EntityType.FIREWORK;
         fireProj.particleType = Particle.WHITE_ASH;
-        fireProj.soundType = Sound.ENTITY_BLAZE_SHOOT;
-        fireProj.inaccuracy = 0.75f;
+        fireProj.soundType = Sound.ENTITY_FIREWORK_ROCKET_BLAST_FAR;
+        fireProj.inaccuracy = 0.125f;
         return fireProj;
-    }
-    
-    public static EntityProjectile getDefaultScatterShot() {
-    	EntityProjectile scatterProj = new EntityProjectile(new ItemStack(Material.GRAVEL));
-    	scatterProj.inaccuracy = 0.325f;
-    	scatterProj.entityCount = 24;
-    	scatterProj.particleType = Particle.ELECTRIC_SPARK;
-    	scatterProj.soundType = Sound.ITEM_CROSSBOW_SHOOT;
-        return scatterProj;
     }
 
     @Override
@@ -80,19 +74,25 @@ public class EntityProjectile extends SiegeEngineProjectile {
         } else {
             arrow.setVelocity(loc.getDirection().multiply(velocity));
         }
-        arrow.setMetadata("isEntityProj", SiegeEnginesUtil.addMetaDataValue("true"));
+        arrow.setMetadata("isRocketProj", SiegeEnginesUtil.addMetaDataValue("true"));
         Bukkit.getServer().getPluginManager().callEvent(new org.bukkit.event.entity.ProjectileLaunchEvent(arrow));
 
         if (arrow instanceof org.bukkit.entity.Projectile) {
             if (player instanceof org.bukkit.projectiles.ProjectileSource)
                 ((org.bukkit.entity.Projectile) arrow).setShooter((org.bukkit.projectiles.ProjectileSource) player);
         }
-        if (arrow instanceof Arrow) {
-            Arrow arr = (Arrow) arrow;
-            arr.setDamage(8);
+        if (arrow instanceof Firework) {
+            Firework firework = (Firework) arrow;
             if (player instanceof org.bukkit.projectiles.ProjectileSource) {
-                arr.setShooter((org.bukkit.projectiles.ProjectileSource) player);
-                arr.setPickupStatus(org.bukkit.entity.AbstractArrow.PickupStatus.CREATIVE_ONLY);
+                firework.setShotAtAngle(true);
+                firework.setShooter((org.bukkit.projectiles.ProjectileSource) player);
+                ItemStack rocketItem = getAmmuinitionItem();
+                if (rocketItem.getItemMeta() instanceof FireworkMeta) {
+                    firework.setFireworkMeta((FireworkMeta)rocketItem.getItemMeta());
+                }
+                int itemPower = 1+firework.getFireworkMeta().getPower();
+                itemPower *= firework.getMaxLife();
+                firework.setMaxLife(itemPower);
             }
         }
         if (playSound) {

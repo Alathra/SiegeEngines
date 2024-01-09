@@ -19,6 +19,7 @@ import org.bukkit.metadata.MetadataValueAdapter;
 import com.github.alathra.siegeengines.listeners.ClickHandler;
 import com.github.alathra.siegeengines.listeners.RotationHandler;
 import com.github.alathra.siegeengines.projectile.EntityProjectile;
+import com.github.alathra.siegeengines.projectile.FireworkProjectile;
 import com.github.alathra.siegeengines.projectile.ExplosiveProjectile;
 import com.github.alathra.siegeengines.projectile.SiegeEngineProjectile;
 
@@ -37,7 +38,6 @@ public class SiegeEngines extends JavaPlugin {
     public static HashMap<UUID, SiegeEngine> activeSiegeEngines = new HashMap<UUID, SiegeEngine>();
     // Player UUID, siege engine entity
     public static HashMap<UUID, List<Entity>> siegeEngineEntitiesPerPlayer = new HashMap<UUID, List<Entity>>();
-   
 
 	public static SiegeEngines getInstance() {
 		return instance;
@@ -98,6 +98,7 @@ public class SiegeEngines extends JavaPlugin {
         SiegeEngineProjectile repeatingShot = ExplosiveProjectile.getDefaultRepeatingShot();
         SiegeEngineProjectile breachShot = ExplosiveProjectile.getDefaultBreachShot();
         SiegeEngineProjectile scatterShot = EntityProjectile.getDefaultScatterShot();
+        SiegeEngineProjectile fireworkCannon = FireworkProjectile.getDefaultRocketShot();
         
         // Trebuchet
         HashMap<ItemStack, SiegeEngineProjectile> trebuchetProjectiles = new HashMap<>();
@@ -105,11 +106,11 @@ public class SiegeEngines extends JavaPlugin {
         trebuchetProjectiles.put(fireballShot.getAmmuinitionItem(), fireballShot);
         trebuchetProjectiles.put(breachShot.getAmmuinitionItem(), breachShot);
         
-    	SiegeEngine trebuchet = new SiegeEngine("Trebuchet", trebuchetProjectiles, new ItemStack(Material.STRING), 122);
-    	trebuchet.xOffset = 3;
-    	trebuchet.yOffset = 3;
+        SiegeEngine trebuchet = new SiegeEngine("Trebuchet", trebuchetProjectiles, new ItemStack(Material.STRING), 122);
+        trebuchet.xOffset = 3;
+        trebuchet.yOffset = 3;
         trebuchet.placementOffsetY = 0.0;
-    	trebuchet.velocityPerFuel = 0.3f;
+        trebuchet.velocityPerFuel = 0.3f;
         trebuchet.shotAmount = 1;
         trebuchet.rotateStandHead = false;
         trebuchet.rotateSideways = true;
@@ -121,6 +122,7 @@ public class SiegeEngines extends JavaPlugin {
             123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139
         ));
         trebuchet.cycleThroughModelsBeforeFiring = true;
+        trebuchet.projectiles = trebuchetProjectiles;
         definedSiegeEngines.put(trebuchet.readyModelNumber, trebuchet);
         
         // Siege Cannon
@@ -129,6 +131,7 @@ public class SiegeEngines extends JavaPlugin {
         siegeCannonProjectiles.put(fireballShot.getAmmuinitionItem(), fireballShot);
         siegeCannonProjectiles.put(breachShot.getAmmuinitionItem(), breachShot);
         siegeCannonProjectiles.put(repeatingShot.getAmmuinitionItem(), repeatingShot);
+        siegeCannonProjectiles.put(scatterShot.getAmmuinitionItem(), scatterShot);
         siegeCannonProjectiles.put(scatterShot.getAmmuinitionItem(), scatterShot);
         
         SiegeEngine siegeCannon = new SiegeEngine("Siege Cannon", siegeCannonProjectiles, new ItemStack(Material.GUNPOWDER), 141);
@@ -139,6 +142,7 @@ public class SiegeEngines extends JavaPlugin {
         siegeCannon.firingModelNumbers = new ArrayList<Integer>();
         siegeCannon.rotateStandHead = true;
         siegeCannon.rotateSideways = true;
+        siegeCannon.projectiles = siegeCannonProjectiles;
         definedSiegeEngines.put(siegeCannon.readyModelNumber, siegeCannon);
 
         // Naval Cannon
@@ -157,6 +161,7 @@ public class SiegeEngines extends JavaPlugin {
         navalCannon.firingModelNumbers = new ArrayList<Integer>();
         navalCannon.rotateStandHead = true;
         navalCannon.rotateSideways = false;
+        navalCannon.projectiles = navalCannonProjectiles;
         definedSiegeEngines.put(navalCannon.readyModelNumber, navalCannon);
     }
 
