@@ -34,9 +34,9 @@ public class SiegeEngines extends JavaPlugin {
     
     // model id, defined seige engine types
     public static HashMap<Integer, SiegeEngine> definedSiegeEngines = new HashMap<Integer, SiegeEngine>();
-    // siege engine entity, siege engine object
+    // SiegeEngine entity, SiegeEngine object
     public static HashMap<UUID, SiegeEngine> activeSiegeEngines = new HashMap<UUID, SiegeEngine>();
-    // Player UUID, siege engine entity
+    // Player UUID, SiegeEngine entity
     public static HashMap<UUID, List<Entity>> siegeEngineEntitiesPerPlayer = new HashMap<UUID, List<Entity>>();
 
 	public static SiegeEngines getInstance() {

@@ -69,7 +69,7 @@ public class SiegeEngine implements Cloneable {
     public int baseStandModelNumber;
     
     // Passed parameters
-    public String name = "Unnammed Siege Engine";
+    public String name = "Unnammed SiegeEngine";
     public ItemStack fuelItem = new ItemStack(Material.GUNPOWDER);
     public HashMap<ItemStack, SiegeEngineProjectile> projectiles = new HashMap<>();
 	
@@ -364,11 +364,16 @@ public class SiegeEngine implements Cloneable {
         }
     
     @SuppressWarnings("deprecation")
-	public Boolean place(Entity player, Location l) {
+	public boolean place(Entity player, Location l) {
         l.add(0.5, 0, 0.5);
         NamespacedKey key = new NamespacedKey(SiegeEngines.getInstance(), "siege_engines");
         if (this == null || !this.enabled) {
             return false;
+        }
+        for (Entity ent : l.getWorld().getNearbyEntities(l,2.5d,2.5d,2.5d)) {
+            if (SiegeEngines.activeSiegeEngines.keySet().contains(ent.getUniqueId())) {
+                return false;
+            }
         }
         l.setY(l.getY() + 1);
         l.setDirection(player.getFacing().getDirection());

@@ -28,7 +28,7 @@ public class RotationHandler implements Listener {
     @EventHandler
     public void playerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
-        NamespacedKey key = new NamespacedKey(SiegeEngines.getInstance(), "cannons");
+        NamespacedKey key = new NamespacedKey(SiegeEngines.getInstance(), "siege_engines");
         if (SiegeEngines.siegeEngineEntitiesPerPlayer.containsKey(player.getUniqueId())) {
             ItemStack itemInHand = player.getInventory().getItemInMainHand();
             if (itemInHand != null) {

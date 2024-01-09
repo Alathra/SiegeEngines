@@ -37,7 +37,7 @@ public class SiegeEnginesCommand {
     }
 
     private void onExecute(CommandSender sender, CommandArguments args) {
-        sender.sendMessage(ColorParser.of("<yellow>Incorrect usage, /SiegeEngines get, /SiegeEngines reload").build());
+        sender.sendMessage(ColorParser.of("<yellow>Incorrect usage, /SiegeEngines get, /SiegeEngines getAll, /SiegeEngines reload").build());
     }
 
     private CommandAPICommand commandGet() {
@@ -70,7 +70,7 @@ public class SiegeEnginesCommand {
 
     private void onGet(CommandSender sender, CommandArguments args) throws WrapperCommandSyntaxException {
         if (!(args.get("equipmentid") instanceof String equipmentId))
-            throw CommandAPIBukkit.failWithAdventureComponent(ColorParser.of("<red>Invalid equipment id specified.").build());
+            throw CommandAPIBukkit.failWithAdventureComponent(ColorParser.of("<red>Invalid SiegeEngine id specified.").build());
 
         Player player = (Player) args.getOptional("target").orElse(sender);
 
@@ -100,13 +100,13 @@ public class SiegeEnginesCommand {
         definedSiegeEngines.clear();
         AddDefaults();
         for (SiegeEngine i : definedSiegeEngines.values()) {
-            sender.sendMessage(ColorParser.of("<yellow>Enabled Weapon : %s".formatted(i.name)).build());
-            sender.sendMessage(ColorParser.of("<yellow>Weapon Propellant/\"Fuel\" ItemStacks : %s".formatted(i.fuelItem)).build());
+            sender.sendMessage(ColorParser.of("<yellow>Enabled SiegeEngine : %s".formatted(i.name)).build());
+            sender.sendMessage(ColorParser.of("<yellow>SiegeEngine Propellant/\"Fuel\" ItemStacks : %s".formatted(i.fuelItem)).build());
             for (ItemStack proj : i.projectiles.keySet()) {
-                sender.sendMessage(ColorParser.of("<yellow>Weapon Projectile ItemStacks : %s".formatted(proj)).build());
+                sender.sendMessage(ColorParser.of("<yellow>SiegeEngine Projectile ItemStacks : %s".formatted(proj)).build());
             }
         }
-        sender.sendMessage("<yellow>Gunners Core configs reloaded");
+        sender.sendMessage("<yellow>SiegeEngine configs reloaded");
     }
 
     private void giveEquipment(Player player, SiegeEngine SiegeEquipment) {
