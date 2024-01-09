@@ -132,7 +132,7 @@ public class SiegeEngines extends JavaPlugin {
         siegeCannonProjectiles.put(breachShot.getAmmuinitionItem(), breachShot);
         siegeCannonProjectiles.put(repeatingShot.getAmmuinitionItem(), repeatingShot);
         siegeCannonProjectiles.put(scatterShot.getAmmuinitionItem(), scatterShot);
-        siegeCannonProjectiles.put(scatterShot.getAmmuinitionItem(), scatterShot);
+        siegeCannonProjectiles.put(fireworkCannon.getAmmuinitionItem(), fireworkCannon);
         
         SiegeEngine siegeCannon = new SiegeEngine("Siege Cannon", siegeCannonProjectiles, new ItemStack(Material.GUNPOWDER), 141);
         siegeCannon.shotAmount = 1;
