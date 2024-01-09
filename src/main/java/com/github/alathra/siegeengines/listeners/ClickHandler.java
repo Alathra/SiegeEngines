@@ -415,7 +415,6 @@ public class ClickHandler implements Listener {
 				if (siegeEngineEntities == null) {
 					return;
 				}
-				player.sendMessage("§eReloading Ammunition");
 
 				// for each siege engine entity currently being controlled by the player
 				for (Entity siegeEngineEntity : siegeEngineEntities) {
@@ -466,12 +465,13 @@ public class ClickHandler implements Listener {
 								}
 							}*/
 						if (!siegeEngine.hasAmmunition()) {
-							event.getPlayer().sendMessage("§eCould not load ammunition.");
+							player.sendMessage("§eCould not reload ammunition.");
+						} else {
+							player.sendMessage("§eReloaded ammunition!");
 						}
 					}
 				}
 
-				player.sendMessage("§eReloading Propellant");
 				for (Entity siegeEngineEntity : siegeEngineEntities) {
 					if ((siegeEngineEntity.isDead()))
 						continue;
@@ -503,7 +503,14 @@ public class ClickHandler implements Listener {
 							}
 						}
 						if (!siegeEngine.hasPropellant()) {
-							event.getPlayer().sendMessage("§eCould not load propellant.");
+							player.sendMessage("§eCould not load propellant.");
+						} else {
+							player.sendMessage("§eReloaded propellant");
+							if (!siegeEngine.canLoadFuel()) {
+								player.sendMessage("§ePropellant is Full! Level: §6("+siegeEngine.ammoHolder.loadedFuel+"/"+siegeEngine.maxFuel+")");
+							} else {
+								player.sendMessage("§ePropellant level is: §6("+siegeEngine.ammoHolder.loadedFuel+"/"+siegeEngine.maxFuel+")");
+							}
 						}
 					}
 				}

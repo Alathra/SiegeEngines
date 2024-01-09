@@ -14,7 +14,7 @@ public class Config {
 	// DEFAULTS
 	public static int configVersion = 1;
 	
-	public static Material controlItem  = Material.COMPASS;
+	public static Material controlItem  = Material.CLOCK;
 	
 	public static int controlDistance = 64;
 	
@@ -28,8 +28,8 @@ public class Config {
 		try {
 			controlItem = Material.getMaterial(config.getString("ControlItem"));
 		} catch (Exception e) {
-			SiegeEnginesLogger.warn("Control item material could not be found, defaulting to compass!");
-			controlItem = Material.COMPASS;
+			SiegeEnginesLogger.warn("Control item material could not be found, defaulting to clock!");
+			controlItem = Material.CLOCK;
 		}
 		
 		controlDistance = config.getInt("ControlDistance");
