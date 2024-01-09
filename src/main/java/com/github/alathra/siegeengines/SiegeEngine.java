@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.UUID;
 
 import com.github.alathra.siegeengines.projectile.EntityProjectile;
+import com.github.alathra.siegeengines.projectile.FireworkProjectile;
 import com.github.alathra.siegeengines.projectile.SiegeEngineProjectile;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -28,7 +29,7 @@ import org.jetbrains.annotations.NotNull;
 
 
 public class SiegeEngine implements Cloneable {
-	
+
 	// Core variables
 	public Boolean enabled;
 	public String id;
@@ -245,7 +246,6 @@ public class SiegeEngine implements Cloneable {
         float loadedFuel = ammoHolder.loadedFuel;
         ItemStack LoadedProjectile = ammoHolder.materialName;
 
-
         LivingEntity living = (LivingEntity) entity;
         if (living == null || living.getEquipment() == null || living.getEquipment().getHelmet() == null || living.getEquipment().getHelmet().getItemMeta() == null) {
             return;
@@ -259,7 +259,8 @@ public class SiegeEngine implements Cloneable {
         }
         ammoHolder.loadedFuel = 0;
         ammoHolder.loadedProjectile = 0;
-        ammoHolder.materialName = new ItemStack(Material.AIR, 1);
+        ammoHolder.materialName = new ItemStack(Material.AIR);
+
 
         worldName = entity.getWorld().getName();
         nextShotTime = System.currentTimeMillis() + 1000;
@@ -319,6 +320,11 @@ public class SiegeEngine implements Cloneable {
                                 SiegeEngineProjectile projType = projectiles.get(LoadedProjectile);
                                 if (projType == null) return;
                                 projType.Shoot(player, entity, this.GetFireLocation(living), loadedFuel * velocityPerFuel);
+                                if (LoadedProjectile.getType() == Material.FIREWORK_ROCKET) {
+                                    projectiles.remove(LoadedProjectile);
+                                    projectiles.remove(SiegeEnginesUtil.DEFAULT_ROCKET);
+                                    projectiles.put(SiegeEnginesUtil.DEFAULT_ROCKET, FireworkProjectile.getDefaultRocketShot(SiegeEnginesUtil.DEFAULT_ROCKET));
+                                }
                             }
                             nextModelNumber += 1;
 
@@ -347,6 +353,11 @@ public class SiegeEngine implements Cloneable {
                     SiegeEngineProjectile projType = projectiles.get(LoadedProjectile);
                     if (projType == null) return;
                     projType.Shoot(player, entity, this.GetFireLocation(living), loadedFuel * velocityPerFuel);
+                    if (LoadedProjectile.getType() == Material.FIREWORK_ROCKET) {
+                        projectiles.remove(LoadedProjectile);
+                        projectiles.remove(SiegeEnginesUtil.DEFAULT_ROCKET);
+                        projectiles.put(SiegeEnginesUtil.DEFAULT_ROCKET, FireworkProjectile.getDefaultRocketShot(SiegeEnginesUtil.DEFAULT_ROCKET));
+                    }
                 }, (long) delay);
 
             }

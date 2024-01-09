@@ -34,12 +34,11 @@ public class FireworkProjectile extends SiegeEngineProjectile {
     
     public FireworkProjectile(ItemStack ammunitionItem) {
 		super(ProjectileType.EXPLOSIVE, ammunitionItem);
-		
 		// Defaults
 	}
     
-    public static FireworkProjectile getDefaultRocketShot() {
-    	FireworkProjectile fireProj = new FireworkProjectile(new ItemStack(Material.FIREWORK_ROCKET));
+    public static FireworkProjectile getDefaultRocketShot(ItemStack rocketItem) {
+    	FireworkProjectile fireProj = new FireworkProjectile(rocketItem);
         fireProj.entityCount = 1;
         fireProj.entityType = EntityType.FIREWORK;
         fireProj.particleType = Particle.WHITE_ASH;

@@ -65,6 +65,7 @@ public class SiegeEngines extends JavaPlugin {
                 System.out.println("§eWeapon Projectile ItemStacks : " + proj);
             }
         }
+        this.saveDefaultConfig();
         commandHandler.onEnable();
     }
 
@@ -98,7 +99,7 @@ public class SiegeEngines extends JavaPlugin {
         SiegeEngineProjectile repeatingShot = ExplosiveProjectile.getDefaultRepeatingShot();
         SiegeEngineProjectile breachShot = ExplosiveProjectile.getDefaultBreachShot();
         SiegeEngineProjectile scatterShot = EntityProjectile.getDefaultScatterShot();
-        SiegeEngineProjectile fireworkCannon = FireworkProjectile.getDefaultRocketShot();
+        SiegeEngineProjectile rocketShot = FireworkProjectile.getDefaultRocketShot(SiegeEnginesUtil.DEFAULT_ROCKET);
         
         // Trebuchet
         HashMap<ItemStack, SiegeEngineProjectile> trebuchetProjectiles = new HashMap<>();
@@ -132,7 +133,7 @@ public class SiegeEngines extends JavaPlugin {
         siegeCannonProjectiles.put(breachShot.getAmmuinitionItem(), breachShot);
         siegeCannonProjectiles.put(repeatingShot.getAmmuinitionItem(), repeatingShot);
         siegeCannonProjectiles.put(scatterShot.getAmmuinitionItem(), scatterShot);
-        siegeCannonProjectiles.put(fireworkCannon.getAmmuinitionItem(), fireworkCannon);
+        siegeCannonProjectiles.put(rocketShot.getAmmuinitionItem(), rocketShot);
         
         SiegeEngine siegeCannon = new SiegeEngine("Siege Cannon", siegeCannonProjectiles, new ItemStack(Material.GUNPOWDER), 141);
         siegeCannon.shotAmount = 1;
@@ -147,11 +148,12 @@ public class SiegeEngines extends JavaPlugin {
 
         // Naval Cannon
         HashMap<ItemStack, SiegeEngineProjectile> navalCannonProjectiles = new HashMap<>();
-        siegeCannonProjectiles.put(stoneShot.getAmmuinitionItem(), stoneShot);
-        siegeCannonProjectiles.put(fireballShot.getAmmuinitionItem(), fireballShot);
-        siegeCannonProjectiles.put(breachShot.getAmmuinitionItem(), breachShot);
-        siegeCannonProjectiles.put(repeatingShot.getAmmuinitionItem(), repeatingShot);
-        siegeCannonProjectiles.put(scatterShot.getAmmuinitionItem(), scatterShot);
+        navalCannonProjectiles.put(stoneShot.getAmmuinitionItem(), stoneShot);
+        navalCannonProjectiles.put(fireballShot.getAmmuinitionItem(), fireballShot);
+        navalCannonProjectiles.put(breachShot.getAmmuinitionItem(), breachShot);
+        navalCannonProjectiles.put(repeatingShot.getAmmuinitionItem(), repeatingShot);
+        navalCannonProjectiles.put(scatterShot.getAmmuinitionItem(), scatterShot);
+        navalCannonProjectiles.put(rocketShot.getAmmuinitionItem(), rocketShot);
         
         SiegeEngine navalCannon = new SiegeEngine("Naval Cannon", navalCannonProjectiles, new ItemStack(Material.GUNPOWDER), 142);
         navalCannon.placementOffsetY = -1;

@@ -238,22 +238,114 @@ public class ClickHandler implements Listener {
 		return contents;
 	}
 	
+	private boolean pulledAmmoFromPlayer(Player state, SiegeEngine siegeEngine) {
+		for (ItemStack inventoryItem : state.getInventory().getContents()) {
+			for (ItemStack stack : siegeEngine.projectiles.keySet()) {
+				if (siegeEngine.hasAmmunition()) {
+					return true;
+				}
+				if (!(SiegeEnginesUtil.hasItem(state.getInventory(), stack)) && (stack.getType() != Material.FIREWORK_ROCKET))
+					continue;
+				if (stack.getType() != Material.FIREWORK_ROCKET && stack.isSimilar(inventoryItem)
+						&& siegeEngine.ammoHolder.loadedProjectile == 0) {
+					siegeEngine.ammoHolder.loadedProjectile = 1;
+					siegeEngine.ammoHolder.materialName = stack;
+					if (inventoryItem.getAmount() - 1 > 0) {
+						inventoryItem.setAmount(inventoryItem.getAmount() - 1);
+					} else {
+						inventoryItem.setType(Material.AIR);
+						inventoryItem.setAmount(0);
+					}
+					return true;
+				} 
+				if (stack.getType() == Material.FIREWORK_ROCKET && inventoryItem.getType() == stack.getType()
+						&& siegeEngine.ammoHolder.loadedProjectile == 0) {
+					siegeEngine.ammoHolder.loadedProjectile = 1;
+					siegeEngine.ammoHolder.materialName = inventoryItem;
+					if (inventoryItem.getAmount() - 1 > 0) {
+						inventoryItem.setAmount(inventoryItem.getAmount() - 1);
+					} else {
+						inventoryItem.setType(Material.AIR);
+						inventoryItem.setAmount(0);
+					}
+					siegeEngine.projectiles.put(inventoryItem, new FireworkProjectile(inventoryItem.clone()));
+					return true;
+				}
+				continue;
+			}
+		}
+		return false;
+	}
+	
 	private boolean pulledAmmoFromContainer(Location loc, SiegeEngine siegeEngine) {
-		
 		if (loc.getBlock().getType() == Material.BARREL
 				|| loc.getBlock().getType() == Material.CHEST) {
 			Block inv = loc.getBlock();
 			Container state = ((Container) inv.getState());
-			for (ItemStack stack : siegeEngine.projectiles.keySet()) {
+			for (ItemStack inventoryItem : state.getInventory().getContents()) {
+				for (ItemStack stack : siegeEngine.projectiles.keySet()) {
+					if (siegeEngine.hasAmmunition()) {
+						return true;
+					}
+					if (!(SiegeEnginesUtil.hasItem(state.getInventory(), stack)) && (stack.getType() != Material.FIREWORK_ROCKET))
+						continue;
+					if (stack.getType() != Material.FIREWORK_ROCKET && stack.isSimilar(inventoryItem)
+							&& siegeEngine.ammoHolder.loadedProjectile == 0) {
+						siegeEngine.ammoHolder.loadedProjectile = 1;
+						siegeEngine.ammoHolder.materialName = stack;
+						if (inventoryItem.getAmount() - 1 > 0) {
+							inventoryItem.setAmount(inventoryItem.getAmount() - 1);
+						} else {
+							inventoryItem.setType(Material.AIR);
+							inventoryItem.setAmount(0);
+						}
+						return true;
+					} 
+					if (stack.getType() == Material.FIREWORK_ROCKET && inventoryItem.getType() == stack.getType()
+							&& siegeEngine.ammoHolder.loadedProjectile == 0) {
+						siegeEngine.ammoHolder.loadedProjectile = 1;
+						siegeEngine.ammoHolder.materialName = inventoryItem;
+						if (inventoryItem.getAmount() - 1 > 0) {
+							inventoryItem.setAmount(inventoryItem.getAmount() - 1);
+						} else {
+							inventoryItem.setType(Material.AIR);
+							inventoryItem.setAmount(0);
+						}
+						siegeEngine.projectiles.put(inventoryItem, new FireworkProjectile(inventoryItem.clone()));
+						return true;
+					}
+					continue;
+				}
+			}
+		}
+		return false;
+			/*for (ItemStack stack : siegeEngine.projectiles.keySet()) {
 				stack.setAmount(1);
 				if (siegeEngine.hasAmmunition()) {
 					return false;
 				}
 				if (stack.getType() == Material.FIREWORK_ROCKET) {
-					if (((Inventory) state.getInventory()).first(Material.FIREWORK_ROCKET) < 0) {
+					int slotId = ((Inventory) state.getInventory()).first(Material.FIREWORK_ROCKET);
+					if (slotId < 0) {
 						continue;
 					}
-					((Inventory) state.getInventory()).setContents(updateContents((Inventory) state.getInventory(), stack, 1));
+					ItemStack rocketItem = ((Inventory) state.getInventory()).getItem(slotId);
+					if ((rocketItem.getAmount()-1) < 1) {
+						((Inventory) state.getInventory()).setItem(slotId,new ItemStack(Material.AIR));
+					} else {
+						rocketItem.setAmount(rocketItem.getAmount()-1);
+						((Inventory) state.getInventory()).setItem(slotId,rocketItem);
+					}
+					rocketItem = rocketItem.clone();
+					rocketItem.setAmount(1);
+					if (siegeEngine.projectiles.keySet().contains(rocketItem)) {
+						siegeEngine.ammoHolder.loadedProjectile = 1;
+						siegeEngine.ammoHolder.materialName = stack;
+						return true;
+					}
+					FireworkProjectile rocketProj = FireworkProjectile.getDefaultRocketShot(rocketItem);
+					siegeEngine.projectiles.put(rocketItem, rocketProj);
+					return true;
 				} else {
 					if (!SiegeEnginesUtil.hasItem((Inventory) state.getInventory(), stack)) {
 						continue;
@@ -263,9 +355,7 @@ public class ClickHandler implements Listener {
 				siegeEngine.ammoHolder.loadedProjectile = 1;
 				siegeEngine.ammoHolder.materialName = stack;
 				return true;
-			}
-		}
-		return false;
+			}*/
 	}
 	
 	private boolean pulledPropellantFromContainer(Location loc, SiegeEngine siegeEngine) {
@@ -343,17 +433,23 @@ public class ClickHandler implements Listener {
 						}
 						// Checks for ammo in nearby container and loads if found
 						if(!pulledAmmoFromContainer(siegeEngine.entity.getLocation(), siegeEngine)) {
+							siegeEngine.ammoHolder.loadedProjectile = 1;
 							continue;
 						}
 						if(!pulledAmmoFromContainer(siegeEngine.entity.getLocation().getBlock().getRelative(0, -1, 0).getLocation(), siegeEngine)) {
+							siegeEngine.ammoHolder.loadedProjectile = 1;
 							continue;
 						}
 						if(!pulledAmmoFromContainer(siegeEngine.entity.getLocation().getBlock().getRelative(0, 1, 0).getLocation(), siegeEngine)) {
 							continue;
 						}
 						// Search player's inv for ammo because it was not found in a nearby container
-						if (!siegeEngine.hasAmmunition()) {
-							for (ItemStack inventoryItem : event.getPlayer().getInventory().getContents()) {
+						if (!pulledAmmoFromPlayer(player,siegeEngine)) {
+							continue;
+						}
+							// Old Non-Firework Compatible
+
+							/*for (ItemStack inventoryItem : event.getPlayer().getInventory().getContents()) {
 								for (ItemStack stack : siegeEngine.projectiles.keySet()) {
 									if (siegeEngine.hasAmmunition()) {
 										continue;
@@ -368,8 +464,7 @@ public class ClickHandler implements Listener {
 										break;
 									}
 								}
-							}
-						}
+							}*/
 						if (!siegeEngine.hasAmmunition()) {
 							event.getPlayer().sendMessage("§eCould not load ammunition.");
 						}
