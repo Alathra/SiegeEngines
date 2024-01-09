@@ -882,14 +882,13 @@ public class ClickHandler implements Listener {
 			return;
 		}
 		if (entity.getType() == EntityType.ARMOR_STAND) {
+			if (itemInHand.getType() == Config.controlItem) {
+				player.sendMessage("§eNow commanding this SiegeEngine.");
+				TakeControl(player, entity);
+			}
 			if (SiegeEngines.activeSiegeEngines.containsKey(entity.getUniqueId())) {
 				SiegeEngine equipment = SiegeEngines.activeSiegeEngines.get(entity.getUniqueId());
 				event.setCancelled(true);
-				if (itemInHand.getType() == Config.controlItem) {
-					player.sendMessage("§eNow controlling this SiegeEngine.");
-					TakeControl(player, entity);
-					return;
-				}
 				if (player.isSneaking() && (itemInHand.getType() != Config.controlItem)) {
 					if (equipment.canLoadFuel()) {
 						ItemStack stack = equipment.fuelItem;

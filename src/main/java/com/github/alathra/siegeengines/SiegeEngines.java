@@ -108,11 +108,11 @@ public class SiegeEngines extends JavaPlugin {
         trebuchetProjectiles.put(breachShot.getAmmuinitionItem(), breachShot);
         
         SiegeEngine trebuchet = new SiegeEngine("Trebuchet", trebuchetProjectiles, new ItemStack(Material.STRING), 122);
+        trebuchet.shotAmount = 1;
         trebuchet.xOffset = 3;
         trebuchet.yOffset = 3;
         trebuchet.placementOffsetY = 0.0;
         trebuchet.velocityPerFuel = 0.3f;
-        trebuchet.shotAmount = 1;
         trebuchet.rotateStandHead = false;
         trebuchet.rotateSideways = true;
         trebuchet.readyModelNumber = 122;
@@ -156,8 +156,8 @@ public class SiegeEngines extends JavaPlugin {
         navalCannonProjectiles.put(rocketShot.getAmmuinitionItem(), rocketShot);
         
         SiegeEngine navalCannon = new SiegeEngine("Naval Cannon", navalCannonProjectiles, new ItemStack(Material.GUNPOWDER), 142);
-        navalCannon.placementOffsetY = -1;
         navalCannon.shotAmount = 1;
+        navalCannon.placementOffsetY = -1;
         navalCannon.readyModelNumber = 142;
         navalCannon.modelNumberToFireAt = 142;
         navalCannon.firingModelNumbers = new ArrayList<Integer>();
