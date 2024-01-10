@@ -320,11 +320,6 @@ public class SiegeEngine implements Cloneable {
                                 SiegeEngineProjectile projType = projectiles.get(LoadedProjectile);
                                 if (projType == null) return;
                                 projType.Shoot(player, entity, this.GetFireLocation(living), loadedFuel * velocityPerFuel);
-                                if (LoadedProjectile.getType() == Material.FIREWORK_ROCKET) {
-                                    projectiles.remove(LoadedProjectile);
-                                    projectiles.remove(SiegeEnginesUtil.DEFAULT_ROCKET);
-                                    projectiles.put(SiegeEnginesUtil.DEFAULT_ROCKET, FireworkProjectile.getDefaultRocketShot(SiegeEnginesUtil.DEFAULT_ROCKET));
-                                }
                             }
                             nextModelNumber += 1;
 
@@ -353,11 +348,6 @@ public class SiegeEngine implements Cloneable {
                     SiegeEngineProjectile projType = projectiles.get(LoadedProjectile);
                     if (projType == null) return;
                     projType.Shoot(player, entity, this.GetFireLocation(living), loadedFuel * velocityPerFuel);
-                    if (LoadedProjectile.getType() == Material.FIREWORK_ROCKET) {
-                        projectiles.remove(LoadedProjectile);
-                        projectiles.remove(SiegeEnginesUtil.DEFAULT_ROCKET);
-                        projectiles.put(SiegeEnginesUtil.DEFAULT_ROCKET, FireworkProjectile.getDefaultRocketShot(SiegeEnginesUtil.DEFAULT_ROCKET));
-                    }
                 }, (long) delay);
 
             }

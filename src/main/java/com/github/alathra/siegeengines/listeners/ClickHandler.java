@@ -272,7 +272,7 @@ public class ClickHandler implements Listener {
 						inventoryItem.setType(Material.AIR);
 						inventoryItem.setAmount(0);
 					}
-					siegeEngine.projectiles.put(inventoryItem, new FireworkProjectile(inventoryItem.clone()));
+					siegeEngine.projectiles.put(inventoryItem, FireworkProjectile.getDefaultRocketShot(inventoryItem.clone()));
 					return true;
 				}
 				continue;
@@ -292,7 +292,7 @@ public class ClickHandler implements Listener {
 					if (siegeEngine.hasAmmunition()) {
 						return true;
 					}
-					if (!(SiegeEnginesUtil.hasItem(state.getInventory(), stack)) && (stack.getType() != Material.FIREWORK_ROCKET))
+					if (!(stack.isSimilar(inventoryItem)) && (stack.getType() != Material.FIREWORK_ROCKET))
 						continue;
 					if (stack.getType() != Material.FIREWORK_ROCKET && stack.isSimilar(inventoryItem)
 							&& siegeEngine.ammoHolder.loadedProjectile == 0) {
@@ -316,7 +316,7 @@ public class ClickHandler implements Listener {
 							inventoryItem.setType(Material.AIR);
 							inventoryItem.setAmount(0);
 						}
-						siegeEngine.projectiles.put(inventoryItem, new FireworkProjectile(inventoryItem.clone()));
+						siegeEngine.projectiles.put(inventoryItem, FireworkProjectile.getDefaultRocketShot(inventoryItem.clone()));
 						return true;
 					}
 					continue;
