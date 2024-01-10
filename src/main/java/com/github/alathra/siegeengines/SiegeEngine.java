@@ -251,7 +251,7 @@ public class SiegeEngine implements Cloneable {
             return;
         }
 
-        if (living.getEquipment().getHelmet().getItemMeta().getCustomModelData() != readyModelNumber) {
+        if (living.getEquipment().getHelmet().getItemMeta().getCustomModelData() != readyModelNumber || ammoHolder.loadedProjectile == 0) {
             if (player instanceof Player) {
                 ((Player) player).sendMessage("§eCannot fire yet!");
             }
@@ -315,9 +315,14 @@ public class SiegeEngine implements Cloneable {
                             SiegeEnginesUtil.UpdateEntityIdModel(entity, modelData, worldName);
                             if (modelData == modelNumberToFireAt) {
                                 //	player.sendMessage("§efiring" + modelData);
+                                SiegeEngineProjectile projType = null;
                                 if (LoadedProjectile == null) return;
                                 if (LoadedProjectile.getType() == Material.AIR) return;
-                                SiegeEngineProjectile projType = projectiles.get(LoadedProjectile);
+                                if (LoadedProjectile.getType() == Material.FIREWORK_ROCKET) {
+                                    projType = FireworkProjectile.getDefaultRocketShot(LoadedProjectile);
+                                } else {
+                                    projType = projectiles.get(LoadedProjectile);
+                                }
                                 if (projType == null) return;
                                 projType.Shoot(player, entity, this.GetFireLocation(living), loadedFuel * velocityPerFuel);
                             }
@@ -343,9 +348,14 @@ public class SiegeEngine implements Cloneable {
                     loc.add(direction);
 
                     nextModelNumber = 0;
+                    SiegeEngineProjectile projType = null;
                     if (LoadedProjectile == null) return;
                     if (LoadedProjectile.getType() == Material.AIR) return;
-                    SiegeEngineProjectile projType = projectiles.get(LoadedProjectile);
+                    if (LoadedProjectile.getType() == Material.FIREWORK_ROCKET) {
+                        projType = FireworkProjectile.getDefaultRocketShot(LoadedProjectile);
+                    } else {
+                        projType = projectiles.get(LoadedProjectile);
+                    }
                     if (projType == null) return;
                     projType.Shoot(player, entity, this.GetFireLocation(living), loadedFuel * velocityPerFuel);
                 }, (long) delay);
