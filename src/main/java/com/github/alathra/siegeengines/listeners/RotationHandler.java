@@ -38,6 +38,8 @@ public class RotationHandler implements Listener {
                     return;
                 }
                 final List<Entity> list = new ArrayList<>(SiegeEngines.siegeEngineEntitiesPerPlayer.get(player.getUniqueId()));
+                
+                final List<Entity> concurrentCopyFix = new ArrayList<>(list);
                 for (Entity ent : list) {
                     if (ent != null) {
                         SiegeEngine equipment = SiegeEngines.activeSiegeEngines.get(ent.getUniqueId());
@@ -85,7 +87,8 @@ public class RotationHandler implements Listener {
                             living.teleport(loc);
                             equipment.ShowFireLocation(player);
                         } else {
-                            SiegeEngines.siegeEngineEntitiesPerPlayer.get(player.getUniqueId()).remove(ent);
+                            concurrentCopyFix.remove(ent);
+                            SiegeEngines.siegeEngineEntitiesPerPlayer.put(player.getUniqueId(), concurrentCopyFix);
                             continue;
                         }
                     }

@@ -37,7 +37,7 @@ public class SiegeEnginesCommand {
     }
 
     private void onExecute(CommandSender sender, CommandArguments args) {
-        sender.sendMessage(ColorParser.of("<yellow>Incorrect usage, /SiegeEngines get, /SiegeEngines getAll, /SiegeEngines reload").build());
+        sender.sendMessage(ColorParser.of("<yellow>Incorrect usage, /siegeengines get, /siegeengines getAll, /siegeengines reload").build());
     }
 
     private CommandAPICommand commandGet() {

@@ -89,9 +89,10 @@ public class FireworkProjectile extends SiegeEngineProjectile {
                 if (rocketItem.getItemMeta() instanceof FireworkMeta) {
                     firework.setFireworkMeta((FireworkMeta)rocketItem.getItemMeta());
                 }
+                int fuse = firework.getMaxLife();
                 int itemPower = 1+firework.getFireworkMeta().getPower();
-                itemPower *= firework.getMaxLife();
-                firework.setMaxLife(itemPower);
+                fuse = fuse + (40*itemPower);
+                firework.setMaxLife(fuse);
             }
         }
         if (playSound) {

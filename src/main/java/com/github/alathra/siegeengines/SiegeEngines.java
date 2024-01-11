@@ -18,6 +18,7 @@ import org.bukkit.metadata.MetadataValueAdapter;
 
 import com.github.alathra.siegeengines.listeners.ClickHandler;
 import com.github.alathra.siegeengines.listeners.RotationHandler;
+import com.github.alathra.siegeengines.listeners.PlayerHandler;
 import com.github.alathra.siegeengines.projectile.EntityProjectile;
 import com.github.alathra.siegeengines.projectile.FireworkProjectile;
 import com.github.alathra.siegeengines.projectile.ExplosiveProjectile;
@@ -52,11 +53,12 @@ public class SiegeEngines extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        getServer().getPluginManager().registerEvents(new RotationHandler(), this);
-        getServer().getPluginManager().registerEvents(new ClickHandler(), this);
         activeSiegeEngines.clear();
         siegeEngineEntitiesPerPlayer.clear();
         definedSiegeEngines.clear();
+        getServer().getPluginManager().registerEvents(new RotationHandler(), this);
+        getServer().getPluginManager().registerEvents(new ClickHandler(), this);
+        getServer().getPluginManager().registerEvents(new PlayerHandler(), this);
         AddDefaults();
         for (SiegeEngine i : definedSiegeEngines.values()) {
             System.out.println("§eEnabled Weapon : " + i.name);
@@ -78,7 +80,6 @@ public class SiegeEngines extends JavaPlugin {
                 ItemStack item = new ItemStack(Material.CARVED_PUMPKIN);
                 ItemMeta meta = item.getItemMeta();
                 siegeEngine.ammoHolder = new SiegeEngineAmmoHolder();
-
                 meta.setCustomModelData(siegeEngine.readyModelNumber);
                 meta.setDisplayName("§e" + siegeEngine.name + " Item");
                 List<String> Lore = new ArrayList<String>();
@@ -92,7 +93,7 @@ public class SiegeEngines extends JavaPlugin {
     }
 
     public static void AddDefaults() {
-        
+
         // Predefined projectiles with default values
         SiegeEngineProjectile fireballShot = EntityProjectile.getDefaultFireballShot();
         SiegeEngineProjectile stoneShot = ExplosiveProjectile.getDefaultStoneShot();
@@ -100,13 +101,13 @@ public class SiegeEngines extends JavaPlugin {
         SiegeEngineProjectile breachShot = ExplosiveProjectile.getDefaultBreachShot();
         SiegeEngineProjectile scatterShot = EntityProjectile.getDefaultScatterShot();
         SiegeEngineProjectile rocketShot = FireworkProjectile.getDefaultRocketShot(SiegeEnginesUtil.DEFAULT_ROCKET);
-        
+
         // Trebuchet
         HashMap<ItemStack, SiegeEngineProjectile> trebuchetProjectiles = new HashMap<>();
         trebuchetProjectiles.put(stoneShot.getAmmuinitionItem(), stoneShot);
         trebuchetProjectiles.put(fireballShot.getAmmuinitionItem(), fireballShot);
         trebuchetProjectiles.put(breachShot.getAmmuinitionItem(), breachShot);
-        
+
         SiegeEngine trebuchet = new SiegeEngine("Trebuchet", trebuchetProjectiles, new ItemStack(Material.STRING), 122);
         trebuchet.shotAmount = 1;
         trebuchet.xOffset = 3;
@@ -125,7 +126,7 @@ public class SiegeEngines extends JavaPlugin {
         trebuchet.cycleThroughModelsBeforeFiring = true;
         trebuchet.projectiles = trebuchetProjectiles;
         definedSiegeEngines.put(trebuchet.readyModelNumber, trebuchet);
-        
+
         // Siege Cannon
         HashMap<ItemStack, SiegeEngineProjectile> siegeCannonProjectiles = new HashMap<>();
         siegeCannonProjectiles.put(stoneShot.getAmmuinitionItem(), stoneShot);
