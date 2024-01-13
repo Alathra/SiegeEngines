@@ -52,7 +52,7 @@ public class SiegeEngines extends JavaPlugin {
     @Override
     public void onEnable() {
     	this.saveDefaultConfig();
-    	Config.initConfigVals();
+    	Config.reload();
         activeSiegeEngines.clear();
         siegeEngineEntitiesPerPlayer.clear();
         definedSiegeEngines.clear();

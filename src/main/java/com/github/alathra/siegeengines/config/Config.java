@@ -130,7 +130,10 @@ public class Config {
 	}
 
 	private static void loadProjectilesConfig() {
+		projectileMap.clear();
+		
 		for (String projectileName : config.getConfigurationSection("Projectiles").getKeys(false)) {
+			
 			ProjectileType projectileType = null;
 			try {
 				projectileType = ProjectileType
@@ -140,44 +143,41 @@ public class Config {
 						.warn("Could not load projectile - " + projectileName + " likely due to a config error!");
 				continue;
 			}
-
-			projectileMap.clear();
 			
 			try {
 				switch (projectileType) {
 				case EXPLOSIVE:
-					SiegeEnginesLogger.info(projectileName);
 					ExplosiveProjectile explosiveProjectile = new ExplosiveProjectile(new ItemStack(
 							Material.getMaterial(config.getString("Projectiles." + projectileName + ".AmmoItem"))));
 					explosiveProjectile.explodePower = (float) config.getDouble("Projectiles." + projectileName + ".ExplodePower");
 					explosiveProjectile.inaccuracy = (float) config.getDouble("Projectiles." + projectileName + ".Inaccuracy");
 					explosiveProjectile.projectilesCount = config.getInt("Projectiles." + projectileName + ".ProjectileCount");
 					projectileMap.put(projectileName, explosiveProjectile);
+					break;
 				case ENTITY:
-					SiegeEnginesLogger.info(projectileName);
 					EntityProjectile entityProjectile = new EntityProjectile(new ItemStack(
 							Material.getMaterial(config.getString("Projectiles." + projectileName + ".AmmoItem"))));
 					entityProjectile.inaccuracy = (float) config.getDouble("Projectiles." + projectileName + ".Inaccuracy");
 					entityProjectile.entityCount = config.getInt("Projectiles." + projectileName + ".EntityCount");
-					entityProjectile.entityType = EntityType.valueOf(config.getString("Projectiles." + projectileName + ".EntityType"));
+					entityProjectile.entityType = EntityType.valueOf(config.getString("Projectiles." + projectileName + ".EntityShotType"));
 					projectileMap.put(projectileName, entityProjectile);
+					break;
 				case FIREWORK:
-					SiegeEnginesLogger.info(projectileName);
 					FireworkProjectile fireworkProjectile = new FireworkProjectile(SiegeEnginesUtil.DEFAULT_ROCKET);
 					fireworkProjectile.inaccuracy = (float) config.getDouble("Projectiles." + projectileName + ".Inaccuracy");
 					fireworkProjectile.entityCount = config.getInt("Projectiles." + projectileName + ".EntityCount");
 					fireworkProjectile.delayTime = config.getInt("Projectiles." + projectileName + ".EntityCount");
 					if (fireworkProjectile.delayTime <= 0) {
-						fireworkProjectile.delayedFire = false;
+					fireworkProjectile.delayedFire = false;
 					} else {
 						fireworkProjectile.delayedFire = true;
 					}
 					projectileMap.put(projectileName, fireworkProjectile);
+					break;
 				default:
 					continue;
 				}
-			}
-			catch(Exception e) {
+			} catch(Exception e) {
 				e.printStackTrace();
 			}
 		}

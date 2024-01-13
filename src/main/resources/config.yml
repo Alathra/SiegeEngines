@@ -33,37 +33,37 @@ AutoReload: false
 
 Projectiles:
   StoneShot:
-    ProjectileType: EXPLOSIVE
+    ProjectileType: "EXPLOSIVE"
     ExplodePower: 1.0
     Inaccuracy: 0.3
     ProjectileCount: 1
-    AmmoItem: COBBLESTONE
+    AmmoItem: "COBBLESTONE"
   BreachShot:
-    ProjectileType: EXPLOSIVE
+    ProjectileType: "EXPLOSIVE"
     ExplodePower: 3.0
     Inaccuracy: 0.3
     ProjectileCount: 1
-    AmmoItem: IRON_BLOCK
+    AmmoItem: "IRON_BLOCK"
   RepeatingShot:
-    ProjectileType: EXPLOSIVE
+    ProjectileType: "EXPLOSIVE"
     ExplodePower: 1.0
     Inaccuracy: 0.45
     ProjectileCount: 5
-    AmmoItem: TNT
+    AmmoItem: "TNT"
   ScatterShot:
-    ProjectileType: ENTITY
+    ProjectileType: "ENTITY"
     Inaccuracy: 0.325
     EntityCount: 24
-    EntityType: ARROW
-    AmmoItem: GRAVEL
+    EntityShotType: "ARROW"
+    AmmoItem: "GRAVEL"
   FireShot:
-    ProjectileType: ENTITY
+    ProjectileType: "ENTITY"
     Inaccuracy: 0.75
     EntityCount: 4
-    EntityType: SMALL_FIREBALL
-    AmmoItem: MAGMA_BLOCK
+    EntityShotType: "SMALL_FIREBALL"
+    AmmoItem: "MAGMA_BLOCK"
   FireworkShot:
-    ProjectileType: FIREWORK
+    ProjectileType: "FIREWORK"
     Inaccuracy: 0.125
     EntityCount: 1
     Delay: 6

@@ -407,7 +407,7 @@ public class ClickHandler implements Listener {
 	}
 
 	@EventHandler
-	public void interact(PlayerInteractEvent event, ItemStack inventoryItem) {
+	public void interact(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
 
 		ItemStack ItemInHand = event.getPlayer().getInventory().getItemInMainHand();
