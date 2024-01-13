@@ -19,3 +19,84 @@ ControlDistance: 64
 
 # The maximum distance the player can be away from the SiegeEngine before rotation control is terminated
 RotateDistance: 32
+
+# The maximum siege engines a player can control at the same time
+MaxSiegeEnginesControlled: 5
+
+# The auto-reload feature by shift-clicking
+AutoReload: false
+
+
+# ======================================
+# |       SiegeEngine Options          |
+# ======================================
+
+Projectiles:
+  StoneShot:
+    ProjectileType: EXPLOSIVE
+    ExplodePower: 1.0
+    Inaccuracy: 0.3
+    ProjectileCount: 1
+    AmmoItem: COBBLESTONE
+  BreachShot:
+    ProjectileType: EXPLOSIVE
+    ExplodePower: 3.0
+    Inaccuracy: 0.3
+    ProjectileCount: 1
+    AmmoItem: IRON_BLOCK
+  RepeatingShot:
+    ProjectileType: EXPLOSIVE
+    ExplodePower: 1.0
+    Inaccuracy: 0.45
+    ProjectileCount: 5
+    AmmoItem: TNT
+  ScatterShot:
+    ProjectileType: ENTITY
+    Inaccuracy: 0.325
+    EntityCount: 24
+    EntityType: ARROW
+    AmmoItem: GRAVEL
+  FireShot:
+    ProjectileType: ENTITY
+    Inaccuracy: 0.75
+    EntityCount: 4
+    EntityType: SMALL_FIREBALL
+    AmmoItem: MAGMA_BLOCK
+  FireworkShot:
+    ProjectileType: FIREWORK
+    Inaccuracy: 0.125
+    EntityCount: 1
+    Delay: 6
+
+SiegeEngines:
+  Trebuchet:
+    ShotAmount: 1
+    VelocityPerFuel: 0.3
+    MaxFuel: 5
+    FuelItem: STRING
+    Projectiles:
+      - StoneShot
+      - BreachShot
+      - FireShot
+  SiegeCannon:
+    ShotAmount: 1
+    VelocityPerFuel: 1.0125
+    MaxFuel: 5
+    FuelItem: GUNPOWDER
+    Projectiles:
+      - StoneShot
+      - ScatterShot
+      - FireShot
+      - FireworkShot
+  NavalCannon:
+    ShotAmount: 1
+    VelocityPerFuel: 1.0125
+    MaxFuel: 5
+    FuelItem: GUNPOWDER
+    Projectiles:
+      - StoneShot
+      - RepeatingShot
+      - BreachShot
+      - FireShot
+      - FireworkShot
+    

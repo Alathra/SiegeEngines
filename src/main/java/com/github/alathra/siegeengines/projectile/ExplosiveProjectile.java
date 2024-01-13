@@ -11,7 +11,6 @@ import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Snowball;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
@@ -20,9 +19,9 @@ public class ExplosiveProjectile extends SiegeEngineProjectile {
 	
 	// Defaults
     public Boolean placeBlocks = false;
-    public Material blockToPlace = Material.COBWEB;
-    public int blocksToPlaceAmount = 3;
-    public float explodePower = 2;
+    public Material blockToPlace = Material.COBWEB; // TO-DO
+    public int blocksToPlaceAmount = 3; // TO-DO
+    public float explodePower = 2.0f;
     public float inaccuracy = 0.3f;
     public int projectilesCount = 1;
     public Boolean delayedFire = false;
@@ -45,10 +44,10 @@ public class ExplosiveProjectile extends SiegeEngineProjectile {
     
     public static ExplosiveProjectile getDefaultRepeatingShot() {
     	ExplosiveProjectile repeatingProj = new ExplosiveProjectile(new ItemStack(Material.TNT));
-    	repeatingProj.explodePower = 1;
+    	repeatingProj.explodePower = 1.0f;
     	repeatingProj.projectilesCount = 5;
     	repeatingProj.delayedFire = true;
-    	repeatingProj.inaccuracy = 0.75f;
+    	repeatingProj.inaccuracy = 0.45f;
     	return repeatingProj;
     }
     

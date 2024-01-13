@@ -1,6 +1,7 @@
 package com.github.alathra.siegeengines.command;
 
 import com.github.alathra.siegeengines.SiegeEngine;
+import com.github.alathra.siegeengines.config.Config;
 import com.github.milkdrinkers.colorparser.ColorParser;
 import dev.jorel.commandapi.CommandAPIBukkit;
 import dev.jorel.commandapi.CommandAPICommand;
@@ -98,6 +99,7 @@ public class SiegeEnginesCommand {
         activeSiegeEngines.clear();
         siegeEngineEntitiesPerPlayer.clear();
         definedSiegeEngines.clear();
+        Config.reload();
         AddDefaults();
         for (SiegeEngine i : definedSiegeEngines.values()) {
             sender.sendMessage(ColorParser.of("<yellow>Enabled SiegeEngine : %s".formatted(i.name)).build());

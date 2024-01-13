@@ -5,16 +5,13 @@ import com.github.alathra.siegeengines.SiegeEnginesUtil;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.World;
-import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.util.Vector;
 
@@ -22,7 +19,6 @@ public class FireworkProjectile extends SiegeEngineProjectile {
 	
 	// Defaults 
 	public int entityCount = 1;
-    public int arrowOnlyDamage = 6;
     public Boolean delayedFire = true;
     public int delayTime = 6;
     public EntityType entityType = EntityType.FIREWORK;
@@ -33,7 +29,7 @@ public class FireworkProjectile extends SiegeEngineProjectile {
     private boolean playSound = true;
     
     public FireworkProjectile(ItemStack ammunitionItem) {
-		super(ProjectileType.EXPLOSIVE, ammunitionItem);
+		super(ProjectileType.FIREWORK, ammunitionItem);
 		// Defaults
 	}
     
