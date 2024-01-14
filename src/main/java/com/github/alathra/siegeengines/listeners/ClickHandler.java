@@ -70,7 +70,7 @@ public class ClickHandler implements Listener {
 
 	@EventHandler
 	public void onHit(ProjectileHitEvent event) {
-		if ((event.getEntity() instanceof org.bukkit.entity.Projectile)
+		if ((event.getEntity() instanceof Projectile)
 				&& projectiles.containsKey(event.getEntity().getUniqueId())) {
 			ExplosiveProjectile proj = projectiles.get(event.getEntity().getUniqueId());
 			Entity snowball = event.getEntity();

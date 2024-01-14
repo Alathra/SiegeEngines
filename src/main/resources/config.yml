@@ -66,6 +66,7 @@ Projectiles:
     ProjectileType: FIREWORK
     Inaccuracy: 0.125
     EntityCount: 1
+    VelocityFactor: 0.5
     Delay: 6
 
 SiegeEngines:

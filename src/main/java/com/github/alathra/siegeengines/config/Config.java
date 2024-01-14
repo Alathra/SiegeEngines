@@ -172,6 +172,7 @@ public class Config {
 					} else {
 						fireworkProjectile.delayedFire = true;
 					}
+					fireworkProjectile.velocityFactor = (float) config.getDouble("Projectiles." + projectileName + ".VelocityFactor");
 					projectileMap.put(projectileName, fireworkProjectile);
 					break;
 				default:

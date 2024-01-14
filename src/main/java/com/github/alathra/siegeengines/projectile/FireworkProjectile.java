@@ -25,6 +25,7 @@ public class FireworkProjectile extends SiegeEngineProjectile {
     public float inaccuracy = 0.125f;
     public Particle particleType = Particle.EXPLOSION_NORMAL;
     public Sound soundType = Sound.ENTITY_FIREWORK_ROCKET_BLAST_FAR;
+    public float velocityFactor = 0.5f;
     
     private boolean playSound = true;
     
@@ -51,7 +52,7 @@ public class FireworkProjectile extends SiegeEngineProjectile {
             if (delayedFire) {
                 baseDelay += delayTime;
                 Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(SiegeEngines.getInstance(), () -> {
-                    CreateEntity(entity, FireLocation, velocity, player);
+                    CreateEntity(entity, FireLocation, velocity*velocityFactor, player);
                 }, (long) baseDelay);
             } else {
                 CreateEntity(entity, FireLocation, velocity, player);
