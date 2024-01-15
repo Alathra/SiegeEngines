@@ -125,6 +125,28 @@ public class SiegeEngines extends JavaPlugin {
         trebuchet.cycleThroughModelsBeforeFiring = true;
         definedSiegeEngines.put(trebuchet.readyModelNumber, trebuchet);
 
+        // Ballista
+        SiegeEngine ballista = new SiegeEngine("Ballista", Config.ballistaProjectiles, new ItemStack(Material.GUNPOWDER), 146);
+        // config options
+        ballista.shotAmount = Config.ballistaShotAmount;
+        ballista.velocityPerFuel = Config.ballistaVelocityPerFuel;
+        ballista.maxFuel = Config.ballistaMaxFuel;
+        ballista.fuelItem = new ItemStack(Config.ballistaFuelItem);
+        ballista.projectiles = Config.ballistaProjectiles;
+        
+        ballista.xOffset = 1;
+        ballista.yOffset = 1;
+        ballista.placementOffsetY = 0.0;
+        ballista.rotateStandHead = true;
+        ballista.rotateSideways = true;
+        ballista.readyModelNumber = 145;
+        ballista.modelNumberToFireAt = 143;
+        ballista.firingModelNumbers = new ArrayList<>(Arrays.asList(
+            145, 145, 144, 144, 143
+        ));
+        ballista.cycleThroughModelsBeforeFiring = true;
+        definedSiegeEngines.put(ballista.readyModelNumber, ballista);
+
         // Siege Cannon   
         SiegeEngine siegeCannon = new SiegeEngine("Siege Cannon", Config.siegeCannonProjectiles, new ItemStack(Material.GUNPOWDER), 141);
         // config options
