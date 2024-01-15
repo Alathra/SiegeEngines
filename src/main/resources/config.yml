@@ -34,20 +34,20 @@ AutoReload: false
 Projectiles:
   StoneShot:
     ProjectileType: EXPLOSIVE
-    ExplodePower: 1.0
-    Inaccuracy: 0.3
+    ExplodePower: 1.5
+    Inaccuracy: 0.125
     ProjectileCount: 1
     AmmoItem: COBBLESTONE
   BreachShot:
     ProjectileType: EXPLOSIVE
-    ExplodePower: 3.0
+    ExplodePower: 3.75
     Inaccuracy: 0.3
     ProjectileCount: 1
     AmmoItem: IRON_BLOCK
   RepeatingShot:
     ProjectileType: EXPLOSIVE
     ExplodePower: 1.0
-    Inaccuracy: 0.45
+    Inaccuracy: 0.325
     ProjectileCount: 5
     AmmoItem: TNT
   ScatterShot:
@@ -56,28 +56,51 @@ Projectiles:
     EntityCount: 24
     EntityShotType: ARROW
     AmmoItem: GRAVEL
+  BallistaBoltShot:
+    ProjectileType: ENTITY
+    Inaccuracy: 0.025
+    EntityCount: 1
+    EntityShotType: ARROW
+    AmmoItem: ARROW
+  DragonsBreath:
+    ProjectileType: ENTITY
+    Inaccuracy: 0.25
+    EntityCount: 3
+    EntityShotType: DRAGON_FIREBALL
+    AmmoItem: DRAGON_BREATH
   FireShot:
     ProjectileType: ENTITY
-    Inaccuracy: 0.75
-    EntityCount: 4
+    Inaccuracy: 0.475
+    EntityCount: 8
     EntityShotType: SMALL_FIREBALL
     AmmoItem: MAGMA_BLOCK
   FireworkShot:
     ProjectileType: FIREWORK
     Inaccuracy: 0.125
     EntityCount: 1
-    Delay: 6
+    Delay: 5
 
 SiegeEngines:
   Trebuchet:
     ShotAmount: 1
     VelocityPerFuel: 0.3
-    MaxFuel: 5
+    MaxFuel: 3
     FuelItem: STRING
     Projectiles:
       - StoneShot
       - BreachShot
       - FireShot
+      - RepeatingShot
+  Ballista:
+    ShotAmount: 1
+    VelocityPerFuel: 0.925
+    MaxFuel: 2
+    FuelItem: STRING
+    Projectiles:
+      - BallistaBoltShot
+      - ScatterShot
+      - DragonsBreath
+      - FireworkShot
   SiegeCannon:
     ShotAmount: 1
     VelocityPerFuel: 1.0125
@@ -90,8 +113,8 @@ SiegeEngines:
       - FireworkShot
   NavalCannon:
     ShotAmount: 1
-    VelocityPerFuel: 1.0125
-    MaxFuel: 5
+    VelocityPerFuel: 0.975
+    MaxFuel: 4
     FuelItem: GUNPOWDER
     Projectiles:
       - StoneShot
