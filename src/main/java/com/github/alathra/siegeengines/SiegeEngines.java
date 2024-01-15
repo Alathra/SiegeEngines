@@ -92,15 +92,7 @@ public class SiegeEngines extends JavaPlugin {
     }
 
     public static void AddDefaults() {
-
-        // Predefined projectiles with default values
-        //SiegeEngineProjectile fireballShot = EntityProjectile.getDefaultFireballShot();
-        //SiegeEngineProjectile stoneShot = ExplosiveProjectile.getDefaultStoneShot();
-        //SiegeEngineProjectile repeatingShot = ExplosiveProjectile.getDefaultRepeatingShot();
-        //SiegeEngineProjectile breachShot = ExplosiveProjectile.getDefaultBreachShot();
-        //SiegeEngineProjectile scatterShot = EntityProjectile.getDefaultScatterShot();
-        //SiegeEngineProjectile rocketShot = FireworkProjectile.getDefaultRocketShot(SiegeEnginesUtil.DEFAULT_ROCKET);
-
+    	
         // Trebuchet
         SiegeEngine trebuchet = new SiegeEngine("Trebuchet", Config.trebuchetProjectiles, new ItemStack(Material.STRING), 122);
         // config options
@@ -126,21 +118,22 @@ public class SiegeEngines extends JavaPlugin {
         definedSiegeEngines.put(trebuchet.readyModelNumber, trebuchet);
 
         // Ballista
-        SiegeEngine ballista = new SiegeEngine("Ballista", Config.ballistaProjectiles, new ItemStack(Material.GUNPOWDER), 145);
+        SiegeEngine ballista = new SiegeEngine("Ballista", Config.ballistaProjectiles, new ItemStack(Material.STRING), 145);
         // config options
         ballista.shotAmount = Config.ballistaShotAmount;
         ballista.velocityPerFuel = Config.ballistaVelocityPerFuel;
         ballista.maxFuel = Config.ballistaMaxFuel;
         ballista.fuelItem = new ItemStack(Config.ballistaFuelItem);
         ballista.projectiles = Config.ballistaProjectiles;
-        
         ballista.xOffset = 1;
         ballista.yOffset = 1;
         ballista.placementOffsetY = -0.75;
         ballista.rotateStandHead = true;
         ballista.rotateSideways = true;
+        ballista.setModelNumberWhenFullyLoaded = true;
         ballista.readyModelNumber = 145;
-        ballista.modelNumberToFireAt = 143;
+        ballista.modelNumberToFireAt = 145;
+        ballista.preFireModelNumber = 143;
         ballista.firingModelNumbers = new ArrayList<>(Arrays.asList(
             143, 144, 145
         ));

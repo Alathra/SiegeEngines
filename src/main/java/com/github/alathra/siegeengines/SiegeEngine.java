@@ -51,6 +51,7 @@ public class SiegeEngine implements Cloneable {
     public int millisecondsToLoad;
     public int modelNumberToFireAt;
     public boolean cycleThroughModelsBeforeFiring;
+    public boolean setModelNumberWhenFullyLoaded;
     public boolean rotateSideways;
     public boolean rotateUpDown;
     public boolean rotateStandHead;
@@ -60,6 +61,7 @@ public class SiegeEngine implements Cloneable {
     public List<Integer> firingModelNumbers;
     public int readyModelNumber;
     public int nextModelNumber;
+    public int preFireModelNumber;
     public SiegeEngineAmmoHolder ammoHolder;
     
     // Optional variables
@@ -98,15 +100,16 @@ public class SiegeEngine implements Cloneable {
         placementOffsetY = -1.125f;
         readyModelNumber = customModelID;
         modelNumberToFireAt = customModelID;
+        preFireModelNumber = customModelID;
         firingModelNumbers = new ArrayList<Integer>();
         ammoHolder = new SiegeEngineAmmoHolder();
         //fuelItem = new ItemStack(Material.GUNPOWDER);
         cycleThroughModelsBeforeFiring = false;
+        setModelNumberWhenFullyLoaded = false;
         allowInvisibleStand = false;
         shotAmount = 1;
         ammoHolder.loadedFuel = maxFuel;
         enabled = true;
-        cycleThroughModelsBeforeFiring = false;
         rotateSideways = false;
         rotateUpDown = true;
         rotateStandHead = true;
@@ -250,12 +253,21 @@ public class SiegeEngine implements Cloneable {
         if (living == null || living.getEquipment() == null || living.getEquipment().getHelmet() == null || living.getEquipment().getHelmet().getItemMeta() == null) {
             return;
         }
-
+        
         if (living.getEquipment().getHelmet().getItemMeta().getCustomModelData() != readyModelNumber || ammoHolder.loadedProjectile == 0) {
-            if (player instanceof Player) {
-                ((Player) player).sendMessage("§eCannot fire yet!");
-            }
-            return;
+        	if (!setModelNumberWhenFullyLoaded) {
+        		if (player instanceof Player) {
+                    ((Player) player).sendMessage("§eCannot fire yet!");
+                }
+        		 return;
+        	} else {
+        		if (setModelNumberWhenFullyLoaded && living.getEquipment().getHelmet().getItemMeta().getCustomModelData() != preFireModelNumber) {
+        			if (player instanceof Player) {
+                        ((Player) player).sendMessage("§eCannot fire yet!");
+                    }
+            		 return;
+        		}
+        	}
         }
         ammoHolder.loadedFuel = 0;
         ammoHolder.loadedProjectile = 0;

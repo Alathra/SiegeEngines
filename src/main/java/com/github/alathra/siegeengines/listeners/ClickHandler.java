@@ -1032,57 +1032,61 @@ public class ClickHandler implements Listener {
 				}
 			}
 			if (SiegeEngines.activeSiegeEngines.containsKey(entity.getUniqueId())) {
-				SiegeEngine equipment = SiegeEngines.activeSiegeEngines.get(entity.getUniqueId());
+				SiegeEngine siegeEngine = SiegeEngines.activeSiegeEngines.get(entity.getUniqueId());
 				event.setCancelled(true);
-				ItemStack stack = equipment.fuelItem;
+				ItemStack stack = siegeEngine.fuelItem;
 				if (itemInHand.getType() == stack.getType()) {
-					if (equipment.canLoadFuel()) {
+					if (siegeEngine.canLoadFuel()) {
 						if (itemInHand.isSimilar(stack)) {
-							equipment.ammoHolder.loadedFuel += 1;
+							siegeEngine.ammoHolder.loadedFuel += 1;
 							stack.setAmount(1);
 							player.getInventory().removeItem(stack);
-							sendSiegeEngineHelpMSG(player, equipment);
+							sendSiegeEngineHelpMSG(player, siegeEngine);
+							// If fully loaded && requires change in animation when loaded (i.e. ballista)
+							if (!siegeEngine.canLoadFuel() && siegeEngine.setModelNumberWhenFullyLoaded) {
+								SiegeEnginesUtil.UpdateEntityIdModel(siegeEngine.entity, siegeEngine.preFireModelNumber, siegeEngine.worldName);
+							}
 						}
 					}
 				}
-				if (pulledHeldAmmoFromPlayer(player, equipment)) {
+				if (pulledHeldAmmoFromPlayer(player, siegeEngine)) {
 					player.sendMessage("§eAdded ammunition to this Siege Engine.");
 					return;
 				}
 				if (itemInHand == null || itemInHand.getType() == Material.AIR
 						|| itemInHand.getType() == Config.controlItem) {
-					if (!pulledPropellantFromContainer(equipment.entity.getLocation(), equipment)) {
-						sendSiegeEngineHelpMSG(player, equipment);
+					if (!pulledPropellantFromContainer(siegeEngine.entity.getLocation(), siegeEngine)) {
+						sendSiegeEngineHelpMSG(player, siegeEngine);
 						return;
 					}
 					if (!pulledPropellantFromContainer(
-							equipment.entity.getLocation().getBlock().getRelative(0, -1, 0).getLocation(), equipment)) {
-						sendSiegeEngineHelpMSG(player, equipment);
+							siegeEngine.entity.getLocation().getBlock().getRelative(0, -1, 0).getLocation(), siegeEngine)) {
+						sendSiegeEngineHelpMSG(player, siegeEngine);
 						return;
 					}
 					if (!pulledPropellantFromContainer(
-							equipment.entity.getLocation().getBlock().getRelative(0, 1, 0).getLocation(), equipment)) {
-						sendSiegeEngineHelpMSG(player, equipment);
+							siegeEngine.entity.getLocation().getBlock().getRelative(0, 1, 0).getLocation(), siegeEngine)) {
+						sendSiegeEngineHelpMSG(player, siegeEngine);
 						return;
 					}
-					if (pulledAmmoFromContainer(equipment.entity.getLocation(), equipment)) {
+					if (pulledAmmoFromContainer(siegeEngine.entity.getLocation(), siegeEngine)) {
 						player.sendMessage("§eAdded ammunition to this Siege Engine.");
 						return;
 					}
 					if (pulledAmmoFromContainer(
-							equipment.entity.getLocation().getBlock().getRelative(0, -1, 0).getLocation(), equipment)) {
+							siegeEngine.entity.getLocation().getBlock().getRelative(0, -1, 0).getLocation(), siegeEngine)) {
 						player.sendMessage("§eAdded ammunition to this Siege Engine.");
 						return;
 					}
 					if (pulledAmmoFromContainer(
-							equipment.entity.getLocation().getBlock().getRelative(0, 1, 0).getLocation(), equipment)) {
+							siegeEngine.entity.getLocation().getBlock().getRelative(0, 1, 0).getLocation(), siegeEngine)) {
 						player.sendMessage("§eAdded ammunition to this Siege Engine.");
 						return;
 					}
 				}
-				if (equipment.fuelItem.isSimilar(itemInHand))
+				if (siegeEngine.fuelItem.isSimilar(itemInHand))
 					return;
-				for (ItemStack item : equipment.projectiles.keySet()) {
+				for (ItemStack item : siegeEngine.projectiles.keySet()) {
 					if (item.getType() == itemInHand.getType()) {
 						return;
 					}
