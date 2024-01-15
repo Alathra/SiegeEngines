@@ -126,7 +126,7 @@ public class SiegeEngines extends JavaPlugin {
         definedSiegeEngines.put(trebuchet.readyModelNumber, trebuchet);
 
         // Ballista
-        SiegeEngine ballista = new SiegeEngine("Ballista", Config.ballistaProjectiles, new ItemStack(Material.GUNPOWDER), 143);
+        SiegeEngine ballista = new SiegeEngine("Ballista", Config.ballistaProjectiles, new ItemStack(Material.GUNPOWDER), 145);
         // config options
         ballista.shotAmount = Config.ballistaShotAmount;
         ballista.velocityPerFuel = Config.ballistaVelocityPerFuel;
