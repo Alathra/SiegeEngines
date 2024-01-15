@@ -34,26 +34,6 @@ public class EntityProjectile extends SiegeEngineProjectile {
 		
 		// Defaults
 	}
-    
-    public static EntityProjectile getDefaultFireballShot() {
-    	EntityProjectile fireProj = new EntityProjectile(new ItemStack(Material.MAGMA_BLOCK));
-        fireProj.entityCount = 4;
-        fireProj.entityType = EntityType.SMALL_FIREBALL;
-        fireProj.particleType = Particle.WHITE_ASH;
-        fireProj.soundType = Sound.ENTITY_BLAZE_SHOOT;
-        fireProj.inaccuracy = 0.75f;
-        return fireProj;
-    }
-    
-    public static EntityProjectile getDefaultScatterShot() {
-    	EntityProjectile scatterProj = new EntityProjectile(new ItemStack(Material.GRAVEL));
-    	scatterProj.inaccuracy = 0.325f;
-    	scatterProj.entityCount = 24;
-    	scatterProj.entityType = EntityType.ARROW;
-    	scatterProj.particleType = Particle.ELECTRIC_SPARK;
-    	scatterProj.soundType = Sound.ITEM_CROSSBOW_SHOOT;
-        return scatterProj;
-    }
 
     @Override
     public void Shoot(Entity player, Entity entity, Location FireLocation, Float velocity) {

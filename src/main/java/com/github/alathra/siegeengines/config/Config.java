@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
@@ -174,6 +175,7 @@ public class Config {
 					explosiveProjectile.explodePower = (float) config.getDouble("Projectiles." + projectileName + ".ExplodePower");
 					explosiveProjectile.inaccuracy = (float) config.getDouble("Projectiles." + projectileName + ".Inaccuracy");
 					explosiveProjectile.projectilesCount = config.getInt("Projectiles." + projectileName + ".ProjectileCount");
+					explosiveProjectile.soundType = Sound.valueOf(config.getString("Projectiles." + projectileName + ".FireSound"));
 					projectileMap.put(projectileName, explosiveProjectile);
 					break;
 				case ENTITY:
@@ -181,7 +183,8 @@ public class Config {
 							Material.getMaterial(config.getString("Projectiles." + projectileName + ".AmmoItem"))));
 					entityProjectile.inaccuracy = (float) config.getDouble("Projectiles." + projectileName + ".Inaccuracy");
 					entityProjectile.entityCount = config.getInt("Projectiles." + projectileName + ".EntityCount");
-					entityProjectile.entityType = EntityType.valueOf(config.getString("Projectiles." + projectileName + ".EntityShotType"));
+					entityProjectile.entityType = EntityType.valueOf(config.getString("Projectiles." + projectileName + ".EntityType"));
+					entityProjectile.soundType = Sound.valueOf(config.getString("Projectiles." + projectileName + ".FireSound"));
 					projectileMap.put(projectileName, entityProjectile);
 					break;
 				case FIREWORK:
