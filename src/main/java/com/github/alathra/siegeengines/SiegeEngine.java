@@ -50,7 +50,7 @@ public class SiegeEngine implements Cloneable {
     public int millisecondsBetweenReloadingStages;
     public int millisecondsToLoad;
     public int modelNumberToFireAt;
-    public boolean cycleThroughModelsBeforeFiring;
+    public boolean cycleThroughModelsWhileFiring;
     public boolean setModelNumberWhenFullyLoaded;
     public boolean rotateSideways;
     public boolean rotateUpDown;
@@ -104,7 +104,7 @@ public class SiegeEngine implements Cloneable {
         firingModelNumbers = new ArrayList<Integer>();
         ammoHolder = new SiegeEngineAmmoHolder();
         //fuelItem = new ItemStack(Material.GUNPOWDER);
-        cycleThroughModelsBeforeFiring = false;
+        cycleThroughModelsWhileFiring = false;
         setModelNumberWhenFullyLoaded = false;
         allowInvisibleStand = false;
         shotAmount = 1;
@@ -280,7 +280,7 @@ public class SiegeEngine implements Cloneable {
             if (living == null || living.isDead()) {
                 return;
             }
-            if (cycleThroughModelsBeforeFiring) {
+            if (cycleThroughModelsWhileFiring) {
 
                 this.taskNumber = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(SiegeEngines.getInstance(), () -> {
                     if (living == null || living.isDead()) {
@@ -305,16 +305,18 @@ public class SiegeEngine implements Cloneable {
                                 taskNumber = 0;
                             } else {
                                 //firing stages
-                                if (nextModelNumber - 1 <= firingModelNumbers.size() && nextModelNumber - 1 >= 0) {
-                                    int modelData = firingModelNumbers.get(nextModelNumber - 1);
-                                    //	player.sendMessage("§e" + modelData);
-                                    SiegeEnginesUtil.UpdateEntityIdModel(entity, modelData, worldName);
-                                    nextModelNumber -= 1;
+                            	if (setModelNumberWhenFullyLoaded) {
+                            		hasReloaded = true;
+                            	} else {
+                            		if (nextModelNumber - 1 <= firingModelNumbers.size() && nextModelNumber - 1 >= 0) {
+                                        int modelData = firingModelNumbers.get(nextModelNumber - 1);
+                                        SiegeEnginesUtil.UpdateEntityIdModel(entity, modelData, worldName);
+                                        nextModelNumber -= 1;
 
-                                } else {
-                                    //	plugin.getLogger().log(Level.INFO, "its reloaded");
-                                    hasReloaded = true;
-                                }
+                                    } else {
+                                        hasReloaded = true;
+                                    }
+                            	}
                             }
                         }, 0, millisecondsBetweenReloadingStages);
 
@@ -339,7 +341,6 @@ public class SiegeEngine implements Cloneable {
                                 projType.Shoot(player, entity, this.GetFireLocation(living), loadedFuel * velocityPerFuel);
                             }
                             nextModelNumber += 1;
-
                         } else {
                             hasFired = true;
 

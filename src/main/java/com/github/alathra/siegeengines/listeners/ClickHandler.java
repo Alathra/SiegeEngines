@@ -430,7 +430,11 @@ public class ClickHandler implements Listener {
 						SiegeEngine siegeEngine = SiegeEngines.activeSiegeEngines.get(siegeEngineEntity.getUniqueId());
 						if (siegeEngine != null && siegeEngine.enabled && !(siegeEngineEntity.isDead())
 								&& siegeEngine.isLoaded()) {
-							siegeEngine.Fire(player, 10f, 1);
+							if (siegeEngine.setModelNumberWhenFullyLoaded && siegeEngine.canLoadFuel()) {
+								player.sendMessage("§eFailed to fire. This siege engine needs to be fully loaded!");
+							} else {
+								siegeEngine.Fire(player, 10f, 1);
+							}
 						}
 					}
 				}
