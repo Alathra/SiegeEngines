@@ -33,22 +33,28 @@ public class Config {
 	// Siege Engine Options - Defaults
 	public static int trebuchetShotAmount = 1;
 	public static float trebuchetVelocityPerFuel = 0.3f;
-	public static int trebuchetMaxFuel = 5;
+	public static int trebuchetMaxFuel = 3;
 	public static Material trebuchetFuelItem = Material.STRING;
+	public static HashMap<ItemStack, SiegeEngineProjectile> trebuchetProjectiles = new HashMap<>();
+
+	public static int ballistaShotAmount = 1;
+	public static float ballistaVelocityPerFuel = 0.925f;
+	public static int ballistaMaxFuel = 4;
+	public static Material ballistaFuelItem = Material.STRING;
+	public static HashMap<ItemStack, SiegeEngineProjectile> ballistaProjectiles = new HashMap<>();
 
 	public static int siegeCannonShotAmount = 1;
 	public static float siegeCannonVelocityPerFuel = 1.0125f;
 	public static int siegeCannonMaxFuel = 5;
-	public static Material siegeCannonFuelItem = Material.STRING;
+	public static Material siegeCannonFuelItem = Material.GUNPOWDER;
+	public static HashMap<ItemStack, SiegeEngineProjectile> siegeCannonProjectiles = new HashMap<>();
 
 	public static int navalCannonShotAmount = 1;
-	public static float navalCannonVelocityPerFuel = 1.0125f;
-	public static int navalCannonMaxFuel = 5;
-	public static Material navalCannonFuelItem = Material.STRING;
-	
-	public static HashMap<ItemStack, SiegeEngineProjectile> trebuchetProjectiles = new HashMap<>();
-	public static HashMap<ItemStack, SiegeEngineProjectile> siegeCannonProjectiles = new HashMap<>();
+	public static float navalCannonVelocityPerFuel = 1.075f;
+	public static int navalCannonMaxFuel = 4;
+	public static Material navalCannonFuelItem = Material.GUNPOWDER;
 	public static HashMap<ItemStack, SiegeEngineProjectile> navalCannonProjectiles = new HashMap<>();
+	
 
 	// Projectiles
 
@@ -93,6 +99,22 @@ public class Config {
 		for (String projectileName : config.getStringList("SiegeEngines.Trebuchet.Projectiles")) {
 			if (projectileMap.keySet().contains(projectileName)) {
 				trebuchetProjectiles.put(projectileMap.get(projectileName).getAmmuinitionItem(), projectileMap.get(projectileName));
+			}
+		}
+
+		ballistaShotAmount = config.getInt("SiegeEngines.Ballista.ShotAmount");
+		ballistaVelocityPerFuel = (float) config.getDouble("SiegeEngines.Ballista.VelocityPerFuel");
+		ballistaMaxFuel = config.getInt("SiegeEngines.Ballista.MaxFuel");
+		try {
+			ballistaFuelItem = Material.getMaterial(config.getString("SiegeEngines.Ballista.FuelItem"));
+		} catch (Exception e) {
+			ballistaFuelItem = Material.STRING;
+			SiegeEnginesLogger.warn("Propellant item material could not be found, defaulting to "
+					+ ballistaFuelItem.toString() + " !");
+		}
+		for (String projectileName : config.getStringList("SiegeEngines.Ballista.Projectiles")) {
+			if (projectileMap.keySet().contains(projectileName)) {
+				ballistaProjectiles.put(projectileMap.get(projectileName).getAmmuinitionItem(), projectileMap.get(projectileName));
 			}
 		}
 
