@@ -38,42 +38,49 @@ Projectiles:
     Inaccuracy: 0.125
     ProjectileCount: 1
     AmmoItem: COBBLESTONE
+    FireSound: ENTITY_GENERIC_EXPLODE
   BreachShot:
     ProjectileType: EXPLOSIVE
     ExplodePower: 3.75
     Inaccuracy: 0.3
     ProjectileCount: 1
     AmmoItem: IRON_BLOCK
+    FireSound: ENTITY_GENERIC_EXPLODE
   RepeatingShot:
     ProjectileType: EXPLOSIVE
     ExplodePower: 1.0
     Inaccuracy: 0.325
     ProjectileCount: 5
     AmmoItem: TNT
+    FireSound: ENTITY_GENERIC_EXPLODE
   ScatterShot:
     ProjectileType: ENTITY
     Inaccuracy: 0.325
     EntityCount: 24
-    EntityShotType: ARROW
+    EntityType: ARROW
     AmmoItem: GRAVEL
+    FireSound: ENTITY_GENERIC_EXPLODE
   BallistaBoltShot:
     ProjectileType: ENTITY
     Inaccuracy: 0.025
     EntityCount: 1
-    EntityShotType: ARROW
+    EntityType: ARROW
     AmmoItem: ARROW
+    FireSound: ITEM_CROSSBOW_SHOOT
   DragonsBreath:
     ProjectileType: ENTITY
     Inaccuracy: 0.25
     EntityCount: 3
-    EntityShotType: DRAGON_FIREBALL
+    EntityType: DRAGON_FIREBALL
     AmmoItem: DRAGON_BREATH
+    FireSound: ENTITY_GENERIC_EXPLODE
   FireShot:
     ProjectileType: ENTITY
     Inaccuracy: 0.475
     EntityCount: 8
-    EntityShotType: SMALL_FIREBALL
+    EntityType: SMALL_FIREBALL
     AmmoItem: MAGMA_BLOCK
+    FireSound: ENTITY_GENERIC_EXPLODE
   FireworkShot:
     ProjectileType: FIREWORK
     Inaccuracy: 0.125

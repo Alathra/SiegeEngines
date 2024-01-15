@@ -36,28 +36,6 @@ public class ExplosiveProjectile extends SiegeEngineProjectile {
 		super(ProjectileType.EXPLOSIVE, ammunitionItem);
 	}
     
-    public static ExplosiveProjectile getDefaultStoneShot() {
-    	ExplosiveProjectile stoneProj = new ExplosiveProjectile(new ItemStack(Material.COBBLESTONE));
-    	stoneProj.explodePower = 1;
-    	return stoneProj;
-    }
-    
-    public static ExplosiveProjectile getDefaultRepeatingShot() {
-    	ExplosiveProjectile repeatingProj = new ExplosiveProjectile(new ItemStack(Material.TNT));
-    	repeatingProj.explodePower = 1.0f;
-    	repeatingProj.projectilesCount = 5;
-    	repeatingProj.delayedFire = true;
-    	repeatingProj.inaccuracy = 0.45f;
-    	return repeatingProj;
-    }
-    
-    public static ExplosiveProjectile getDefaultBreachShot() {
-    	ExplosiveProjectile breachProj = new ExplosiveProjectile(new ItemStack(Material.IRON_BLOCK));
-    	breachProj.explodePower = 3;
-    	breachProj.projectilesCount = 1;
-    	return breachProj;
-    }
-    
     @Override
     public void Shoot(Entity player, Entity entity, Location loc, Float velocity) {
         playSound = true;
