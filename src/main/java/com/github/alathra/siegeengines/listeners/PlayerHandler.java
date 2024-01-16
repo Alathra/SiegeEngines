@@ -18,6 +18,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.EulerAngle;
@@ -40,6 +41,21 @@ public class PlayerHandler implements Listener {
     @EventHandler
     public void playerDeathEvent(PlayerDeathEvent event) {
         PlayerJoinLeave(event.getPlayer());
+    }
+    @EventHandler
+    public void entityDeathEvent(EntityDeathEvent event) {
+        SiegeEngineEntityDied(event.getEntity());
+    }
+    public void SiegeEngineEntityDied(Entity entity) {
+        for (UUID uuid : SiegeEngines.siegeEngineEntitiesPerPlayer.keySet()) {
+            if (SiegeEngines.siegeEngineEntitiesPerPlayer.containsKey(uuid)) {
+                final List<Entity> list = new ArrayList<>(SiegeEngines.siegeEngineEntitiesPerPlayer.get(uuid));
+                if (SiegeEngines.siegeEngineEntitiesPerPlayer.get(uuid).contains(entity.getUniqueId())) {
+                    list.remove(entity);
+                    SiegeEngines.siegeEngineEntitiesPerPlayer.put(uuid,list);
+                }
+            }
+        }
     }
     public void PlayerJoinLeave(Player player) {
         if (SiegeEngines.siegeEngineEntitiesPerPlayer.containsKey(player.getUniqueId())) {

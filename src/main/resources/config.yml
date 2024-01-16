@@ -101,7 +101,7 @@ SiegeEngines:
       - RepeatingShot
   Ballista:
     ShotAmount: 1
-    VelocityPerFuel: 0.925
+    VelocityPerFuel: 1.25
     MaxFuel: 2
     FuelItem: STRING
     Projectiles:
