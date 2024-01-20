@@ -54,7 +54,7 @@ public class ExplosiveProjectile extends SiegeEngineProjectile {
 
     private void CreateEntity(Entity entity, Location loc, Float velocity, Entity player) {
         World world = entity.getLocation().getWorld();
-        Entity tnt = world.spawnEntity(loc, EntityType.SHULKER_BULLET);
+        Entity tnt = world.spawnEntity(loc, EntityType.SNOWBALL);
         org.bukkit.entity.Projectile ball = (org.bukkit.entity.Projectile) tnt;
         if (player instanceof org.bukkit.projectiles.ProjectileSource)
             ball.setShooter((org.bukkit.projectiles.ProjectileSource) player);

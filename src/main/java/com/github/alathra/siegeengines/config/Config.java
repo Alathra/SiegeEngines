@@ -44,17 +44,17 @@ public class Config {
 	public static Material ballistaFuelItem = Material.STRING;
 	public static HashMap<ItemStack, SiegeEngineProjectile> ballistaProjectiles = new HashMap<>();
 
-	public static int siegeCannonShotAmount = 1;
-	public static float siegeCannonVelocityPerFuel = 1.0125f;
-	public static int siegeCannonMaxFuel = 5;
-	public static Material siegeCannonFuelItem = Material.GUNPOWDER;
-	public static HashMap<ItemStack, SiegeEngineProjectile> siegeCannonProjectiles = new HashMap<>();
+	public static int swivelCannonShotAmount = 1;
+	public static float swivelCannonVelocityPerFuel = 1.0125f;
+	public static int swivelCannonMaxFuel = 5;
+	public static Material swivelCannonFuelItem = Material.GUNPOWDER;
+	public static HashMap<ItemStack, SiegeEngineProjectile> swivelCannonProjectiles = new HashMap<>();
 
-	public static int navalCannonShotAmount = 1;
-	public static float navalCannonVelocityPerFuel = 1.075f;
-	public static int navalCannonMaxFuel = 4;
-	public static Material navalCannonFuelItem = Material.GUNPOWDER;
-	public static HashMap<ItemStack, SiegeEngineProjectile> navalCannonProjectiles = new HashMap<>();
+	public static int breachCannonShotAmount = 1;
+	public static float breachCannonVelocityPerFuel = 1.075f;
+	public static int breachCannonMaxFuel = 4;
+	public static Material breachCannonFuelItem = Material.GUNPOWDER;
+	public static HashMap<ItemStack, SiegeEngineProjectile> breachCannonProjectiles = new HashMap<>();
 	
 
 	// Projectiles
@@ -119,35 +119,35 @@ public class Config {
 			}
 		}
 
-		siegeCannonShotAmount = config.getInt("SiegeEngines.SiegeCannon.ShotAmount");
-		siegeCannonVelocityPerFuel = (float) config.getDouble("SiegeEngines.SiegeCannon.VelocityPerFuel");
-		siegeCannonMaxFuel = config.getInt("SiegeEngines.SiegeCannon.MaxFuel");
+		swivelCannonShotAmount = config.getInt("SiegeEngines.SwivelCannon.ShotAmount");
+		swivelCannonVelocityPerFuel = (float) config.getDouble("SiegeEngines.SwivelCannon.VelocityPerFuel");
+		swivelCannonMaxFuel = config.getInt("SiegeEngines.SwivelCannon.MaxFuel");
 		try {
-			siegeCannonFuelItem = Material.getMaterial(config.getString("SiegeEngines.SiegeCannon.FuelItem"));
+			swivelCannonFuelItem = Material.getMaterial(config.getString("SiegeEngines.SwivelCannon.FuelItem"));
 		} catch (Exception e) {
-			siegeCannonFuelItem = Material.GUNPOWDER;
+			swivelCannonFuelItem = Material.GUNPOWDER;
 			SiegeEnginesLogger.warn("Propellant item material could not be found, defaulting to "
-					+ siegeCannonFuelItem.toString() + " !");
+					+ swivelCannonFuelItem.toString() + " !");
 		}
-		for (String projectileName : config.getStringList("SiegeEngines.SiegeCannon.Projectiles")) {
+		for (String projectileName : config.getStringList("SiegeEngines.SwivelCannon.Projectiles")) {
 			if (projectileMap.keySet().contains(projectileName)) {
-				siegeCannonProjectiles.put(projectileMap.get(projectileName).getAmmuinitionItem(), projectileMap.get(projectileName));
+				swivelCannonProjectiles.put(projectileMap.get(projectileName).getAmmuinitionItem(), projectileMap.get(projectileName));
 			}
 		}
 
-		navalCannonShotAmount = config.getInt("SiegeEngines.NavalCannon.ShotAmount");
-		navalCannonVelocityPerFuel = (float) config.getDouble("SiegeEngines.NavalCannon.VelocityPerFuel");
-		navalCannonMaxFuel = config.getInt("SiegeEngines.NavalCannon.MaxFuel");
+		breachCannonShotAmount = config.getInt("SiegeEngines.BreachCannon.ShotAmount");
+		breachCannonVelocityPerFuel = (float) config.getDouble("SiegeEngines.BreachCannon.VelocityPerFuel");
+		breachCannonMaxFuel = config.getInt("SiegeEngines.BreachCannon.MaxFuel");
 		try {
-			navalCannonFuelItem = Material.getMaterial(config.getString("SiegeEngines.NavalCannon.FuelItem"));
+			breachCannonFuelItem = Material.getMaterial(config.getString("SiegeEngines.BreachCannon.FuelItem"));
 		} catch (Exception e) {
-			navalCannonFuelItem = Material.GUNPOWDER;
+			breachCannonFuelItem = Material.GUNPOWDER;
 			SiegeEnginesLogger.warn("Propellant item material could not be found, defaulting to "
-					+ navalCannonFuelItem.toString() + " !");
+					+ breachCannonFuelItem.toString() + " !");
 		}
-		for (String projectileName : config.getStringList("SiegeEngines.NavalCannon.Projectiles")) {
+		for (String projectileName : config.getStringList("SiegeEngines.BreachCannon.Projectiles")) {
 			if (projectileMap.keySet().contains(projectileName)) {
-				navalCannonProjectiles.put(projectileMap.get(projectileName).getAmmuinitionItem(), projectileMap.get(projectileName));
+				breachCannonProjectiles.put(projectileMap.get(projectileName).getAmmuinitionItem(), projectileMap.get(projectileName));
 			}
 		}
 	}
@@ -211,6 +211,8 @@ public class Config {
 
 	public static void reload() {
 		// put whatever you want here to run config-wise when plugin reloads
+		SiegeEngines.getInstance().reloadConfig();
+		SiegeEngines.getInstance().saveDefaultConfig();
 		initConfigVals();
 	}
 

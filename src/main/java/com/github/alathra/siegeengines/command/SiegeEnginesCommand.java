@@ -95,11 +95,10 @@ public class SiegeEnginesCommand {
     private void onReload(CommandSender sender, CommandArguments args) throws WrapperCommandSyntaxException {
         if (!(sender instanceof Player))
             throw CommandAPIBukkit.failWithAdventureComponent(ColorParser.of("<red>Only players can use this command.").build());
-
+        Config.reload();
         activeSiegeEngines.clear();
         siegeEngineEntitiesPerPlayer.clear();
         definedSiegeEngines.clear();
-        Config.reload();
         AddDefaults();
         for (SiegeEngine i : definedSiegeEngines.values()) {
             sender.sendMessage(ColorParser.of("<yellow>Enabled SiegeEngine : %s".formatted(i.name)).build());
@@ -108,7 +107,7 @@ public class SiegeEnginesCommand {
                 sender.sendMessage(ColorParser.of("<yellow>SiegeEngine Projectile ItemStacks : %s".formatted(proj)).build());
             }
         }
-        sender.sendMessage("<yellow>SiegeEngine configs reloaded");
+        sender.sendMessage(ColorParser.of("<yellow>SiegeEngine configs reloaded").build());
     }
 
     private void giveEquipment(Player player, SiegeEngine SiegeEquipment) {

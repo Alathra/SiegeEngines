@@ -139,40 +139,40 @@ public class SiegeEngines extends JavaPlugin {
 		definedSiegeEngines.put(ballista.readyModelNumber, ballista);
 
 		// Siege Cannon
-		SiegeEngine siegeCannon = new SiegeEngine("Siege Cannon", Config.siegeCannonProjectiles,
+		SiegeEngine swivelCannon = new SiegeEngine("Swivel Cannon", Config.swivelCannonProjectiles,
 				new ItemStack(Material.GUNPOWDER), 141);
 		// config options
-		siegeCannon.shotAmount = Config.siegeCannonShotAmount;
-		siegeCannon.velocityPerFuel = Config.siegeCannonVelocityPerFuel;
-		siegeCannon.maxFuel = Config.siegeCannonMaxFuel;
-		siegeCannon.fuelItem = new ItemStack(Config.siegeCannonFuelItem);
-		siegeCannon.projectiles = Config.siegeCannonProjectiles;
+		swivelCannon.shotAmount = Config.swivelCannonShotAmount;
+		swivelCannon.velocityPerFuel = Config.swivelCannonVelocityPerFuel;
+		swivelCannon.maxFuel = Config.swivelCannonMaxFuel;
+		swivelCannon.fuelItem = new ItemStack(Config.swivelCannonFuelItem);
+		swivelCannon.projectiles = Config.swivelCannonProjectiles;
 
-		siegeCannon.placementOffsetY = -1;
-		siegeCannon.readyModelNumber = 141;
-		siegeCannon.modelNumberToFireAt = 141;
-		siegeCannon.firingModelNumbers = new ArrayList<Integer>();
-		siegeCannon.rotateStandHead = true;
-		siegeCannon.rotateSideways = true;
-		definedSiegeEngines.put(siegeCannon.readyModelNumber, siegeCannon);
+		swivelCannon.placementOffsetY = -1;
+		swivelCannon.readyModelNumber = 141;
+		swivelCannon.modelNumberToFireAt = 141;
+		swivelCannon.firingModelNumbers = new ArrayList<Integer>();
+		swivelCannon.rotateStandHead = true;
+		swivelCannon.rotateSideways = true;
+		definedSiegeEngines.put(swivelCannon.readyModelNumber, swivelCannon);
 
 		// Naval Cannon
-		SiegeEngine navalCannon = new SiegeEngine("Naval Cannon", Config.navalCannonProjectiles,
+		SiegeEngine beachCannon = new SiegeEngine("Breach Cannon", Config.breachCannonProjectiles,
 				new ItemStack(Material.GUNPOWDER), 142);
 		// config options
-		navalCannon.shotAmount = Config.navalCannonShotAmount;
-		navalCannon.velocityPerFuel = Config.navalCannonVelocityPerFuel;
-		navalCannon.maxFuel = Config.navalCannonMaxFuel;
-		navalCannon.fuelItem = new ItemStack(Config.navalCannonFuelItem);
-		navalCannon.projectiles = Config.navalCannonProjectiles;
+		beachCannon.shotAmount = Config.breachCannonShotAmount;
+		beachCannon.velocityPerFuel = Config.breachCannonVelocityPerFuel;
+		beachCannon.maxFuel = Config.breachCannonMaxFuel;
+		beachCannon.fuelItem = new ItemStack(Config.breachCannonFuelItem);
+		beachCannon.projectiles = Config.breachCannonProjectiles;
 
-		navalCannon.placementOffsetY = -1;
-		navalCannon.readyModelNumber = 142;
-		navalCannon.modelNumberToFireAt = 142;
-		navalCannon.firingModelNumbers = new ArrayList<Integer>();
-		navalCannon.rotateStandHead = true;
-		navalCannon.rotateSideways = false;
-		definedSiegeEngines.put(navalCannon.readyModelNumber, navalCannon);
+		beachCannon.placementOffsetY = -1;
+		beachCannon.readyModelNumber = 142;
+		beachCannon.modelNumberToFireAt = 142;
+		beachCannon.firingModelNumbers = new ArrayList<Integer>();
+		beachCannon.rotateStandHead = true;
+		beachCannon.rotateSideways = false;
+		definedSiegeEngines.put(beachCannon.readyModelNumber, beachCannon);
 	}
 
 }
