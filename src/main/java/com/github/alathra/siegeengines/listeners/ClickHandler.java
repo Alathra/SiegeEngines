@@ -145,6 +145,15 @@ public class ClickHandler implements Listener {
 						} catch (CloneNotSupportedException e) {
 						}
 						break;
+					} else {
+						// if siege engine was broken during one of its firing stages
+						if (entry.firingModelNumbers.contains(customModel)) {
+							try {
+								siegeEngine = entry.clone();
+							} catch (CloneNotSupportedException e) {
+								break;
+							}
+						}
 					}
 				}
 				// If SiegeEngine found, place it
@@ -839,11 +848,18 @@ public class ClickHandler implements Listener {
 				for (ItemStack i : items) {
 					if (i.getType() == Material.CARVED_PUMPKIN && i.hasItemMeta()
 							&& i.getItemMeta().hasCustomModelData()) {
+						// If siege engine is default model number
 						if (SiegeEngines.definedSiegeEngines.containsKey(i.getItemMeta().getCustomModelData())) {
 							removeStands = true;
 							break;
 						}
-
+						// If siege engine is some other model number because it was broken in the middle of firing
+						for (SiegeEngine siegeEngine : SiegeEngines.definedSiegeEngines.values()) {
+							if (siegeEngine.firingModelNumbers.contains(i.getItemMeta().getCustomModelData())) {
+								removeStands = true;
+								break;
+							}
+						}
 					}
 				}
 			}
