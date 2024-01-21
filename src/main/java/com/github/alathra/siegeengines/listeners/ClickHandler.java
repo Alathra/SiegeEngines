@@ -1045,7 +1045,7 @@ public class ClickHandler implements Listener {
 				}
 			}
 			if (!(player.isSneaking()) && itemInHand.getType() == Config.controlItem) {
-				if (isSiegeEngine(entity, false)) TakeControl(player, entity);
+				if (isSiegeEngine(entity, true)) TakeControl(player, entity);
 			}
 			/*if (itemInHand.getType() == Config.controlItem) {
 				if (SiegeEngines.siegeEngineEntitiesPerPlayer.get(player.getUniqueId()) != null) {
