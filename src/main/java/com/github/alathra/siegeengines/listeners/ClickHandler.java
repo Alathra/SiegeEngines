@@ -988,8 +988,7 @@ public class ClickHandler implements Listener {
 
 			if (sign.getLine(0).equalsIgnoreCase("[Cannon]")) {
 				if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
-					SiegeEngines.siegeEngineEntitiesPerPlayer.remove(player.getUniqueId());
-					player.sendMessage("§eReleasing all SiegeEngines!");
+					PlayerHandler.releasePlayerSiegeEngine(player,null);
 					return;
 				}
 
@@ -1053,6 +1052,10 @@ public class ClickHandler implements Listener {
 			}
 			if (SiegeEngines.activeSiegeEngines.containsKey(entity.getUniqueId())) {
 				SiegeEngine siegeEngine = SiegeEngines.activeSiegeEngines.get(entity.getUniqueId());
+				if ((player.isSneaking()) && itemInHand.getType() == Material.AIR) {
+					PlayerHandler.releasePlayerSiegeEngine(player,entity);
+					return;
+				}
 				event.setCancelled(true);
 				ItemStack stack = siegeEngine.fuelItem;
 				if (itemInHand.getType() == stack.getType()) {
@@ -1103,21 +1106,6 @@ public class ClickHandler implements Listener {
 						player.sendMessage("§eAdded ammunition to this Siege Engine.");
 						return;
 					}
-				}
-				if (siegeEngine.fuelItem.isSimilar(itemInHand))
-					return;
-				for (ItemStack item : siegeEngine.projectiles.keySet()) {
-					if (item.getType() == itemInHand.getType()) {
-						return;
-					}
-				}
-				if ((player.isSneaking())) {
-					final List<Entity> entities = new ArrayList<>(
-							SiegeEngines.siegeEngineEntitiesPerPlayer.get(player.getUniqueId()));
-					entities.remove(entity);
-					SiegeEngines.siegeEngineEntitiesPerPlayer.put(player.getUniqueId(), entities);
-					player.sendMessage("§eThis Siege Engine is no longer commanded by you.");
-					return;
 				}
 			}
 		}
