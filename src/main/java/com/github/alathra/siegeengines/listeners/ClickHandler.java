@@ -1034,7 +1034,7 @@ public class ClickHandler implements Listener {
 		}
 		if (entity.getType() == EntityType.ARMOR_STAND) {
 			if (!(player.isSneaking()) && itemInHand.getType() == Config.controlItem) {
-				isSiegeEngine(entity, true);
+				if (isSiegeEngine(entity, false)) TakeControl(player, entity);
 				return;
 			}
 			if ((itemInHand.getType() == Material.AIR || itemInHand == null))  {
