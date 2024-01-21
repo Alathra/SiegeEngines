@@ -1024,7 +1024,7 @@ public class ClickHandler implements Listener {
 		}
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
 	public void onEntityClick(PlayerInteractAtEntityEvent event) {
 		Player player = event.getPlayer();
 		ItemStack itemInHand = player.getInventory().getItemInMainHand();
@@ -1033,17 +1033,21 @@ public class ClickHandler implements Listener {
 			return;
 		}
 		if (entity.getType() == EntityType.ARMOR_STAND) {
-			if (!(player.isSneaking()) && itemInHand.getType() == Config.controlItem) {
-				if (isSiegeEngine(entity, false)) TakeControl(player, entity);
-				return;
-			}
 			if ((itemInHand.getType() == Material.AIR || itemInHand == null))  {
 				if (player.isSneaking()) {
-					PlayerHandler.releasePlayerSiegeEngine(player,entity);
+					if (isSiegeEngine(entity, false)) PlayerHandler.releasePlayerSiegeEngine(player,entity);
+					else PlayerHandler.releasePlayerSiegeEngine(player,null);
+					if (SiegeEngines.activeSiegeEngines.containsKey(entity.getUniqueId())) {
+						SiegeEngines.activeSiegeEngines.remove(entity.getUniqueId());
+					}
+					player.sendMessage("§eReleased this SiegeEngine!");
 					return;
 				}
 			}
-			if (itemInHand.getType() == Config.controlItem) {
+			if (!(player.isSneaking()) && itemInHand.getType() == Config.controlItem) {
+				if (isSiegeEngine(entity, false)) TakeControl(player, entity);
+			}
+			/*if (itemInHand.getType() == Config.controlItem) {
 				if (SiegeEngines.siegeEngineEntitiesPerPlayer.get(player.getUniqueId()) != null) {
 					if (!(SiegeEngines.siegeEngineEntitiesPerPlayer.get(player.getUniqueId()).contains(entity))) {
 						player.sendMessage("§eNow commanding this Siege Engine.");
@@ -1053,7 +1057,7 @@ public class ClickHandler implements Listener {
 					player.sendMessage("§eNow commanding this Siege Engine.");
 					TakeControl(player, entity);
 				}
-			}
+			}*/
 			if (SiegeEngines.activeSiegeEngines.containsKey(entity.getUniqueId())) {
 				SiegeEngine siegeEngine = SiegeEngines.activeSiegeEngines.get(entity.getUniqueId());
 				event.setCancelled(true);

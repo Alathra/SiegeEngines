@@ -38,9 +38,11 @@ public class RotationHandler implements Listener {
                     return;
                 }
                 final List<Entity> list = new ArrayList<>(SiegeEngines.siegeEngineEntitiesPerPlayer.get(player.getUniqueId()));
+                final List<Entity> concurrentFix = new ArrayList<>(list);
                 for (Entity ent : list) {
                     if (ent != null) {
                         SiegeEngine equipment = SiegeEngines.activeSiegeEngines.get(ent.getUniqueId());
+                        if (equipment == null) continue;
                         if (ent.isDead()) {
                             continue;
                         }
@@ -85,7 +87,7 @@ public class RotationHandler implements Listener {
                             living.teleport(loc);
                             equipment.ShowFireLocation(player);
                         } else {
-                            PlayerHandler.siegeEngineEntityDied(ent);
+                            PlayerHandler.releasePlayerSiegeEngine(player, ent);
                             continue;
                         }
                     }
