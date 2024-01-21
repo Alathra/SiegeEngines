@@ -59,12 +59,12 @@ public class PlayerHandler implements Listener {
                 if (SiegeEngines.siegeEngineEntitiesPerPlayer.get(uuid).contains(entity.getUniqueId())) {
                     list.remove(entity);
                     SiegeEngines.siegeEngineEntitiesPerPlayer.put(uuid,list);
-                    player.sendMessage("§eReleasing this SiegeEngine!");
+                    player.sendMessage("§eReleased this SiegeEngine!");
                 }
                 return;
             }
             list.clear();
-            player.sendMessage("§eReleasing all SiegeEngines!");
+            player.sendMessage("§eReleased all SiegeEngines!");
             SiegeEngines.siegeEngineEntitiesPerPlayer.put(uuid,list); 
         }
     }

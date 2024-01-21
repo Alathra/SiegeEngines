@@ -1028,16 +1028,20 @@ public class ClickHandler implements Listener {
 	public void onEntityClick(PlayerInteractAtEntityEvent event) {
 		Player player = event.getPlayer();
 		ItemStack itemInHand = player.getInventory().getItemInMainHand();
-		if (itemInHand == null)
-			itemInHand = new ItemStack(Material.AIR);
-		itemInHand = itemInHand.clone();
 		Entity entity = event.getRightClicked();
 		if (entity == null) {
 			return;
 		}
 		if (entity.getType() == EntityType.ARMOR_STAND) {
-			if (!isSiegeEngine(entity, true) && itemInHand.getType() == Config.controlItem) {
+			if (!(player.isSneaking()) && itemInHand.getType() == Config.controlItem) {
+				isSiegeEngine(entity, true);
 				return;
+			}
+			if ((itemInHand.getType() == Material.AIR || itemInHand == null))  {
+				if (player.isSneaking()) {
+					PlayerHandler.releasePlayerSiegeEngine(player,entity);
+					return;
+				}
 			}
 			if (itemInHand.getType() == Config.controlItem) {
 				if (SiegeEngines.siegeEngineEntitiesPerPlayer.get(player.getUniqueId()) != null) {
@@ -1052,10 +1056,6 @@ public class ClickHandler implements Listener {
 			}
 			if (SiegeEngines.activeSiegeEngines.containsKey(entity.getUniqueId())) {
 				SiegeEngine siegeEngine = SiegeEngines.activeSiegeEngines.get(entity.getUniqueId());
-				if ((player.isSneaking()) && itemInHand.getType() == Material.AIR) {
-					PlayerHandler.releasePlayerSiegeEngine(player,entity);
-					return;
-				}
 				event.setCancelled(true);
 				ItemStack stack = siegeEngine.fuelItem;
 				if (itemInHand.getType() == stack.getType()) {
