@@ -1,8 +1,11 @@
 package com.github.alathra.siegeengines.config;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 
+import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -30,6 +33,9 @@ public class Config {
 	public static int rotateDistance = 32;
 	public static int maxSiegeEnginesControlled = 5;
 	public static boolean autoReload = false;
+
+
+	public static HashSet<World> disabledWorlds = new HashSet<>();
 
 	// Siege Engine Options - Defaults
 	public static int trebuchetShotAmount = 1;
@@ -87,6 +93,18 @@ public class Config {
 	}
 
 	private static void loadSiegeEngineConfig() {
+		try {
+			for (String worldName : config.getStringList("DisabledWorlds")) {
+				World world = Bukkit.getWorld(worldName);
+				if (world != null) {
+					disabledWorlds.add(world);
+				}
+			}
+			SiegeEnginesLogger.info("Disabled in worlds: "+ config.getStringList("DisabledWorlds"));
+		} catch (Exception e) {
+			SiegeEnginesLogger.warn("Missing Disabled Worlds-List");
+		}
+
 		trebuchetShotAmount = config.getInt("SiegeEngines.Trebuchet.ShotAmount");
 		trebuchetVelocityPerFuel = (float) config.getDouble("SiegeEngines.Trebuchet.VelocityPerFuel");
 		trebuchetMaxFuel = config.getInt("SiegeEngines.Trebuchet.MaxFuel");

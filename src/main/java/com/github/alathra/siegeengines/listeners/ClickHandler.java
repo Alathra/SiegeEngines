@@ -158,6 +158,10 @@ public class ClickHandler implements Listener {
 				}
 				// If SiegeEngine found, place it
 				if (siegeEngine != null) {
+					if (Config.disabledWorlds.contains(thePlayer.getWorld())) {
+						thePlayer.sendMessage("§eSiege Engines cannot be placed in this World.");
+						event.setCancelled(true);
+					}
 					if (fluidMaterials.contains(replaced)) {
 						thePlayer.sendMessage("§eSiege Engines cannot be placed in Fluid Blocks.");
 						event.setCancelled(true);
@@ -591,11 +595,12 @@ public class ClickHandler implements Listener {
 	}
 
 	@EventHandler
-	public void damage(EntityDamageByEntityEvent event) {
+	public void onProjectileDamage(EntityDamageByEntityEvent event) {
 		if (event.getEntity() instanceof ArmorStand) {
-			if (event.getDamager() instanceof Projectile) {
-				event.setDamage(0);
-				event.setCancelled(true);
+			if (isSiegeEngine(event.getEntity(),false)) {
+				if (event.getDamager() instanceof Projectile) {
+					event.setDamage(3);
+				}
 			}
 		}
 	}
@@ -832,8 +837,8 @@ public class ClickHandler implements Listener {
 
 	NamespacedKey key = new NamespacedKey(SiegeEngines.getInstance(), "siege_engines");
 
-	@EventHandler
-	public void DeathEvent(EntityDeathEvent event) {
+	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
+	public void onSiegeEngineDeathEvent(EntityDeathEvent event) {
 		Boolean removeStands = false;
 		List<ItemStack> items = event.getDrops();
 		if (event.getEntity() instanceof ArmorStand) {
@@ -864,16 +869,7 @@ public class ClickHandler implements Listener {
 				}
 			}
 			if (removeStands) {
-				for (UUID key : SiegeEngines.siegeEngineEntitiesPerPlayer.keySet()) {
-					if (SiegeEngines.siegeEngineEntitiesPerPlayer.get(key) != null) {
-						final List<Entity> entities = new ArrayList<>(
-								SiegeEngines.siegeEngineEntitiesPerPlayer.get(key));
-						if (entities.contains(event.getEntity())) {
-							entities.remove(event.getEntity());
-							SiegeEngines.siegeEngineEntitiesPerPlayer.put(key, entities);
-						}
-					}
-				}
+				PlayerHandler.siegeEngineEntityDied(event.getEntity());
 				for (ItemStack i : items) {
 					if (i.getType() == Material.ARMOR_STAND) {
 						i.setAmount(0);

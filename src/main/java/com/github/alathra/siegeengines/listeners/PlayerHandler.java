@@ -29,10 +29,6 @@ public class PlayerHandler implements Listener {
     public void playerDeathEvent(PlayerDeathEvent event) {
         playerJoinLeave(event.getPlayer());
     }
-    @EventHandler
-    public void entityDeathEvent(EntityDeathEvent event) {
-        siegeEngineEntityDied(event.getEntity());
-    }
     public static void siegeEngineEntityDied(Entity entity) {
         for (UUID uuid : SiegeEngines.siegeEngineEntitiesPerPlayer.keySet()) {
             if (SiegeEngines.siegeEngineEntitiesPerPlayer.containsKey(uuid)) {

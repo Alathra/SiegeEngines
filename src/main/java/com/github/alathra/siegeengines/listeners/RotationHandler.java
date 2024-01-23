@@ -26,30 +26,40 @@ import com.github.alathra.siegeengines.config.Config;
 public class RotationHandler implements Listener {
 
     @EventHandler
-    public void playerMove(PlayerMoveEvent event) {
+    public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
         NamespacedKey key = new NamespacedKey(SiegeEngines.getInstance(), "siege_engines");
         if (SiegeEngines.siegeEngineEntitiesPerPlayer.containsKey(player.getUniqueId())) {
             ItemStack itemInHand = player.getInventory().getItemInMainHand();
             if (itemInHand != null) {
-                if (itemInHand.getType() != Config.controlItem) {
-                    //	TrackedStands.remove(player.getUniqueId());
-
-                    return;
-                }
                 final List<Entity> list = new ArrayList<>(SiegeEngines.siegeEngineEntitiesPerPlayer.get(player.getUniqueId()));
                 final List<Entity> concurrentFix = new ArrayList<>(list);
                 for (Entity ent : list) {
                     if (ent != null) {
                         SiegeEngine equipment = SiegeEngines.activeSiegeEngines.get(ent.getUniqueId());
                         if (equipment == null) continue;
+                        final LivingEntity living = (LivingEntity) ent;
+                        if (Config.disabledWorlds.contains(ent.getWorld())) {
+                            PlayerHandler.siegeEngineEntityDied(ent);
+                            living.setHealth(0.0d);
+                            continue;
+                        }
+                        if (!(ent.getLocation().getWorld().equals(player.getLocation().getWorld()))) {
+                            PlayerHandler.releasePlayerSiegeEngine(player, ent);
+                            continue;
+                        }
+                        final double distance = player.getLocation().distance(ent.getLocation());
+                        if (distance >= Config.controlDistance) {
+                            PlayerHandler.releasePlayerSiegeEngine(player, ent);
+                            continue;
+                        }
+                        if (itemInHand.getType() != Config.controlItem) {
+                            continue;
+                        }
                         if (ent.isDead()) {
                             continue;
                         }
-                        double distance = player.getLocation().distance(ent.getLocation());
                         if (distance <= Config.rotateDistance) {
-                            //	player.sendMessage("§egot id");
-                            LivingEntity living = (LivingEntity) ent;
                             Location loc = ent.getLocation();
 
                             if (equipment.rotateSideways) {
@@ -64,8 +74,6 @@ public class RotationHandler implements Listener {
                                 }
                                 loc.setDirection(dirBetweenLocations);
                             }
-                            //loc.setYaw(player.getLocation().getYaw());
-                            //loc.setPitch(player.getLocation().getPitch());
 
 
                             ArmorStand stand = (ArmorStand) living;
@@ -86,9 +94,6 @@ public class RotationHandler implements Listener {
 
                             living.teleport(loc);
                             equipment.ShowFireLocation(player);
-                        } else {
-                            PlayerHandler.releasePlayerSiegeEngine(player, ent);
-                            continue;
                         }
                     }
                 }

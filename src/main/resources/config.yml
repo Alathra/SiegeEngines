@@ -21,11 +21,13 @@ ControlDistance: 64
 RotateDistance: 32
 
 # The maximum siege engines a player can control at the same time
-MaxSiegeEnginesControlled: 5
+MaxSiegeEnginesControlled: 2
 
 # The auto-reload feature by shift-clicking
 AutoReload: false
 
+DisabledWorlds:
+  - world_nether
 
 # ======================================
 # |       SiegeEngine Options          |
