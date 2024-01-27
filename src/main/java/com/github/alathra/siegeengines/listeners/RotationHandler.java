@@ -70,7 +70,7 @@ public class RotationHandler implements Listener {
                                     Entity base = Bukkit.getEntity(UUID.fromString(ent.getPersistentDataContainer().get(key, PersistentDataType.STRING)));
                                     Location baseloc = base.getLocation();
                                     baseloc.setDirection(dirBetweenLocations);
-                                    base.teleport(baseloc);
+                                    base.teleport(baseloc,io.papermc.paper.entity.TeleportFlag.EntityState.values());
                                 }
                                 loc.setDirection(dirBetweenLocations);
                             }
@@ -92,7 +92,7 @@ public class RotationHandler implements Listener {
                             }
 
 
-                            living.teleport(loc);
+                            living.teleport(loc,io.papermc.paper.entity.TeleportFlag.EntityState.values());
                             equipment.ShowFireLocation(player);
                         }
                     }

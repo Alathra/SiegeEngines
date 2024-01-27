@@ -3,6 +3,7 @@ package com.github.alathra.siegeengines.listeners;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
@@ -678,14 +679,13 @@ public class ClickHandler implements Listener {
 			}
 		}
 		// Can only have one pilot
-		final List<UUID> keys = new ArrayList<>(SiegeEngines.siegeEngineEntitiesPerPlayer.keySet());
+		final HashSet<UUID> keys = new HashSet<>(SiegeEngines.siegeEngineEntitiesPerPlayer.keySet());
 		int numPilots = 0;
 		for (UUID uuid : keys) {
 			if (uuid.equals(player.getUniqueId())) {
 				continue;
 			}
 			numPilots++;
-
 		}
 		if (numPilots > 1) {
 			if (player instanceof Player)
@@ -693,11 +693,12 @@ public class ClickHandler implements Listener {
 			return;
 		}
 
-		if (SiegeEngines.siegeEngineEntitiesPerPlayer.get(player.getUniqueId()) != null) {
+		if (SiegeEngines.siegeEngineEntitiesPerPlayer.containsKey(player.getUniqueId())) {
 			if (SiegeEngines.siegeEngineEntitiesPerPlayer.get(player.getUniqueId())
-					.size() >= Config.maxSiegeEnginesControlled) {
+					.size() > Config.maxSiegeEnginesControlled) {
 				if (player instanceof Player) {
 					((Player) player).sendMessage("§eYou are already commanding too many Siege Engines!");
+					PlayerHandler.releasePlayerSiegeEngine(((Player) player),entity);
 				}
 				return;
 			}
@@ -1031,7 +1032,7 @@ public class ClickHandler implements Listener {
 		if (entity.getType() == EntityType.ARMOR_STAND) {
 			if ((itemInHand.getType() == Material.AIR || itemInHand == null))  {
 				if (player.isSneaking()) {
-					if (isSiegeEngine(entity, false)) PlayerHandler.releasePlayerSiegeEngine(player,entity);
+					if (isSiegeEngine(entity, false)) PlayerHandler.siegeEngineEntityDied(entity);
 					else PlayerHandler.releasePlayerSiegeEngine(player,null);
 					if (SiegeEngines.activeSiegeEngines.containsKey(entity.getUniqueId())) {
 						SiegeEngines.activeSiegeEngines.remove(entity.getUniqueId());
@@ -1108,6 +1109,63 @@ public class ClickHandler implements Listener {
 					}
 				}
 			}
+		}
+		if (entity.getType() == EntityType.RAVAGER || entity.getType() == EntityType.HORSE || entity.getType() == EntityType.DONKEY) {
+			if (player.getInventory().getItemInMainHand().getType() == Material.CARVED_PUMPKIN) {
+				final ItemStack item = player.getInventory().getItemInMainHand();
+				if (item.getItemMeta() != null && item.getItemMeta().hasCustomModelData()) {
+					int customModel = item.getItemMeta().getCustomModelData();
+					SiegeEngine siegeEngine = null;
+					// Search for match in custom model data value in defined siege engines
+					for (SiegeEngine entry : SiegeEngines.definedSiegeEngines.values()) {
+						if (entry.customModelID == customModel) {
+							try {
+								siegeEngine = entry.clone();
+							} catch (CloneNotSupportedException e) {
+							}
+							break;
+						} else {
+							// if siege engine was broken during one of its firing stages
+							if (entry.firingModelNumbers.contains(customModel)) {
+								try {
+									siegeEngine = entry.clone();
+								} catch (CloneNotSupportedException e) {
+									break;
+								}
+							}
+						}
+					}
+					// If SiegeEngine found, place it
+					if (siegeEngine != null) {
+						if (!siegeEngine.canMount) {
+							player.sendMessage("§eThis type of Siege Engine cannot be mounted to mobs.");
+							event.setCancelled(true);
+							return;
+						}
+						if (Config.disabledWorlds.contains(entity.getWorld())) {
+							player.sendMessage("§eSiege Engines cannot be placed in this World.");
+							event.setCancelled(true);
+						}
+						if (fluidMaterials.contains(entity.getLocation().getBlock().getType())) {
+							player.sendMessage("§eSiege Engines cannot be placed in Fluid Blocks.");
+							event.setCancelled(true);
+						}
+						if (event.isCancelled()) {
+							return;
+						}
+						if (siegeEngine.place(player, entity.getLocation(),entity)) {
+							item.setAmount(item.getAmount() - 1);
+							player.getInventory().setItemInMainHand(item);
+							player.sendMessage("§eSiege Engine mounted to the "+entity.getType().toString().toLowerCase()+"!");
+						} else {
+							player.sendMessage(
+									"§eSiege Engine cannot be placed within a 2.5 Block-Radius of other Siege Engines.");
+						}
+						event.setCancelled(true);
+					}
+				}
+			}
+			return;
 		}
 	}
 }

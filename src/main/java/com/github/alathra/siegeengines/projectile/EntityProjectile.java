@@ -24,7 +24,7 @@ public class EntityProjectile extends SiegeEngineProjectile {
     public int delayTime = 6;
     public EntityType entityType = EntityType.ARROW;
     public float inaccuracy = 0.2f;
-    public Particle particleType = Particle.EXPLOSION_LARGE;
+    public Particle particleType = Particle.CAMPFIRE_SIGNAL_SMOKE;
     public Sound soundType = Sound.ENTITY_GENERIC_EXPLODE;
     
     private boolean playSound = true;
@@ -62,7 +62,6 @@ public class EntityProjectile extends SiegeEngineProjectile {
             arrow.setVelocity(loc.getDirection().multiply(velocity));
         }
         arrow.setMetadata("isEntityProj", SiegeEnginesUtil.addMetaDataValue("true"));
-        Bukkit.getServer().getPluginManager().callEvent(new org.bukkit.event.entity.ProjectileLaunchEvent(arrow));
 
         if (arrow instanceof org.bukkit.entity.Projectile) {
             if (player instanceof org.bukkit.projectiles.ProjectileSource)
@@ -75,6 +74,8 @@ public class EntityProjectile extends SiegeEngineProjectile {
                 arr.setShooter((org.bukkit.projectiles.ProjectileSource) player);
                 arr.setPickupStatus(org.bukkit.entity.AbstractArrow.PickupStatus.CREATIVE_ONLY);
             }
+        } else {
+            Bukkit.getServer().getPluginManager().callEvent(new org.bukkit.event.entity.ProjectileLaunchEvent(arrow));
         }
         if (playSound) {
             world.playSound(loc, this.soundType, 20, 2);

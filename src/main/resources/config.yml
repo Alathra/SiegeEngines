@@ -15,19 +15,20 @@ config-version: 1
 ControlItem: CLOCK
 
 # The maxmimum distance the player can be away from the SiegeEngine before total control is terminated
-ControlDistance: 64
+ControlDistance: 24
 
 # The maximum distance the player can be away from the SiegeEngine before rotation control is terminated
-RotateDistance: 32
+RotateDistance: 16
 
 # The maximum siege engines a player can control at the same time
-MaxSiegeEnginesControlled: 2
+MaxSiegeEnginesControlled: 1
 
 # The auto-reload feature by shift-clicking
 AutoReload: false
 
 DisabledWorlds:
   - world_nether
+  - World-o_nether
 
 # ======================================
 # |       SiegeEngine Options          |
@@ -36,43 +37,43 @@ DisabledWorlds:
 Projectiles:
   StoneShot:
     ProjectileType: EXPLOSIVE
-    ExplodePower: 1.5
+    ExplodePower: 3.25
     Inaccuracy: 0.125
     ProjectileCount: 1
     AmmoItem: COBBLESTONE
     FireSound: ENTITY_GENERIC_EXPLODE
   BreachShot:
     ProjectileType: EXPLOSIVE
-    ExplodePower: 3.75
-    Inaccuracy: 0.3
+    ExplodePower: 5.25
+    Inaccuracy: 0.375
     ProjectileCount: 1
     AmmoItem: IRON_BLOCK
     FireSound: ENTITY_GENERIC_EXPLODE
   RepeatingShot:
     ProjectileType: EXPLOSIVE
-    ExplodePower: 1.0
-    Inaccuracy: 0.325
-    ProjectileCount: 5
+    ExplodePower: 1.75
+    Inaccuracy: 0.525
+    ProjectileCount: 6
     AmmoItem: TNT
     FireSound: ENTITY_GENERIC_EXPLODE
   ScatterShot:
     ProjectileType: ENTITY
-    Inaccuracy: 0.325
+    Inaccuracy: 0.365
     EntityCount: 24
     EntityType: ARROW
     AmmoItem: GRAVEL
-    FireSound: ENTITY_GENERIC_EXPLODE
+    FireSound: ITEM_CROSSBOW_SHOOT
   BallistaBoltShot:
     ProjectileType: ENTITY
-    Inaccuracy: 0.025
+    Inaccuracy: 0.0125
     EntityCount: 1
     EntityType: ARROW
     AmmoItem: ARROW
     FireSound: ITEM_CROSSBOW_SHOOT
   DragonsBreath:
     ProjectileType: ENTITY
-    Inaccuracy: 0.25
-    EntityCount: 3
+    Inaccuracy: 0.125
+    EntityCount: 1
     EntityType: DRAGON_FIREBALL
     AmmoItem: DRAGON_BREATH
     FireSound: ENTITY_GENERIC_EXPLODE
@@ -93,7 +94,7 @@ Projectiles:
 SiegeEngines:
   Trebuchet:
     ShotAmount: 1
-    VelocityPerFuel: 0.3
+    VelocityPerFuel: 0.75
     MaxFuel: 3
     FuelItem: STRING
     Projectiles:
@@ -101,9 +102,10 @@ SiegeEngines:
       - BreachShot
       - FireShot
       - RepeatingShot
+    CanMount: false
   Ballista:
     ShotAmount: 1
-    VelocityPerFuel: 1.25
+    VelocityPerFuel: 0.975
     MaxFuel: 2
     FuelItem: STRING
     Projectiles:
@@ -111,25 +113,26 @@ SiegeEngines:
       - ScatterShot
       - DragonsBreath
       - FireworkShot
+    CanMount: false
   SwivelCannon:
     ShotAmount: 1
-    VelocityPerFuel: 1.0125
+    VelocityPerFuel: 0.975
     MaxFuel: 5
     FuelItem: GUNPOWDER
     Projectiles:
       - StoneShot
+      - RepeatingShot
       - ScatterShot
       - FireShot
       - FireworkShot
+    CanMount: false
   BreachCannon:
     ShotAmount: 1
-    VelocityPerFuel: 0.975
+    VelocityPerFuel: 1.0625
     MaxFuel: 4
     FuelItem: GUNPOWDER
     Projectiles:
       - StoneShot
       - RepeatingShot
       - BreachShot
-      - FireShot
-      - FireworkShot
-    
+    CanMount: false

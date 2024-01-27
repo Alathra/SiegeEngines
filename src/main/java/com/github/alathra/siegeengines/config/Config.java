@@ -42,24 +42,28 @@ public class Config {
 	public static float trebuchetVelocityPerFuel = 0.3f;
 	public static int trebuchetMaxFuel = 3;
 	public static Material trebuchetFuelItem = Material.STRING;
+	public static boolean trebuchetCanMount = false;
 	public static HashMap<ItemStack, SiegeEngineProjectile> trebuchetProjectiles = new HashMap<>();
 
 	public static int ballistaShotAmount = 1;
 	public static float ballistaVelocityPerFuel = 0.925f;
 	public static int ballistaMaxFuel = 4;
 	public static Material ballistaFuelItem = Material.STRING;
+	public static boolean ballistaCanMount = false;
 	public static HashMap<ItemStack, SiegeEngineProjectile> ballistaProjectiles = new HashMap<>();
 
 	public static int swivelCannonShotAmount = 1;
 	public static float swivelCannonVelocityPerFuel = 1.0125f;
 	public static int swivelCannonMaxFuel = 5;
 	public static Material swivelCannonFuelItem = Material.GUNPOWDER;
+	public static boolean swivelCannonCanMount = false;
 	public static HashMap<ItemStack, SiegeEngineProjectile> swivelCannonProjectiles = new HashMap<>();
 
 	public static int breachCannonShotAmount = 1;
 	public static float breachCannonVelocityPerFuel = 1.075f;
 	public static int breachCannonMaxFuel = 4;
 	public static Material breachCannonFuelItem = Material.GUNPOWDER;
+	public static boolean breachCannonCanMount = false;
 	public static HashMap<ItemStack, SiegeEngineProjectile> breachCannonProjectiles = new HashMap<>();
 	
 
@@ -108,6 +112,7 @@ public class Config {
 		trebuchetShotAmount = config.getInt("SiegeEngines.Trebuchet.ShotAmount");
 		trebuchetVelocityPerFuel = (float) config.getDouble("SiegeEngines.Trebuchet.VelocityPerFuel");
 		trebuchetMaxFuel = config.getInt("SiegeEngines.Trebuchet.MaxFuel");
+		trebuchetCanMount = config.getBoolean("SiegeEngines.Trebuchet.CanMount");
 		try {
 			trebuchetFuelItem = Material.getMaterial(config.getString("SiegeEngines.Trebuchet.FuelItem"));
 		} catch (Exception e) {
@@ -124,6 +129,7 @@ public class Config {
 		ballistaShotAmount = config.getInt("SiegeEngines.Ballista.ShotAmount");
 		ballistaVelocityPerFuel = (float) config.getDouble("SiegeEngines.Ballista.VelocityPerFuel");
 		ballistaMaxFuel = config.getInt("SiegeEngines.Ballista.MaxFuel");
+		ballistaCanMount = config.getBoolean("SiegeEngines.Ballista.CanMount");
 		try {
 			ballistaFuelItem = Material.getMaterial(config.getString("SiegeEngines.Ballista.FuelItem"));
 		} catch (Exception e) {
@@ -140,6 +146,7 @@ public class Config {
 		swivelCannonShotAmount = config.getInt("SiegeEngines.SwivelCannon.ShotAmount");
 		swivelCannonVelocityPerFuel = (float) config.getDouble("SiegeEngines.SwivelCannon.VelocityPerFuel");
 		swivelCannonMaxFuel = config.getInt("SiegeEngines.SwivelCannon.MaxFuel");
+		swivelCannonCanMount = config.getBoolean("SiegeEngines.SwivelCannon.CanMount");
 		try {
 			swivelCannonFuelItem = Material.getMaterial(config.getString("SiegeEngines.SwivelCannon.FuelItem"));
 		} catch (Exception e) {
@@ -156,6 +163,7 @@ public class Config {
 		breachCannonShotAmount = config.getInt("SiegeEngines.BreachCannon.ShotAmount");
 		breachCannonVelocityPerFuel = (float) config.getDouble("SiegeEngines.BreachCannon.VelocityPerFuel");
 		breachCannonMaxFuel = config.getInt("SiegeEngines.BreachCannon.MaxFuel");
+		breachCannonCanMount = config.getBoolean("SiegeEngines.BreachCannon.CanMount");
 		try {
 			breachCannonFuelItem = Material.getMaterial(config.getString("SiegeEngines.BreachCannon.FuelItem"));
 		} catch (Exception e) {

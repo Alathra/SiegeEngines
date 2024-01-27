@@ -114,6 +114,7 @@ public class SiegeEngines extends JavaPlugin {
 		trebuchet.firingModelNumbers = new ArrayList<>(
 				Arrays.asList(123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139));
 		trebuchet.cycleThroughModelsWhileFiring = true;
+		trebuchet.canMount = Config.trebuchetCanMount;
 		definedSiegeEngines.put(trebuchet.readyModelNumber, trebuchet);
 
 		// Ballista
@@ -136,6 +137,7 @@ public class SiegeEngines extends JavaPlugin {
 		ballista.preFireModelNumber = 143;
 		ballista.firingModelNumbers = new ArrayList<>(Arrays.asList(143, 144, 145));
 		ballista.cycleThroughModelsWhileFiring = true;
+		ballista.canMount = Config.ballistaCanMount;
 		definedSiegeEngines.put(ballista.readyModelNumber, ballista);
 
 		// Siege Cannon
@@ -154,25 +156,27 @@ public class SiegeEngines extends JavaPlugin {
 		swivelCannon.firingModelNumbers = new ArrayList<Integer>();
 		swivelCannon.rotateStandHead = true;
 		swivelCannon.rotateSideways = true;
+		swivelCannon.canMount = Config.swivelCannonCanMount;
 		definedSiegeEngines.put(swivelCannon.readyModelNumber, swivelCannon);
 
 		// Naval Cannon
-		SiegeEngine beachCannon = new SiegeEngine("Breach Cannon", Config.breachCannonProjectiles,
+		SiegeEngine breachCannon = new SiegeEngine("Breach Cannon", Config.breachCannonProjectiles,
 				new ItemStack(Material.GUNPOWDER), 142);
 		// config options
-		beachCannon.shotAmount = Config.breachCannonShotAmount;
-		beachCannon.velocityPerFuel = Config.breachCannonVelocityPerFuel;
-		beachCannon.maxFuel = Config.breachCannonMaxFuel;
-		beachCannon.fuelItem = new ItemStack(Config.breachCannonFuelItem);
-		beachCannon.projectiles = Config.breachCannonProjectiles;
+		breachCannon.shotAmount = Config.breachCannonShotAmount;
+		breachCannon.velocityPerFuel = Config.breachCannonVelocityPerFuel;
+		breachCannon.maxFuel = Config.breachCannonMaxFuel;
+		breachCannon.fuelItem = new ItemStack(Config.breachCannonFuelItem);
+		breachCannon.projectiles = Config.breachCannonProjectiles;
 
-		beachCannon.placementOffsetY = -1;
-		beachCannon.readyModelNumber = 142;
-		beachCannon.modelNumberToFireAt = 142;
-		beachCannon.firingModelNumbers = new ArrayList<Integer>();
-		beachCannon.rotateStandHead = true;
-		beachCannon.rotateSideways = false;
-		definedSiegeEngines.put(beachCannon.readyModelNumber, beachCannon);
+		breachCannon.placementOffsetY = -1;
+		breachCannon.readyModelNumber = 142;
+		breachCannon.modelNumberToFireAt = 142;
+		breachCannon.firingModelNumbers = new ArrayList<Integer>();
+		breachCannon.rotateStandHead = true;
+		breachCannon.rotateSideways = false;
+		breachCannon.canMount = Config.breachCannonCanMount;
+		definedSiegeEngines.put(breachCannon.readyModelNumber, breachCannon);
 	}
 
 }

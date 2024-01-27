@@ -8,6 +8,7 @@ import java.util.UUID;
 import com.github.alathra.siegeengines.projectile.EntityProjectile;
 import com.github.alathra.siegeengines.projectile.FireworkProjectile;
 import com.github.alathra.siegeengines.projectile.SiegeEngineProjectile;
+import com.github.alathra.siegeengines.listeners.ClickHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -31,7 +32,7 @@ import org.jetbrains.annotations.NotNull;
 public class SiegeEngine implements Cloneable {
 
 	// Core variables
-	public Boolean enabled;
+	public boolean enabled;
 	public String id;
 	public String worldName;
 	public UUID entityId;
@@ -69,6 +70,7 @@ public class SiegeEngine implements Cloneable {
     public boolean hasBaseStand;
     public double baseStandOffset;
     public int baseStandModelNumber;
+    public boolean canMount = false;
     
     // Passed parameters
     public String name = "Unnammed SiegeEngine";
@@ -375,9 +377,13 @@ public class SiegeEngine implements Cloneable {
 
             }
         }
-    
     @SuppressWarnings("deprecation")
 	public boolean place(Entity player, Location l) {
+        return place(player,l,null);
+    }
+    
+    @SuppressWarnings("deprecation")
+	public boolean place(Entity player, Location l, Entity mount) {
         l.add(0.5, 0, 0.5);
         NamespacedKey key = new NamespacedKey(SiegeEngines.getInstance(), "siege_engines");
         if (this == null || !this.enabled) {
@@ -393,12 +399,13 @@ public class SiegeEngine implements Cloneable {
         ItemStack item = new ItemStack(Material.CARVED_PUMPKIN);
         ItemMeta meta = item.getItemMeta();
         String id = "";
+        Entity entity3 = null;
         this.ammoHolder = new SiegeEngineAmmoHolder();
         if (this.hasBaseStand) {
 
             Location l2 = l;
             l2.setY(l.getY() + this.baseStandOffset);
-            Entity entity3 = player.getWorld().spawnEntity(l, EntityType.ARMOR_STAND);
+            entity3 = player.getWorld().spawnEntity(l, EntityType.ARMOR_STAND);
 
             LivingEntity ent = (LivingEntity) entity3;
             ArmorStand stand = (ArmorStand) ent;
@@ -431,7 +438,6 @@ public class SiegeEngine implements Cloneable {
         meta.setLore(Lore);
         item.setItemMeta(meta);
 
-        //	entity3.addPassenger(entity2);
 
         LivingEntity ent = (LivingEntity) entity2;
         ArmorStand stand = (ArmorStand) ent;
@@ -451,7 +457,7 @@ public class SiegeEngine implements Cloneable {
 
         stand.setGravity(false);
         ent.getEquipment().setHelmet(item);
-        if (SiegeEngines.siegeEngineEntitiesPerPlayer.containsKey(player.getUniqueId())) {
+        /*if (SiegeEngines.siegeEngineEntitiesPerPlayer.containsKey(player.getUniqueId())) {
             List<Entity> entities = SiegeEngines.siegeEngineEntitiesPerPlayer.get(player.getUniqueId());
             entities.add(entity2);
             SiegeEngines.siegeEngineEntitiesPerPlayer.put(player.getUniqueId(), entities);
@@ -459,8 +465,13 @@ public class SiegeEngine implements Cloneable {
             List<Entity> newList = new ArrayList<Entity>();
             newList.add(entity2);
             SiegeEngines.siegeEngineEntitiesPerPlayer.put(player.getUniqueId(), newList);
-        }
+        }*/
         SiegeEngines.activeSiegeEngines.put(entity2.getUniqueId(), this);
+        ClickHandler.TakeControl(player,entity2);
+        if (mount != null && !(mount.isDead())) {
+            entity2.setGravity(true);
+            mount.addPassenger(entity2);
+        }
         return true;
     }
 }
