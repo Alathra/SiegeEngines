@@ -8,6 +8,9 @@ import java.util.UUID;
 import com.github.alathra.siegeengines.projectile.EntityProjectile;
 import com.github.alathra.siegeengines.projectile.FireworkProjectile;
 import com.github.alathra.siegeengines.projectile.SiegeEngineProjectile;
+
+import net.md_5.bungee.api.ChatColor;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -31,8 +34,11 @@ import org.jetbrains.annotations.NotNull;
 public class SiegeEngine implements Cloneable {
 
 	// Core variables
+	public SiegeEngineType type;
 	public Boolean enabled;
 	public String id;
+	public String itemName;
+	public List<String> itemLore;
 	public String worldName;
 	public UUID entityId;
     public Entity entity;
@@ -90,6 +96,9 @@ public class SiegeEngine implements Cloneable {
         }
         
     	// Set Default values
+        type = SiegeEngineType.UNKNOWN;
+        itemName = ChatColor.translateAlternateColorCodes('&', "&eUnknown Siege Engine");
+        itemLore = new ArrayList<String>();
         xOffset = 0;
         yOffset = 0;
         maxFuel = 5;
@@ -425,10 +434,8 @@ public class SiegeEngine implements Cloneable {
             entity2.getPersistentDataContainer().set(key, PersistentDataType.STRING, id);
         }
         meta.setCustomModelData(this.readyModelNumber);
-        meta.setDisplayName("§e" + this.name + " Item");
-        List<String> Lore = new ArrayList<String>();
-        Lore.add("§ePlace as a block to spawn a " + this.name + " or put on an Armor Stand.");
-        meta.setLore(Lore);
+        meta.setDisplayName(this.itemName);
+        meta.setLore(this.itemLore);
         item.setItemMeta(meta);
 
         //	entity3.addPassenger(entity2);

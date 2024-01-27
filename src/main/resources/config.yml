@@ -99,6 +99,9 @@ SiegeEngines:
       - BreachShot
       - FireShot
       - RepeatingShot
+    ItemName: "&e&lTrebuchet"
+    Lore:
+      - "&ePlace as a block to spawn a Trebuchet"
   Ballista:
     ShotAmount: 1
     VelocityPerFuel: 1.25
@@ -109,6 +112,9 @@ SiegeEngines:
       - ScatterShot
       - DragonsBreath
       - FireworkShot
+    ItemName: "&e&lBallista"
+    Lore:
+      - "&ePlace as a block to spawn a Ballista"
   SwivelCannon:
     ShotAmount: 1
     VelocityPerFuel: 1.0125
@@ -119,6 +125,9 @@ SiegeEngines:
       - ScatterShot
       - FireShot
       - FireworkShot
+    ItemName: "&e&lSwivel Cannon"
+    Lore:
+      - "&ePlace as a block to spawn a Swivel Cannon"
   BreachCannon:
     ShotAmount: 1
     VelocityPerFuel: 0.975
@@ -130,4 +139,7 @@ SiegeEngines:
       - BreachShot
       - FireShot
       - FireworkShot
+    ItemName: "&e&lBreach Cannon"
+    Lore:
+      - "&ePlace as a block to spawn a Breach Cannon"
     

@@ -58,7 +58,7 @@ public class SiegeEngines extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(new RotationHandler(), this);
 		getServer().getPluginManager().registerEvents(new ClickHandler(), this);
 		getServer().getPluginManager().registerEvents(new PlayerHandler(), this);
-		AddDefaults();
+		addDefaults();
 		for (SiegeEngine i : definedSiegeEngines.values()) {
 			System.out.println("§eEnabled Weapon : " + i.name);
 			System.out.println("§eWeapon Propellant/\"Fuel\" ItemStacks : " + i.fuelItem);
@@ -79,10 +79,24 @@ public class SiegeEngines extends JavaPlugin {
 				ItemMeta meta = item.getItemMeta();
 				siegeEngine.ammoHolder = new SiegeEngineAmmoHolder();
 				meta.setCustomModelData(siegeEngine.readyModelNumber);
-				meta.setDisplayName("§e" + siegeEngine.name + " Item");
-				List<String> Lore = new ArrayList<String>();
-				Lore.add("§ePlace as a block to spawn a " + siegeEngine.name + " or put on an Armor Stand.");
-				meta.setLore(Lore);
+				switch(siegeEngine.type) {
+					case TREBUCHET:
+						meta.setDisplayName(Config.trebuchetItemName);
+						meta.setLore(Config.trebuchetItemLore);
+						break;
+					case BALLISTA:
+						meta.setDisplayName(Config.ballistaItemName);
+						meta.setLore(Config.ballistaItemLore);
+						break;
+					case SWIVEL_CANNON:
+						meta.setDisplayName(Config.swivelCannonItemName);
+						meta.setLore(Config.swivelCannonItemLore);
+						break;
+					case BREACH_CANNON:
+						meta.setDisplayName(Config.breachCannonItemName);
+						meta.setLore(Config.ballistaItemLore);
+						break;
+				}
 				item.setItemMeta(meta);
 
 				((LivingEntity) siegeEngine.entity).getEquipment().setHelmet(item);
@@ -90,18 +104,20 @@ public class SiegeEngines extends JavaPlugin {
 		}
 	}
 
-	public static void AddDefaults() {
+	public static void addDefaults() {
 
 		// Trebuchet
 		SiegeEngine trebuchet = new SiegeEngine("Trebuchet", Config.trebuchetProjectiles,
 				new ItemStack(Material.STRING), 122);
 		// config options
+		trebuchet.type = SiegeEngineType.TREBUCHET;
+		trebuchet.itemName = Config.trebuchetItemName;
+		trebuchet.itemLore = Config.trebuchetItemLore;
 		trebuchet.shotAmount = Config.trebuchetShotAmount;
 		trebuchet.velocityPerFuel = Config.trebuchetVelocityPerFuel;
 		trebuchet.maxFuel = Config.trebuchetMaxFuel;
 		trebuchet.fuelItem = new ItemStack(Config.trebuchetFuelItem);
 		trebuchet.projectiles = Config.trebuchetProjectiles;
-
 		trebuchet.xOffset = 3;
 		trebuchet.yOffset = 3;
 		trebuchet.placementOffsetY = 0.0;
@@ -120,6 +136,9 @@ public class SiegeEngines extends JavaPlugin {
 		SiegeEngine ballista = new SiegeEngine("Ballista", Config.ballistaProjectiles, new ItemStack(Material.STRING),
 				145);
 		// config options
+		ballista.type = SiegeEngineType.BALLISTA;
+		ballista.itemName = Config.ballistaItemName;
+		ballista.itemLore = Config.ballistaItemLore;
 		ballista.shotAmount = Config.ballistaShotAmount;
 		ballista.velocityPerFuel = Config.ballistaVelocityPerFuel;
 		ballista.maxFuel = Config.ballistaMaxFuel;
@@ -142,12 +161,14 @@ public class SiegeEngines extends JavaPlugin {
 		SiegeEngine swivelCannon = new SiegeEngine("Swivel Cannon", Config.swivelCannonProjectiles,
 				new ItemStack(Material.GUNPOWDER), 141);
 		// config options
+		swivelCannon.type = SiegeEngineType.SWIVEL_CANNON;
+		swivelCannon.itemName = Config.swivelCannonItemName;
+		swivelCannon.itemLore = Config.swivelCannonItemLore;
 		swivelCannon.shotAmount = Config.swivelCannonShotAmount;
 		swivelCannon.velocityPerFuel = Config.swivelCannonVelocityPerFuel;
 		swivelCannon.maxFuel = Config.swivelCannonMaxFuel;
 		swivelCannon.fuelItem = new ItemStack(Config.swivelCannonFuelItem);
 		swivelCannon.projectiles = Config.swivelCannonProjectiles;
-
 		swivelCannon.placementOffsetY = -1;
 		swivelCannon.readyModelNumber = 141;
 		swivelCannon.modelNumberToFireAt = 141;
@@ -160,12 +181,14 @@ public class SiegeEngines extends JavaPlugin {
 		SiegeEngine beachCannon = new SiegeEngine("Breach Cannon", Config.breachCannonProjectiles,
 				new ItemStack(Material.GUNPOWDER), 142);
 		// config options
+		beachCannon.type = SiegeEngineType.BREACH_CANNON;
+		beachCannon.itemName = Config.breachCannonItemName;
+		beachCannon.itemLore = Config.breachCannonItemLore;
 		beachCannon.shotAmount = Config.breachCannonShotAmount;
 		beachCannon.velocityPerFuel = Config.breachCannonVelocityPerFuel;
 		beachCannon.maxFuel = Config.breachCannonMaxFuel;
 		beachCannon.fuelItem = new ItemStack(Config.breachCannonFuelItem);
 		beachCannon.projectiles = Config.breachCannonProjectiles;
-
 		beachCannon.placementOffsetY = -1;
 		beachCannon.readyModelNumber = 142;
 		beachCannon.modelNumberToFireAt = 142;

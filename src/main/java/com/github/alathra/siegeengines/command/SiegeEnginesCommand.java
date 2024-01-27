@@ -77,7 +77,7 @@ public class SiegeEnginesCommand {
 
         for (SiegeEngine SiegeEquipment : definedSiegeEngines.values()) {
             if (SiegeEquipment.equals(equipmentId)) {
-                giveEquipment(player, SiegeEquipment);
+                giveSiegeEngine(player, SiegeEquipment);
                 break;
             }
         }
@@ -88,7 +88,7 @@ public class SiegeEnginesCommand {
             throw CommandAPIBukkit.failWithAdventureComponent(ColorParser.of("<red>Only players can use this command.").build());
 
         for (SiegeEngine i : definedSiegeEngines.values()) {
-            giveEquipment(player, i);
+            giveSiegeEngine(player, i);
         }
     }
 
@@ -99,7 +99,7 @@ public class SiegeEnginesCommand {
         activeSiegeEngines.clear();
         siegeEngineEntitiesPerPlayer.clear();
         definedSiegeEngines.clear();
-        AddDefaults();
+        addDefaults();
         for (SiegeEngine i : definedSiegeEngines.values()) {
             sender.sendMessage(ColorParser.of("<yellow>Enabled SiegeEngine : %s".formatted(i.name)).build());
             sender.sendMessage(ColorParser.of("<yellow>SiegeEngine Propellant/\"Fuel\" ItemStacks : %s".formatted(i.fuelItem)).build());
@@ -110,16 +110,12 @@ public class SiegeEnginesCommand {
         sender.sendMessage(ColorParser.of("<yellow>SiegeEngine configs reloaded").build());
     }
 
-    private void giveEquipment(Player player, SiegeEngine SiegeEquipment) {
+    private void giveSiegeEngine(Player player, SiegeEngine siegeEngine) {
         ItemStack item = new ItemStack(Material.CARVED_PUMPKIN);
         ItemMeta meta = item.getItemMeta();
-        meta.setCustomModelData(SiegeEquipment.readyModelNumber);
-        meta.displayName(ColorParser.of("<yellow>%s Item".formatted(SiegeEquipment.name)).build());
-        List<Component> lore = new ArrayList<>();
-        lore.add(ColorParser.of("<yellow>Place as a block to spawn a '%s'".formatted(SiegeEquipment.name)).build());
-        lore.add(ColorParser.of("<yellow>or put on an Armor Stand.").build());
-        lore.add(ColorParser.of("<yellow>Right click to toggle visibility of stand.").build());
-        meta.lore(lore);
+        meta.setCustomModelData(siegeEngine.readyModelNumber);
+        meta.setDisplayName(siegeEngine.itemName);
+        meta.setLore(siegeEngine.itemLore);
         item.setItemMeta(meta);
         player.getInventory().addItem(item);
     }
