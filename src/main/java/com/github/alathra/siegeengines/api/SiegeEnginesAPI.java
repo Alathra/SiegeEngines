@@ -26,7 +26,7 @@ public class SiegeEnginesAPI {
 		return ballistaItem;
 	}
 	
-	public static ItemStack getSwivelCannoNItem() {
+	public static ItemStack getSwivelCannonItem() {
 		ItemStack swivelCannonItem = new ItemStack(Material.CARVED_PUMPKIN);
 		ItemMeta meta = swivelCannonItem.getItemMeta();
 		meta.setCustomModelData(141);
