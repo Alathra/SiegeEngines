@@ -29,35 +29,37 @@ public class PlayerHandler implements Listener {
     public void playerDeathEvent(PlayerDeathEvent event) {
         playerJoinLeave(event.getPlayer());
     }
-    @EventHandler
-    public void entityDeathEvent(EntityDeathEvent event) {
-        siegeEngineEntityDied(event.getEntity());
-    }
     public static void siegeEngineEntityDied(Entity entity) {
         for (UUID uuid : SiegeEngines.siegeEngineEntitiesPerPlayer.keySet()) {
             if (SiegeEngines.siegeEngineEntitiesPerPlayer.containsKey(uuid)) {
                 final List<Entity> list = new ArrayList<>(SiegeEngines.siegeEngineEntitiesPerPlayer.get(uuid));
                 if (SiegeEngines.siegeEngineEntitiesPerPlayer.get(uuid).contains(entity.getUniqueId())) {
                     list.remove(entity);
+                    SiegeEngines.activeSiegeEngines.remove(entity.getUniqueId());
                     SiegeEngines.siegeEngineEntitiesPerPlayer.put(uuid,list);
                 }
             }
         }
     }
     public static void playerJoinLeave(Player player) {
-        if (SiegeEngines.siegeEngineEntitiesPerPlayer.containsKey(player.getUniqueId())) {
-            final List<Entity> list = new ArrayList<>(SiegeEngines.siegeEngineEntitiesPerPlayer.get(player.getUniqueId()));
+        if (player == null) return;
+        final UUID uuid = player.getUniqueId();
+        if (SiegeEngines.siegeEngineEntitiesPerPlayer.containsKey(uuid)) {
+            final List<Entity> list = new ArrayList<>(SiegeEngines.siegeEngineEntitiesPerPlayer.get(uuid));
             list.clear();
-            SiegeEngines.siegeEngineEntitiesPerPlayer.put(player.getUniqueId(),list);
+            SiegeEngines.siegeEngineEntitiesPerPlayer.put(uuid,list);
+            SiegeEngines.siegeEngineEntitiesPerPlayer.remove(uuid);
         }
     }
     public static void releasePlayerSiegeEngine(Player player, Entity entity) {
-        UUID uuid = player.getUniqueId();
+        if (player == null) return;
+        final UUID uuid = player.getUniqueId();
         if (SiegeEngines.siegeEngineEntitiesPerPlayer.containsKey(uuid)) {
             final List<Entity> list = new ArrayList<>(SiegeEngines.siegeEngineEntitiesPerPlayer.get(uuid));
             if (entity != null) {
                 if (SiegeEngines.siegeEngineEntitiesPerPlayer.get(uuid).contains(entity.getUniqueId())) {
                     list.remove(entity);
+                    SiegeEngines.activeSiegeEngines.remove(entity.getUniqueId());
                     SiegeEngines.siegeEngineEntitiesPerPlayer.put(uuid,list);
                     player.sendMessage("§eReleased this SiegeEngine!");
                 }
@@ -66,6 +68,7 @@ public class PlayerHandler implements Listener {
             list.clear();
             player.sendMessage("§eReleased all SiegeEngines!");
             SiegeEngines.siegeEngineEntitiesPerPlayer.put(uuid,list); 
+            SiegeEngines.siegeEngineEntitiesPerPlayer.remove(uuid);
         }
     }
 }

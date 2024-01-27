@@ -1,9 +1,13 @@
 package com.github.alathra.siegeengines.config;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.World;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -19,8 +23,6 @@ import com.github.alathra.siegeengines.projectile.FireworkProjectile;
 import com.github.alathra.siegeengines.projectile.ProjectileType;
 import com.github.alathra.siegeengines.projectile.SiegeEngineProjectile;
 
-import net.md_5.bungee.api.ChatColor;
-
 public class Config {
 
 	private static FileConfiguration config;
@@ -34,11 +36,15 @@ public class Config {
 	public static int maxSiegeEnginesControlled = 5;
 	public static boolean autoReload = false;
 
+
+	public static HashSet<World> disabledWorlds = new HashSet<>();
+
 	// Siege Engine Options - Defaults
 	public static int trebuchetShotAmount = 1;
 	public static float trebuchetVelocityPerFuel = 0.3f;
 	public static int trebuchetMaxFuel = 3;
 	public static Material trebuchetFuelItem = Material.STRING;
+	public static boolean trebuchetCanMount = false;
 	public static HashMap<ItemStack, SiegeEngineProjectile> trebuchetProjectiles = new HashMap<>();
 	public static String trebuchetItemName = "&e&oTrebuchet";
 	public static List<String> trebuchetItemLore;
@@ -47,6 +53,7 @@ public class Config {
 	public static float ballistaVelocityPerFuel = 0.925f;
 	public static int ballistaMaxFuel = 4;
 	public static Material ballistaFuelItem = Material.STRING;
+	public static boolean ballistaCanMount = false;
 	public static HashMap<ItemStack, SiegeEngineProjectile> ballistaProjectiles = new HashMap<>();
 	public static String ballistaItemName = "&e&oBallista";
 	public static List<String> ballistaItemLore;
@@ -55,6 +62,7 @@ public class Config {
 	public static float swivelCannonVelocityPerFuel = 1.0125f;
 	public static int swivelCannonMaxFuel = 5;
 	public static Material swivelCannonFuelItem = Material.GUNPOWDER;
+	public static boolean swivelCannonCanMount = false;
 	public static HashMap<ItemStack, SiegeEngineProjectile> swivelCannonProjectiles = new HashMap<>();
 	public static String swivelCannonItemName = "&e&oSwivel Cannon";
 	public static List<String> swivelCannonItemLore;
@@ -63,6 +71,7 @@ public class Config {
 	public static float breachCannonVelocityPerFuel = 1.075f;
 	public static int breachCannonMaxFuel = 4;
 	public static Material breachCannonFuelItem = Material.GUNPOWDER;
+	public static boolean breachCannonCanMount = false;
 	public static HashMap<ItemStack, SiegeEngineProjectile> breachCannonProjectiles = new HashMap<>();
 	public static String breachCannonItemName = "&e&oBreach Cannon";
 	public static List<String> breachCannonItemLore;
@@ -124,6 +133,7 @@ public class Config {
 		ballistaShotAmount = config.getInt("SiegeEngines.Ballista.ShotAmount");
 		ballistaVelocityPerFuel = (float) config.getDouble("SiegeEngines.Ballista.VelocityPerFuel");
 		ballistaMaxFuel = config.getInt("SiegeEngines.Ballista.MaxFuel");
+		ballistaCanMount = config.getBoolean("SiegeEngines.Ballista.CanMount");
 		try {
 			ballistaFuelItem = Material.getMaterial(config.getString("SiegeEngines.Ballista.FuelItem"));
 		} catch (Exception e) {
@@ -149,6 +159,7 @@ public class Config {
 		swivelCannonShotAmount = config.getInt("SiegeEngines.SwivelCannon.ShotAmount");
 		swivelCannonVelocityPerFuel = (float) config.getDouble("SiegeEngines.SwivelCannon.VelocityPerFuel");
 		swivelCannonMaxFuel = config.getInt("SiegeEngines.SwivelCannon.MaxFuel");
+		swivelCannonCanMount = config.getBoolean("SiegeEngines.SwivelCannon.CanMount");
 		try {
 			swivelCannonFuelItem = Material.getMaterial(config.getString("SiegeEngines.SwivelCannon.FuelItem"));
 		} catch (Exception e) {
@@ -174,6 +185,7 @@ public class Config {
 		breachCannonShotAmount = config.getInt("SiegeEngines.BreachCannon.ShotAmount");
 		breachCannonVelocityPerFuel = (float) config.getDouble("SiegeEngines.BreachCannon.VelocityPerFuel");
 		breachCannonMaxFuel = config.getInt("SiegeEngines.BreachCannon.MaxFuel");
+		breachCannonCanMount = config.getBoolean("SiegeEngines.BreachCannon.CanMount");
 		try {
 			breachCannonFuelItem = Material.getMaterial(config.getString("SiegeEngines.BreachCannon.FuelItem"));
 		} catch (Exception e) {
@@ -196,11 +208,23 @@ public class Config {
 	}
 
 	private static void loadSiegeEngineConfig() {
-
+		
 		loadTrebuchetValues();
 		loadBallistaValues();
 		loadSwivelCannonValues();
 		loadBreachCannonValues();
+		
+		try {
+			for (String worldName : config.getStringList("DisabledWorlds")) {
+				World world = Bukkit.getWorld(worldName);
+				if (world != null) {
+					disabledWorlds.add(world);
+				}
+			}
+			SiegeEnginesLogger.info("Disabled in worlds: "+ config.getStringList("DisabledWorlds"));
+		} catch (Exception e) {
+			SiegeEnginesLogger.warn("Missing Disabled Worlds-List");
+		}
 	}
 
 	private static void loadProjectilesConfig() {

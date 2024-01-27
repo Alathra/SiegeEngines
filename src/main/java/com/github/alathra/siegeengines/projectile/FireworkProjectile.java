@@ -23,7 +23,7 @@ public class FireworkProjectile extends SiegeEngineProjectile {
     public int delayTime = 6;
     public EntityType entityType = EntityType.FIREWORK;
     public float inaccuracy = 0.125f;
-    public Particle particleType = Particle.EXPLOSION_NORMAL;
+    public Particle particleType = Particle.FLASH;
     public Sound soundType = Sound.ENTITY_FIREWORK_ROCKET_BLAST_FAR;
     public float velocityFactor = 0.5f;
     
