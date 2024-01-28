@@ -13,7 +13,7 @@ public class SiegeEnginesAPI {
 		ItemMeta meta = trebuchetItem.getItemMeta();
 		meta.setCustomModelData(122);
 		meta.setDisplayName(Config.trebuchetItemName);
-		meta.setLore(Config.ballistaItemLore);
+		meta.setLore(Config.trebuchetItemLore);
 		trebuchetItem.setItemMeta(meta);
 		return trebuchetItem;
 	}
