@@ -15,7 +15,7 @@ public class CraftingHandler implements Listener {
 
 	@EventHandler
 	public void onCraft(CraftItemEvent event) {
-		if (Config.craftingRecipes) {
+		if (!Config.craftingRecipes) {
 			return;
 		}
 		Recipe recipe = event.getRecipe();
