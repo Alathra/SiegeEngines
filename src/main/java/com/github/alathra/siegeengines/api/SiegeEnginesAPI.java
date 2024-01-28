@@ -14,6 +14,7 @@ public class SiegeEnginesAPI {
 		meta.setCustomModelData(122);
 		meta.setDisplayName(Config.trebuchetItemName);
 		meta.setLore(Config.ballistaItemLore);
+		trebuchetItem.setItemMeta(meta);
 		return trebuchetItem;
 	}
 	
@@ -23,6 +24,7 @@ public class SiegeEnginesAPI {
 		meta.setCustomModelData(145);
 		meta.setDisplayName(Config.ballistaItemName);
 		meta.setLore(Config.ballistaItemLore);
+		ballistaItem.setItemMeta(meta);
 		return ballistaItem;
 	}
 	
@@ -32,6 +34,7 @@ public class SiegeEnginesAPI {
 		meta.setCustomModelData(141);
 		meta.setDisplayName(Config.swivelCannonItemName);
 		meta.setLore(Config.swivelCannonItemLore);
+		swivelCannonItem.setItemMeta(meta);
 		return swivelCannonItem;
 	}
 	
@@ -41,6 +44,7 @@ public class SiegeEnginesAPI {
 		meta.setCustomModelData(142);
 		meta.setDisplayName(Config.breachCannonItemName);
 		meta.setLore(Config.breachCannonItemLore);
+		breachCannonItem.setItemMeta(meta);
 		return breachCannonItem;
 	}
 }

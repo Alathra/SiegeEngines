@@ -3,6 +3,16 @@
 # |    ** Forked from CrunchSiegeEquipment by TheRealCrunch **    |
 # =================================================================
 
+# =====================================
+# |         PERMISSION NODES          |
+# =====================================
+
+# SiegeEngines.craft.trebuchet
+# SiegeEngines.craft.ballista
+# SiegeEngines.craft.swivel_cannon
+# SiegeEngines.craft.breach_cannon
+
+
 # DO NOT CHANGE
 config-version: 1
 
@@ -22,6 +32,9 @@ RotateDistance: 16
 
 # The maximum siege engines a player can control at the same time
 MaxSiegeEnginesControlled: 1
+
+# Whether or not the crafting recipes for siege engines will be enabled
+CraftingRecipes: true
 
 # The auto-reload feature by shift-clicking
 AutoReload: false

@@ -35,6 +35,7 @@ public class Config {
 	public static int rotateDistance = 32;
 	public static int maxSiegeEnginesControlled = 5;
 	public static boolean autoReload = false;
+	public static boolean craftingRecipes = true;
 
 
 	public static HashSet<World> disabledWorlds = new HashSet<>();
@@ -98,6 +99,7 @@ public class Config {
 		rotateDistance = config.getInt("RotateDistance");
 		maxSiegeEnginesControlled = config.getInt("MaxSiegeEnginesControlled");
 		autoReload = config.getBoolean("AutoReload");
+		craftingRecipes = config.getBoolean("CraftingRecipes");
 
 		loadProjectilesConfig();
 		loadSiegeEngineConfig();
