@@ -140,7 +140,7 @@ public class ClickHandler implements Listener {
 				SiegeEngine siegeEngine = null;
 				// Search for match in custom model data value in defined siege engines
 				for (SiegeEngine entry : SiegeEngines.definedSiegeEngines.values()) {
-					if (entry.customModelID == customModel) {
+					if (entry.getCustomModelID() == customModel) {
 						try {
 							siegeEngine = entry.clone();
 						} catch (CloneNotSupportedException e) {
@@ -148,7 +148,7 @@ public class ClickHandler implements Listener {
 						break;
 					} else {
 						// if siege engine was broken during one of its firing stages
-						if (entry.firingModelNumbers.contains(customModel)) {
+						if (entry.getFiringModelNumbers().contains(customModel)) {
 							try {
 								siegeEngine = entry.clone();
 							} catch (CloneNotSupportedException e) {
@@ -265,7 +265,7 @@ public class ClickHandler implements Listener {
 			sendSiegeEngineHelpMSG(state, siegeEngine);
 			return false;
 		} else {
-			for (ItemStack stack : siegeEngine.projectiles.keySet()) {
+			for (ItemStack stack : siegeEngine.getProjectiles().keySet()) {
 				if (inventoryItem == null)
 					continue;
 				if (siegeEngine.hasAmmunition()) {
@@ -276,19 +276,19 @@ public class ClickHandler implements Listener {
 					continue;
 				inventoryItem.setAmount(1);
 				if (stack.getType() != Material.FIREWORK_ROCKET && stack.isSimilar(inventoryItem)
-						&& siegeEngine.ammoHolder.loadedProjectile == 0) {
-					siegeEngine.ammoHolder.loadedProjectile = 1;
-					siegeEngine.ammoHolder.materialName = stack;
+						&& siegeEngine.getAmmoHolder().getLoadedProjectile() == 0) {
+					siegeEngine.getAmmoHolder().setLoadedProjectile(1);
+					siegeEngine.getAmmoHolder().setMaterialName(stack);
 					state.getInventory().removeItem(inventoryItem);
 					return true;
 				}
 				if (stack.getType() == Material.FIREWORK_ROCKET && inventoryItem.getType() == stack.getType()
-						&& siegeEngine.ammoHolder.loadedProjectile == 0) {
-					siegeEngine.ammoHolder.loadedProjectile = 1;
-					siegeEngine.ammoHolder.materialName = inventoryItem;
+						&& siegeEngine.getAmmoHolder().getLoadedProjectile() == 0) {
+					siegeEngine.getAmmoHolder().setLoadedProjectile(1);
+					siegeEngine.getAmmoHolder().setMaterialName(inventoryItem);
 					state.getInventory().removeItem(inventoryItem);
 					FireworkProjectile proj = FireworkProjectile.getDefaultRocketShot(inventoryItem.clone());
-					siegeEngine.projectiles.put(inventoryItem, proj);
+					siegeEngine.getProjectiles().put(inventoryItem, proj);
 					return true;
 				}
 				continue;
@@ -299,7 +299,7 @@ public class ClickHandler implements Listener {
 
 	private boolean pulledAmmoFromPlayer(Player state, SiegeEngine siegeEngine) {
 		for (ItemStack inventoryItem : state.getInventory().getContents()) {
-			for (ItemStack stack : siegeEngine.projectiles.keySet()) {
+			for (ItemStack stack : siegeEngine.getProjectiles().keySet()) {
 				if (inventoryItem == null)
 					continue;
 				if (siegeEngine.hasAmmunition()) {
@@ -310,19 +310,19 @@ public class ClickHandler implements Listener {
 				if (!(stack.isSimilar(inventoryItem)) && (stack.getType() != Material.FIREWORK_ROCKET))
 					continue;
 				if (stack.getType() != Material.FIREWORK_ROCKET && stack.isSimilar(inventoryItem)
-						&& siegeEngine.ammoHolder.loadedProjectile == 0) {
-					siegeEngine.ammoHolder.loadedProjectile = 1;
-					siegeEngine.ammoHolder.materialName = stack;
+						&& siegeEngine.getAmmoHolder().getLoadedProjectile() == 0) {
+					siegeEngine.getAmmoHolder().setLoadedProjectile(1);
+					siegeEngine.getAmmoHolder().setMaterialName(stack);
 					state.getInventory().removeItem(inventoryItem);
 					return true;
 				}
 				if (stack.getType() == Material.FIREWORK_ROCKET && inventoryItem.getType() == stack.getType()
-						&& siegeEngine.ammoHolder.loadedProjectile == 0) {
-					siegeEngine.ammoHolder.loadedProjectile = 1;
-					siegeEngine.ammoHolder.materialName = inventoryItem;
+						&& siegeEngine.getAmmoHolder().getLoadedProjectile() == 0) {
+					siegeEngine.getAmmoHolder().setLoadedProjectile(1);
+					siegeEngine.getAmmoHolder().setMaterialName(inventoryItem);
 					state.getInventory().removeItem(inventoryItem);
 					FireworkProjectile proj = FireworkProjectile.getDefaultRocketShot(inventoryItem.clone());
-					siegeEngine.projectiles.put(inventoryItem, proj);
+					siegeEngine.getProjectiles().put(inventoryItem, proj);
 					return true;
 				}
 				continue;
@@ -338,16 +338,16 @@ public class ClickHandler implements Listener {
 			for (ItemStack inventoryItem : state.getInventory().getContents()) {
 				if (inventoryItem == null)
 					continue;
-				for (ItemStack stack : siegeEngine.projectiles.keySet()) {
+				for (ItemStack stack : siegeEngine.getProjectiles().keySet()) {
 					if (siegeEngine.hasAmmunition()) {
 						return true;
 					}
 					if (!(stack.isSimilar(inventoryItem)) && (stack.getType() != Material.FIREWORK_ROCKET))
 						continue;
 					if (stack.getType() != Material.FIREWORK_ROCKET && stack.isSimilar(inventoryItem)
-							&& siegeEngine.ammoHolder.loadedProjectile == 0) {
-						siegeEngine.ammoHolder.loadedProjectile = 1;
-						siegeEngine.ammoHolder.materialName = stack;
+							&& siegeEngine.getAmmoHolder().getLoadedProjectile() == 0) {
+						siegeEngine.getAmmoHolder().setLoadedProjectile(1);
+						siegeEngine.getAmmoHolder().setMaterialName(stack);
 						if (inventoryItem.getAmount() - 1 > 0) {
 							inventoryItem.setAmount(inventoryItem.getAmount() - 1);
 						} else {
@@ -357,9 +357,9 @@ public class ClickHandler implements Listener {
 						return true;
 					}
 					if (stack.getType() == Material.FIREWORK_ROCKET && inventoryItem.getType() == stack.getType()
-							&& siegeEngine.ammoHolder.loadedProjectile == 0) {
-						siegeEngine.ammoHolder.loadedProjectile = 1;
-						siegeEngine.ammoHolder.materialName = inventoryItem;
+							&& siegeEngine.getAmmoHolder().getLoadedProjectile() == 0) {
+						siegeEngine.getAmmoHolder().setLoadedProjectile(1);
+						siegeEngine.getAmmoHolder().setMaterialName(inventoryItem);
 						if (inventoryItem.getAmount() - 1 > 0) {
 							inventoryItem.setAmount(inventoryItem.getAmount() - 1);
 						} else {
@@ -367,7 +367,7 @@ public class ClickHandler implements Listener {
 							inventoryItem.setAmount(0);
 						}
 						FireworkProjectile proj = FireworkProjectile.getDefaultRocketShot(inventoryItem.clone());
-						siegeEngine.projectiles.put(inventoryItem, proj);
+						siegeEngine.getProjectiles().put(inventoryItem, proj);
 						return true;
 					}
 					continue;
@@ -379,7 +379,7 @@ public class ClickHandler implements Listener {
 
 	private boolean pulledPropellantFromContainer(Location loc, SiegeEngine siegeEngine) {
 		if (loc.getBlock().getType() == Material.BARREL || loc.getBlock().getType() == Material.CHEST) {
-			ItemStack stack = siegeEngine.fuelItem;
+			ItemStack stack = siegeEngine.getFuelItem();
 			stack.setAmount(1);
 			Block inv = loc.getBlock();
 			Container state = ((Container) inv.getState());
@@ -390,7 +390,7 @@ public class ClickHandler implements Listener {
 				return false;
 			}
 			state.getInventory().removeItem(stack);
-			siegeEngine.ammoHolder.loadedFuel += 1;
+			siegeEngine.getAmmoHolder().setLoadedFuel(siegeEngine.getAmmoHolder().getLoadedFuel() + 1);
 			return true;
 		}
 		return false;
@@ -399,24 +399,24 @@ public class ClickHandler implements Listener {
 	private void sendPropellantStatusMSG(Player player, SiegeEngine siegeEngine) {
 		player.sendMessage("§eReloaded propellant");
 		if (!siegeEngine.canLoadFuel()) {
-			player.sendMessage("§ePropellant is Full! Level: §6(" + siegeEngine.ammoHolder.loadedFuel + "/"
-					+ siegeEngine.maxFuel + ")");
+			player.sendMessage("§ePropellant is Full! Level: §6(" + siegeEngine.getAmmoHolder().getLoadedFuel() + "/"
+					+ siegeEngine.getMaxFuel() + ")");
 		} else {
 			player.sendMessage(
-					"§ePropellant level is: §6(" + siegeEngine.ammoHolder.loadedFuel + "/" + siegeEngine.maxFuel + ")");
+					"§ePropellant level is: §6(" + siegeEngine.getAmmoHolder().getLoadedFuel() + "/" + siegeEngine.getMaxFuel() + ")");
 		}
 	}
 
 	private void sendSiegeEngineHelpMSG(Player player, SiegeEngine siegeEngine) {
 		if (!siegeEngine.canLoadFuel()) {
-			player.sendMessage("§ePropellant is Full! Level: §6(" + siegeEngine.ammoHolder.loadedFuel + "/"
-					+ siegeEngine.maxFuel + ")");
-			if (siegeEngine.ammoHolder.loadedProjectile == 0) {
+			player.sendMessage("§ePropellant is Full! Level: §6(" + siegeEngine.getAmmoHolder().getLoadedFuel() + "/"
+					+ siegeEngine.getMaxFuel() + ")");
+			if (siegeEngine.getAmmoHolder().getLoadedProjectile() == 0) {
 				player.sendMessage("§eLoad Ammunition by Right Clicking the Siege Engine with any Valid Projectilie!");
 			}
 		} else {
 			player.sendMessage(
-					"§ePropellant level is: §6(" + siegeEngine.ammoHolder.loadedFuel + "/" + siegeEngine.maxFuel + ")");
+					"§ePropellant level is: §6(" + siegeEngine.getAmmoHolder().getLoadedFuel() + "/" + siegeEngine.getMaxFuel() + ")");
 		}
 	}
 
@@ -442,9 +442,9 @@ public class ClickHandler implements Listener {
 				for (Entity siegeEngineEntity : siegeEngineEntities) {
 					if (SiegeEngines.activeSiegeEngines.containsKey(siegeEngineEntity.getUniqueId())) {
 						SiegeEngine siegeEngine = SiegeEngines.activeSiegeEngines.get(siegeEngineEntity.getUniqueId());
-						if (siegeEngine != null && siegeEngine.enabled && !(siegeEngineEntity.isDead())
+						if (siegeEngine != null && siegeEngine.getEnabled() && !(siegeEngineEntity.isDead())
 								&& siegeEngine.isLoaded()) {
-							if (siegeEngine.setModelNumberWhenFullyLoaded && siegeEngine.canLoadFuel()) {
+							if (siegeEngine.isSetModelNumberWhenFullyLoaded() && siegeEngine.canLoadFuel()) {
 								player.sendMessage("§eFailed to fire. This siege engine needs to be fully loaded!");
 							} else {
 								siegeEngine.Fire(player, 10f, 1);
@@ -481,25 +481,25 @@ public class ClickHandler implements Listener {
 				// Validate for SiegeEngine and get object
 				if (SiegeEngines.activeSiegeEngines.containsKey(siegeEngineEntity.getUniqueId())) {
 					SiegeEngine siegeEngine = SiegeEngines.activeSiegeEngines.get(siegeEngineEntity.getUniqueId());
-					if (siegeEngine == null || !siegeEngine.enabled) {
+					if (siegeEngine == null || !siegeEngine.getEnabled()) {
 						continue;
 					}
 					if (siegeEngine.hasAmmunition()) {
 						continue;
 					}
 					// Checks for ammo in nearby container and loads if found
-					if (pulledAmmoFromContainer(siegeEngine.entity.getLocation(), siegeEngine)) {
+					if (pulledAmmoFromContainer(siegeEngine.getEntity().getLocation(), siegeEngine)) {
 						player.sendMessage("§eReloaded ammunition!");
 						continue;
 					}
 					if (pulledAmmoFromContainer(
-							siegeEngine.entity.getLocation().getBlock().getRelative(0, -1, 0).getLocation(),
+							siegeEngine.getEntity().getLocation().getBlock().getRelative(0, -1, 0).getLocation(),
 							siegeEngine)) {
 						player.sendMessage("§eReloaded ammunition!");
 						continue;
 					}
 					if (pulledAmmoFromContainer(
-							siegeEngine.entity.getLocation().getBlock().getRelative(0, 1, 0).getLocation(),
+							siegeEngine.getEntity().getLocation().getBlock().getRelative(0, 1, 0).getLocation(),
 							siegeEngine)) {
 						player.sendMessage("§eReloaded ammunition!");
 						continue;
@@ -515,15 +515,15 @@ public class ClickHandler implements Listener {
 					// Old Non-Firework Compatible
 					// event.getPlayer().getInventory().getContents()
 					for (ItemStack inventoryItem : player.getInventory().getContents()) {
-						for (ItemStack stack : siegeEngine.projectiles.keySet()) {
+						for (ItemStack stack : siegeEngine.getProjectiles().keySet()) {
 							if (siegeEngine.hasAmmunition()) {
 								continue;
 							}
 							if (!SiegeEnginesUtil.hasItem(player.getInventory(), stack))
 								continue;
-							if (stack.isSimilar(inventoryItem) && siegeEngine.ammoHolder.loadedProjectile == 0) {
-								siegeEngine.ammoHolder.loadedProjectile = 1;
-								siegeEngine.ammoHolder.materialName = stack;
+							if (stack.isSimilar(inventoryItem) && siegeEngine.getAmmoHolder().getLoadedProjectile() == 0) {
+								siegeEngine.getAmmoHolder().setLoadedProjectile(1);
+								siegeEngine.getAmmoHolder().setMaterialName(stack);
 								inventoryItem.setAmount(inventoryItem.getAmount() - 1);
 								break;
 							}
@@ -537,31 +537,31 @@ public class ClickHandler implements Listener {
 					continue;
 				if (SiegeEngines.activeSiegeEngines.containsKey(siegeEngineEntity.getUniqueId())) {
 					SiegeEngine siegeEngine = SiegeEngines.activeSiegeEngines.get(siegeEngineEntity.getUniqueId());
-					if (siegeEngine == null || !siegeEngine.enabled) {
+					if (siegeEngine == null || !siegeEngine.getEnabled()) {
 						continue;
 					}
 					// Checks for propellant in nearby container and loads if found
-					if (pulledPropellantFromContainer(siegeEngine.entity.getLocation(), siegeEngine)) {
+					if (pulledPropellantFromContainer(siegeEngine.getEntity().getLocation(), siegeEngine)) {
 						sendPropellantStatusMSG(player, siegeEngine);
 						continue;
 					}
 					if (pulledPropellantFromContainer(
-							siegeEngine.entity.getLocation().getBlock().getRelative(0, -1, 0).getLocation(),
+							siegeEngine.getEntity().getLocation().getBlock().getRelative(0, -1, 0).getLocation(),
 							siegeEngine)) {
 						sendPropellantStatusMSG(player, siegeEngine);
 						continue;
 					}
 					if (pulledPropellantFromContainer(
-							siegeEngine.entity.getLocation().getBlock().getRelative(0, 1, 0).getLocation(),
+							siegeEngine.getEntity().getLocation().getBlock().getRelative(0, 1, 0).getLocation(),
 							siegeEngine)) {
 						sendPropellantStatusMSG(player, siegeEngine);
 						continue;
 					}
 					// Check player's inv for propellant
 					if (siegeEngine.canLoadFuel()) {
-						ItemStack stack = siegeEngine.fuelItem;
+						ItemStack stack = siegeEngine.getFuelItem();
 						if (SiegeEnginesUtil.hasItem((Inventory) player.getInventory(), stack)) {
-							siegeEngine.ammoHolder.loadedFuel += 1;
+							siegeEngine.getAmmoHolder().setLoadedFuel(siegeEngine.getAmmoHolder().getLoadedFuel() + 1);
 							stack.setAmount(1);
 							player.getInventory().removeItem(stack);
 							sendPropellantStatusMSG(player, siegeEngine);
@@ -641,18 +641,18 @@ public class ClickHandler implements Listener {
 
 			if (SiegeEngines.activeSiegeEngines.containsKey(entity.getUniqueId())) {
 				equip = SiegeEngines.activeSiegeEngines.get(entity.getUniqueId());
-				if (equip == null || !equip.enabled) {
+				if (equip == null || !equip.getEnabled()) {
 					return false;
 				}
 			} else {
 				equip = SiegeEnginesUtil.createCloneFromCustomModelData(
 						living.getEquipment().getHelmet().getItemMeta().getCustomModelData());
-				if (equip == null || !equip.enabled) {
+				if (equip == null || !equip.getEnabled()) {
 					return false;
 				}
-				equip.ammoHolder = new SiegeEngineAmmoHolder();
-				equip.entity = entity;
-				equip.entityId = entity.getUniqueId();
+				equip.setAmmoHolder(new SiegeEngineAmmoHolder());
+				equip.setEntity(entity);
+				equip.setEntityId(entity.getUniqueId());
 			}
 			stand.addEquipmentLock(EquipmentSlot.HEAD, LockType.REMOVING_OR_CHANGING);
 			stand.addEquipmentLock(EquipmentSlot.LEGS, LockType.ADDING_OR_CHANGING);
@@ -720,18 +720,18 @@ public class ClickHandler implements Listener {
 
 			if (SiegeEngines.activeSiegeEngines.containsKey(entity.getUniqueId())) {
 				equip = SiegeEngines.activeSiegeEngines.get(entity.getUniqueId());
-				if (equip == null || !equip.enabled) {
+				if (equip == null || !equip.getEnabled()) {
 					return;
 				}
 			} else {
 				equip = SiegeEnginesUtil.createCloneFromCustomModelData(
 						living.getEquipment().getHelmet().getItemMeta().getCustomModelData());
-				if (equip == null || !equip.enabled) {
+				if (equip == null || !equip.getEnabled()) {
 					return;
 				}
-				equip.ammoHolder = new SiegeEngineAmmoHolder();
-				equip.entity = entity;
-				equip.entityId = entity.getUniqueId();
+				equip.setAmmoHolder(new SiegeEngineAmmoHolder());
+				equip.setEntity(entity);
+				equip.setEntityId(entity.getUniqueId());
 			}
 			stand.addEquipmentLock(EquipmentSlot.HEAD, LockType.REMOVING_OR_CHANGING);
 			stand.addEquipmentLock(EquipmentSlot.LEGS, LockType.ADDING_OR_CHANGING);
@@ -788,7 +788,7 @@ public class ClickHandler implements Listener {
 		if (equipment != null) {
 			if (player instanceof Player)
 				equipment.ShowFireLocation(player);
-			if (equipment.rotateStandHead) {
+			if (equipment.isRotateStandHead()) {
 				stand.setHeadPose(new EulerAngle(loc.getDirection().getY() * (-1), 0, 0));
 			}
 			ent.teleport(loc);
@@ -807,7 +807,7 @@ public class ClickHandler implements Listener {
 		if (equipment != null) {
 			if (player instanceof Player)
 				equipment.ShowFireLocation(player);
-			if (equipment.rotateStandHead) {
+			if (equipment.isRotateStandHead()) {
 				stand.setHeadPose(new EulerAngle(loc.getDirection().getY() * (-1), 0, 0));
 			}
 			ent.teleport(loc);
@@ -826,7 +826,7 @@ public class ClickHandler implements Listener {
 			if (player instanceof Player) {
 				equipment.ShowFireLocation((Player) player);
 			}
-			if (equipment.rotateStandHead) {
+			if (equipment.isRotateStandHead()) {
 				stand.setHeadPose(new EulerAngle(loc.getDirection().getY() * (-1), 0, 0));
 
 			}
@@ -861,7 +861,7 @@ public class ClickHandler implements Listener {
 						}
 						// If siege engine is some other model number because it was broken in the middle of firing
 						for (SiegeEngine siegeEngine : SiegeEngines.definedSiegeEngines.values()) {
-							if (siegeEngine.firingModelNumbers.contains(i.getItemMeta().getCustomModelData())) {
+							if (siegeEngine.getFiringModelNumbers().contains(i.getItemMeta().getCustomModelData())) {
 								removeStands = true;
 								break;
 							}
@@ -1058,17 +1058,17 @@ public class ClickHandler implements Listener {
 			if (SiegeEngines.activeSiegeEngines.containsKey(entity.getUniqueId())) {
 				SiegeEngine siegeEngine = SiegeEngines.activeSiegeEngines.get(entity.getUniqueId());
 				event.setCancelled(true);
-				ItemStack stack = siegeEngine.fuelItem;
+				ItemStack stack = siegeEngine.getFuelItem();
 				if (itemInHand.getType() == stack.getType()) {
 					if (siegeEngine.canLoadFuel()) {
 						if (itemInHand.isSimilar(stack)) {
-							siegeEngine.ammoHolder.loadedFuel += 1;
+							siegeEngine.getAmmoHolder().setLoadedFuel(siegeEngine.getAmmoHolder().getLoadedFuel() + 1);
 							stack.setAmount(1);
 							player.getInventory().removeItem(stack);
 							sendSiegeEngineHelpMSG(player, siegeEngine);
 							// If fully loaded && requires change in animation when loaded (i.e. ballista)
-							if (!siegeEngine.canLoadFuel() && siegeEngine.setModelNumberWhenFullyLoaded) {
-								SiegeEnginesUtil.UpdateEntityIdModel(siegeEngine.entity, siegeEngine.preFireModelNumber, siegeEngine.worldName);
+							if (!siegeEngine.canLoadFuel() && siegeEngine.isSetModelNumberWhenFullyLoaded()) {
+								SiegeEnginesUtil.UpdateEntityIdModel(siegeEngine.getEntity(), siegeEngine.getPreFireModelNumber(), siegeEngine.getWorldName());
 							}
 						}
 					}
@@ -1079,31 +1079,31 @@ public class ClickHandler implements Listener {
 				}
 				if (itemInHand == null || itemInHand.getType() == Material.AIR
 						|| itemInHand.getType() == Config.controlItem) {
-					if (!pulledPropellantFromContainer(siegeEngine.entity.getLocation(), siegeEngine)) {
+					if (!pulledPropellantFromContainer(siegeEngine.getEntity().getLocation(), siegeEngine)) {
 						sendSiegeEngineHelpMSG(player, siegeEngine);
 						return;
 					}
 					if (!pulledPropellantFromContainer(
-							siegeEngine.entity.getLocation().getBlock().getRelative(0, -1, 0).getLocation(), siegeEngine)) {
+							siegeEngine.getEntity().getLocation().getBlock().getRelative(0, -1, 0).getLocation(), siegeEngine)) {
 						sendSiegeEngineHelpMSG(player, siegeEngine);
 						return;
 					}
 					if (!pulledPropellantFromContainer(
-							siegeEngine.entity.getLocation().getBlock().getRelative(0, 1, 0).getLocation(), siegeEngine)) {
+							siegeEngine.getEntity().getLocation().getBlock().getRelative(0, 1, 0).getLocation(), siegeEngine)) {
 						sendSiegeEngineHelpMSG(player, siegeEngine);
 						return;
 					}
-					if (pulledAmmoFromContainer(siegeEngine.entity.getLocation(), siegeEngine)) {
+					if (pulledAmmoFromContainer(siegeEngine.getEntity().getLocation(), siegeEngine)) {
 						player.sendMessage("§eAdded ammunition to this Siege Engine.");
 						return;
 					}
 					if (pulledAmmoFromContainer(
-							siegeEngine.entity.getLocation().getBlock().getRelative(0, -1, 0).getLocation(), siegeEngine)) {
+							siegeEngine.getEntity().getLocation().getBlock().getRelative(0, -1, 0).getLocation(), siegeEngine)) {
 						player.sendMessage("§eAdded ammunition to this Siege Engine.");
 						return;
 					}
 					if (pulledAmmoFromContainer(
-							siegeEngine.entity.getLocation().getBlock().getRelative(0, 1, 0).getLocation(), siegeEngine)) {
+							siegeEngine.getEntity().getLocation().getBlock().getRelative(0, 1, 0).getLocation(), siegeEngine)) {
 						player.sendMessage("§eAdded ammunition to this Siege Engine.");
 						return;
 					}
@@ -1118,7 +1118,7 @@ public class ClickHandler implements Listener {
 					SiegeEngine siegeEngine = null;
 					// Search for match in custom model data value in defined siege engines
 					for (SiegeEngine entry : SiegeEngines.definedSiegeEngines.values()) {
-						if (entry.customModelID == customModel) {
+						if (entry.getCustomModelID() == customModel) {
 							try {
 								siegeEngine = entry.clone();
 							} catch (CloneNotSupportedException e) {
@@ -1126,7 +1126,7 @@ public class ClickHandler implements Listener {
 							break;
 						} else {
 							// if siege engine was broken during one of its firing stages
-							if (entry.firingModelNumbers.contains(customModel)) {
+							if (entry.getFiringModelNumbers().contains(customModel)) {
 								try {
 									siegeEngine = entry.clone();
 								} catch (CloneNotSupportedException e) {
@@ -1137,7 +1137,7 @@ public class ClickHandler implements Listener {
 					}
 					// If SiegeEngine found, place it
 					if (siegeEngine != null) {
-						if (!siegeEngine.canMount) {
+						if (!siegeEngine.isMountable()) {
 							player.sendMessage("§eThis type of Siege Engine cannot be mounted to mobs.");
 							event.setCancelled(true);
 							return;

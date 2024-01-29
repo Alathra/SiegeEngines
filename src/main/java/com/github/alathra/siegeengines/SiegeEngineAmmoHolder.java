@@ -5,13 +5,37 @@ import org.bukkit.inventory.ItemStack;
 
 public class SiegeEngineAmmoHolder {
 	
-	public int loadedFuel = 0;
-    public int loadedProjectile = 0;
-    public ItemStack materialName = new ItemStack(Material.AIR, 1);
+	private int loadedFuel = 0;
+    private int loadedProjectile = 0;
+    private ItemStack materialName = new ItemStack(Material.AIR, 1);
 	
 	public SiegeEngineAmmoHolder() {
-		loadedFuel = 0;
-		loadedProjectile = 0;
-		materialName = new ItemStack(Material.AIR, 1);
+		setLoadedFuel(0);
+		setLoadedProjectile(0);
+		setMaterialName(new ItemStack(Material.AIR, 1));
+	}
+
+	public int getLoadedFuel() {
+		return loadedFuel;
+	}
+
+	public void setLoadedFuel(int loadedFuel) {
+		this.loadedFuel = loadedFuel;
+	}
+
+	public int getLoadedProjectile() {
+		return loadedProjectile;
+	}
+
+	public void setLoadedProjectile(int loadedProjectile) {
+		this.loadedProjectile = loadedProjectile;
+	}
+
+	public ItemStack getMaterialName() {
+		return materialName;
+	}
+
+	public void setMaterialName(ItemStack materialName) {
+		this.materialName = materialName;
 	}
 }
