@@ -48,7 +48,7 @@ public class SiegeEnginesCommand {
                 new StringArgument("equipmentid")
                     .replaceSuggestions(
                         ArgumentSuggestions.strings(
-                        	definedSiegeEngines.values().stream().map(SiegeEquipment -> SiegeEquipment.id).toList()
+                        	definedSiegeEngines.values().stream().map(SiegeEquipment -> SiegeEquipment.getId()).toList()
                         )
                     ),
                 new PlayerArgument("target")
@@ -101,9 +101,9 @@ public class SiegeEnginesCommand {
         definedSiegeEngines.clear();
         addDefaults();
         for (SiegeEngine i : definedSiegeEngines.values()) {
-            sender.sendMessage(ColorParser.of("<yellow>Enabled SiegeEngine : %s".formatted(i.name)).build());
-            sender.sendMessage(ColorParser.of("<yellow>SiegeEngine Propellant/\"Fuel\" ItemStacks : %s".formatted(i.fuelItem)).build());
-            for (ItemStack proj : i.projectiles.keySet()) {
+            sender.sendMessage(ColorParser.of("<yellow>Enabled SiegeEngine : %s".formatted(i.getEngineName())).build());
+            sender.sendMessage(ColorParser.of("<yellow>SiegeEngine Propellant/\"Fuel\" ItemStacks : %s".formatted(i.getFuelItem())).build());
+            for (ItemStack proj : i.getProjectiles().keySet()) {
                 sender.sendMessage(ColorParser.of("<yellow>SiegeEngine Projectile ItemStacks : %s".formatted(proj)).build());
             }
         }
@@ -113,9 +113,9 @@ public class SiegeEnginesCommand {
     private void giveSiegeEngine(Player player, SiegeEngine siegeEngine) {
         ItemStack item = new ItemStack(Material.CARVED_PUMPKIN);
         ItemMeta meta = item.getItemMeta();
-        meta.setCustomModelData(siegeEngine.readyModelNumber);
-        meta.setDisplayName(siegeEngine.itemName);
-        meta.setLore(siegeEngine.itemLore);
+        meta.setCustomModelData(siegeEngine.getReadyModelNumber());
+        meta.setDisplayName(siegeEngine.getItemName());
+        meta.setLore(siegeEngine.getItemLore());
         item.setItemMeta(meta);
         player.getInventory().addItem(item);
     }
