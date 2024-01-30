@@ -25,7 +25,7 @@ public class FireworkProjectile extends SiegeEngineProjectile {
     public float inaccuracy = 0.125f;
     public Particle particleType = Particle.FLASH;
     public Sound soundType = Sound.ENTITY_FIREWORK_ROCKET_BLAST_FAR;
-    public float velocityFactor = 0.5f;
+    public float velocityFactor = 1.0f;
     
     private boolean playSound = true;
     
@@ -55,7 +55,7 @@ public class FireworkProjectile extends SiegeEngineProjectile {
                     CreateEntity(entity, FireLocation, velocity*velocityFactor, player);
                 }, (long) baseDelay);
             } else {
-                CreateEntity(entity, FireLocation, velocity, player);
+                CreateEntity(entity, FireLocation, velocity*velocityFactor, player);
             }
         }
     }

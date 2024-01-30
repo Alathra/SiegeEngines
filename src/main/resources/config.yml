@@ -49,6 +49,7 @@ Projectiles:
     ExplodePower: 3.25
     Inaccuracy: 0.125
     ProjectileCount: 1
+    VelocityFactor: 1.0
     AmmoItem: COBBLESTONE
     FireSound: ENTITY_GENERIC_EXPLODE
   BreachShot:
@@ -56,6 +57,7 @@ Projectiles:
     ExplodePower: 5.25
     Inaccuracy: 0.375
     ProjectileCount: 1
+    VelocityFactor: 1.0
     AmmoItem: IRON_BLOCK
     FireSound: ENTITY_GENERIC_EXPLODE
   RepeatingShot:
@@ -63,26 +65,32 @@ Projectiles:
     ExplodePower: 1.75
     Inaccuracy: 0.525
     ProjectileCount: 6
+    VelocityFactor: 1.0
     AmmoItem: TNT
     FireSound: ENTITY_GENERIC_EXPLODE
   ScatterShot:
     ProjectileType: ENTITY
     Inaccuracy: 0.365
     EntityCount: 24
+    VelocityFactor: 1.0
     EntityType: ARROW
+    ArrowDamageFactor: 1.0
     AmmoItem: GRAVEL
     FireSound: ITEM_CROSSBOW_SHOOT
   BallistaBoltShot:
     ProjectileType: ENTITY
     Inaccuracy: 0.0125
     EntityCount: 1
+    VelocityFactor: 0.5
     EntityType: ARROW
+    ArrowDamageFactor: 1.0
     AmmoItem: ARROW
     FireSound: ITEM_CROSSBOW_SHOOT
   DragonsBreath:
     ProjectileType: ENTITY
     Inaccuracy: 0.125
     EntityCount: 1
+    VelocityFactor: 1.0
     EntityType: DRAGON_FIREBALL
     AmmoItem: DRAGON_BREATH
     FireSound: ENTITY_GENERIC_EXPLODE
@@ -90,6 +98,7 @@ Projectiles:
     ProjectileType: ENTITY
     Inaccuracy: 0.475
     EntityCount: 8
+    VelocityFactor: 1.0
     EntityType: SMALL_FIREBALL
     AmmoItem: MAGMA_BLOCK
     FireSound: ENTITY_GENERIC_EXPLODE
@@ -117,7 +126,7 @@ SiegeEngines:
     CanMount: false
   Ballista:
     ShotAmount: 1
-    VelocityPerFuel: 0.975
+    VelocityPerFuel: 2.0
     MaxFuel: 2
     FuelItem: STRING
     Projectiles:

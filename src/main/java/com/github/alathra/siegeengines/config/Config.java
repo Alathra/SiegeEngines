@@ -23,6 +23,7 @@ import com.github.alathra.siegeengines.projectile.FireworkProjectile;
 import com.github.alathra.siegeengines.projectile.ProjectileType;
 import com.github.alathra.siegeengines.projectile.SiegeEngineProjectile;
 
+@SuppressWarnings("deprecation")
 public class Config {
 
 	private static FileConfiguration config;
@@ -257,6 +258,8 @@ public class Config {
 							.getInt("Projectiles." + projectileName + ".ProjectileCount");
 					explosiveProjectile.soundType = Sound
 							.valueOf(config.getString("Projectiles." + projectileName + ".FireSound"));
+					explosiveProjectile.velocityFactor = (float) config
+							.getDouble("Projectiles." + projectileName + ".VelocityFactor");
 					projectileMap.put(projectileName, explosiveProjectile);
 					break;
 				case ENTITY:
@@ -269,6 +272,12 @@ public class Config {
 							.valueOf(config.getString("Projectiles." + projectileName + ".EntityType"));
 					entityProjectile.soundType = Sound
 							.valueOf(config.getString("Projectiles." + projectileName + ".FireSound"));
+					entityProjectile.velocityFactor = (float) config
+							.getDouble("Projectiles." + projectileName + ".VelocityFactor");
+					if (entityProjectile.entityType.equals(EntityType.ARROW)) {
+						entityProjectile.arrowDamageFactor = (float) config
+								.getDouble("Projectiles." + projectileName + ".ArrowDamageFactor");
+					}
 					projectileMap.put(projectileName, entityProjectile);
 					break;
 				case FIREWORK:
