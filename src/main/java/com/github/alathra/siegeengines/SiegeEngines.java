@@ -20,7 +20,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.metadata.MetadataValueAdapter;
 
 import com.github.alathra.siegeengines.listeners.ClickHandler;
-import com.github.alathra.siegeengines.listeners.CraftingHandler;
 import com.github.alathra.siegeengines.listeners.RotationHandler;
 import com.github.alathra.siegeengines.listeners.PlayerHandler;
 
@@ -60,7 +59,6 @@ public class SiegeEngines extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(new RotationHandler(), this);
 		getServer().getPluginManager().registerEvents(new ClickHandler(), this);
 		getServer().getPluginManager().registerEvents(new PlayerHandler(), this);
-		getServer().getPluginManager().registerEvents(new CraftingHandler(), this);
 		addDefaults();
 		for (SiegeEngine i : definedSiegeEngines.values()) {
 			System.out.println("§eEnabled Weapon : " + i.getEngineName());
@@ -70,6 +68,8 @@ public class SiegeEngines extends JavaPlugin {
 			}
 		}
 		commandHandler.onEnable();
+		
+		// load crafting recipes if enabled in config
 		if (Config.craftingRecipes) {
 			CraftingRecipes.loadCraftingRecipes();
 		}
