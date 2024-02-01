@@ -33,6 +33,9 @@ public class PlayerHandler implements Listener {
         playerJoinLeave(event.getPlayer());
     }
     public static void siegeEngineEntityDied(Entity entity) {
+        siegeEngineEntityDied(entity,true);
+    }
+    public static void siegeEngineEntityDied(Entity entity, boolean silent) {
         for (UUID uuid : SiegeEngines.siegeEngineEntitiesPerPlayer.keySet()) {
             if (SiegeEngines.siegeEngineEntitiesPerPlayer.containsKey(uuid)) {
                 if (entity.isDead()) {
@@ -49,9 +52,10 @@ public class PlayerHandler implements Listener {
                         if (SiegeEngines.siegeEngineEntitiesPerPlayer.get(uuid) != null) SiegeEngines.siegeEngineEntitiesPerPlayer.get(uuid).remove(Bukkit.getEntity(eUuid));
                     }
                 }
+				SiegeEngines.activeSiegeEngines.remove(entity.getUniqueId());
                 SiegeEnginesLogger.debug("ENGINE DISABLED/DEAD "+entity.getUniqueId().toString());
             }
-            Bukkit.getPlayer(uuid).sendMessage("§eSiege Engine Destroyed!");
+            if (!silent) Bukkit.getPlayer(uuid).sendMessage("§eSiege Engine Destroyed!");
             for (UUID eUuid : SiegeEngines.activeSiegeEngines.keySet()) {
                 if (Bukkit.getEntity(eUuid) == null || Bukkit.getEntity(eUuid).isDead() || !Bukkit.getEntity(eUuid).isValid()) {
                     SiegeEngines.activeSiegeEngines.remove(eUuid);

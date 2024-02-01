@@ -595,16 +595,15 @@ public class ClickHandler implements Listener {
 		}
 
 	}
-
-	@EventHandler(priority = EventPriority.LOW)
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void onEngineDamage(EntityDamageByEntityEvent event) {
 		if (event.getEntity() instanceof ArmorStand) {
 			if (event.isCancelled()) return;
 			if (event.getDamager() instanceof Player) {
 				PlayerHandler.siegeEngineEntityDied(event.getEntity());
-				event.setDamage(20);
+				event.setDamage(2);
 			} else {
-				event.setDamage(5);
+				event.setDamage(4);
 			}
 		}
 	}
@@ -871,7 +870,7 @@ public class ClickHandler implements Listener {
 			if (removeStands) {
 				for (ItemStack i : items) {
 					if (i.getType() == Material.ARMOR_STAND) {
-						PlayerHandler.siegeEngineEntityDied(event.getEntity());
+						PlayerHandler.siegeEngineEntityDied(event.getEntity(),false);
 						SiegeEngines.activeSiegeEngines.remove(event.getEntity().getUniqueId());
 						i.setAmount(0);
 						return;

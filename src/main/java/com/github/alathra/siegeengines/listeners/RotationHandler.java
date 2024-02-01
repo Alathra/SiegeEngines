@@ -40,8 +40,8 @@ public class RotationHandler implements Listener {
                         if (equipment == null) continue;
                         final LivingEntity living = (LivingEntity) ent;
                         if (Config.disabledWorlds.contains(ent.getWorld())) {
-                            PlayerHandler.siegeEngineEntityDied(ent);
                             living.setHealth(0.0d);
+                            PlayerHandler.siegeEngineEntityDied(ent);
                             continue;
                         }
                         if (!(ent.getLocation().getWorld().equals(player.getLocation().getWorld()))) {
