@@ -73,6 +73,14 @@ public class ClickHandler implements Listener {
 
 	@EventHandler
 	public void onHit(ProjectileHitEvent event) {
+		for (Entity entity : event.getEntity().getNearbyEntities(2, 2, 2)) {
+			if (entity instanceof ArmorStand) {
+				ArmorStand stand = (ArmorStand) entity;
+				if (isSiegeEngine(stand,false)) {
+					PlayerHandler.siegeEngineEntityDied(stand);
+				}
+			}
+		}
 		if ((event.getEntity() instanceof Projectile)
 				&& projectiles.containsKey(event.getEntity().getUniqueId())) {
 			ExplosiveProjectile proj = projectiles.get(event.getEntity().getUniqueId());
