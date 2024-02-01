@@ -5,7 +5,6 @@ import com.github.alathra.siegeengines.SiegeEnginesUtil;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.World;
@@ -26,6 +25,8 @@ public class EntityProjectile extends SiegeEngineProjectile {
     public float inaccuracy = 0.2f;
     public Particle particleType = Particle.CAMPFIRE_SIGNAL_SMOKE;
     public Sound soundType = Sound.ENTITY_GENERIC_EXPLODE;
+    public float velocityFactor = 1.0f;
+    public float arrowDamageFactor = 1.0f;
     
     private boolean playSound = true;
     
@@ -43,10 +44,10 @@ public class EntityProjectile extends SiegeEngineProjectile {
             if (delayedFire) {
                 baseDelay += delayTime;
                 Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(SiegeEngines.getInstance(), () -> {
-                    CreateEntity(entity, FireLocation, velocity, player);
+                    CreateEntity(entity, FireLocation, velocity*velocityFactor, player);
                 }, (long) baseDelay);
             } else {
-                CreateEntity(entity, FireLocation, velocity, player);
+                CreateEntity(entity, FireLocation, velocity*velocityFactor, player);
             }
         }
     }
@@ -69,7 +70,7 @@ public class EntityProjectile extends SiegeEngineProjectile {
         }
         if (arrow instanceof Arrow) {
             Arrow arr = (Arrow) arrow;
-            arr.setDamage(8);
+            arr.setDamage(8*arrowDamageFactor);
             if (player instanceof org.bukkit.projectiles.ProjectileSource) {
                 arr.setShooter((org.bukkit.projectiles.ProjectileSource) player);
                 arr.setPickupStatus(org.bukkit.entity.AbstractArrow.PickupStatus.CREATIVE_ONLY);

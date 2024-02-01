@@ -48,7 +48,7 @@ public class SiegeEnginesCommand {
                 new StringArgument("equipmentid")
                     .replaceSuggestions(
                         ArgumentSuggestions.strings(
-                        	definedSiegeEngines.values().stream().map(SiegeEquipment -> SiegeEquipment.id).toList()
+                        	definedSiegeEngines.values().stream().map(SiegeEquipment -> SiegeEquipment.getId()).toList()
                         )
                     ),
                 new PlayerArgument("target")
@@ -77,7 +77,7 @@ public class SiegeEnginesCommand {
 
         for (SiegeEngine SiegeEquipment : definedSiegeEngines.values()) {
             if (SiegeEquipment.equals(equipmentId)) {
-                giveEquipment(player, SiegeEquipment);
+                giveSiegeEngine(player, SiegeEquipment);
                 break;
             }
         }
@@ -88,7 +88,7 @@ public class SiegeEnginesCommand {
             throw CommandAPIBukkit.failWithAdventureComponent(ColorParser.of("<red>Only players can use this command.").build());
 
         for (SiegeEngine i : definedSiegeEngines.values()) {
-            giveEquipment(player, i);
+            giveSiegeEngine(player, i);
         }
     }
 
@@ -99,27 +99,23 @@ public class SiegeEnginesCommand {
         activeSiegeEngines.clear();
         siegeEngineEntitiesPerPlayer.clear();
         definedSiegeEngines.clear();
-        AddDefaults();
+        addDefaults();
         for (SiegeEngine i : definedSiegeEngines.values()) {
-            sender.sendMessage(ColorParser.of("<yellow>Enabled SiegeEngine : %s".formatted(i.name)).build());
-            sender.sendMessage(ColorParser.of("<yellow>SiegeEngine Propellant/\"Fuel\" ItemStacks : %s".formatted(i.fuelItem)).build());
-            for (ItemStack proj : i.projectiles.keySet()) {
+            sender.sendMessage(ColorParser.of("<yellow>Enabled SiegeEngine : %s".formatted(i.getEngineName())).build());
+            sender.sendMessage(ColorParser.of("<yellow>SiegeEngine Propellant/\"Fuel\" ItemStacks : %s".formatted(i.getFuelItem())).build());
+            for (ItemStack proj : i.getProjectiles().keySet()) {
                 sender.sendMessage(ColorParser.of("<yellow>SiegeEngine Projectile ItemStacks : %s".formatted(proj)).build());
             }
         }
         sender.sendMessage(ColorParser.of("<yellow>SiegeEngine configs reloaded").build());
     }
 
-    private void giveEquipment(Player player, SiegeEngine SiegeEquipment) {
+    private void giveSiegeEngine(Player player, SiegeEngine siegeEngine) {
         ItemStack item = new ItemStack(Material.CARVED_PUMPKIN);
         ItemMeta meta = item.getItemMeta();
-        meta.setCustomModelData(SiegeEquipment.readyModelNumber);
-        meta.displayName(ColorParser.of("<yellow>%s Item".formatted(SiegeEquipment.name)).build());
-        List<Component> lore = new ArrayList<>();
-        lore.add(ColorParser.of("<yellow>Place as a block to spawn a '%s'".formatted(SiegeEquipment.name)).build());
-        lore.add(ColorParser.of("<yellow>or put on an Armor Stand.").build());
-        lore.add(ColorParser.of("<yellow>Right click to toggle visibility of stand.").build());
-        meta.lore(lore);
+        meta.setCustomModelData(siegeEngine.getReadyModelNumber());
+        meta.setDisplayName(siegeEngine.getItemName());
+        meta.setLore(siegeEngine.getItemLore());
         item.setItemMeta(meta);
         player.getInventory().addItem(item);
     }

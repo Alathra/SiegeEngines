@@ -29,6 +29,7 @@ public class ExplosiveProjectile extends SiegeEngineProjectile {
     public Particle particleType = Particle.EXPLOSION_LARGE;
     public Sound soundType = Sound.ENTITY_GENERIC_EXPLODE;
     public Boolean alertOnLanding = false;
+    public float velocityFactor = 1.0f;
     
     private boolean playSound = true;
     
@@ -44,10 +45,10 @@ public class ExplosiveProjectile extends SiegeEngineProjectile {
             if (delayedFire) {
                 baseDelay += delayTime;
                 Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(SiegeEngines.getInstance(), () -> {
-                    CreateEntity(entity, loc, velocity, player);
+                    CreateEntity(entity, loc, velocity*velocityFactor, player);
                 }, (long) baseDelay);
             } else {
-                CreateEntity(entity, loc, velocity, player);
+                CreateEntity(entity, loc, velocity*velocityFactor, player);
             }
         }
     }

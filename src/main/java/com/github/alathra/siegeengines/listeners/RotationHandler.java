@@ -62,7 +62,7 @@ public class RotationHandler implements Listener {
                         if (distance <= Config.rotateDistance) {
                             Location loc = ent.getLocation();
 
-                            if (equipment.rotateSideways) {
+                            if (equipment.isRotateSideways()) {
                                 Location direction = player.getLocation().add(player.getLocation().getDirection().multiply(50));
 
                                 Vector dirBetweenLocations = direction.toVector().subtract(loc.toVector());
@@ -78,7 +78,7 @@ public class RotationHandler implements Listener {
 
                             ArmorStand stand = (ArmorStand) living;
 
-                            if (equipment.rotateUpDown) {
+                            if (equipment.isRotateUpDown()) {
                                 loc.setPitch(player.getLocation().getPitch());
                                 if (loc.getPitch() < -85) {
                                     loc.setPitch(-85);
@@ -86,7 +86,7 @@ public class RotationHandler implements Listener {
                                 if (loc.getPitch() > 85) {
                                     loc.setPitch(85);
                                 }
-                                if (equipment.rotateStandHead) {
+                                if (equipment.isRotateStandHead()) {
                                     stand.setHeadPose(new EulerAngle(loc.getDirection().getY() * (-1), 0, 0));
                                 }
                             }
