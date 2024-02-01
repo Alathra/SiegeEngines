@@ -114,6 +114,7 @@ Projectiles:
 
 SiegeEngines:
   Trebuchet:
+    Health: 8
     ShotAmount: 1
     VelocityPerFuel: 0.75
     MaxFuel: 3
@@ -128,6 +129,7 @@ SiegeEngines:
       - "&ePlace as a block to spawn a Trebuchet"
     CanMount: false
   Ballista:
+    Health: 5
     ShotAmount: 1
     VelocityPerFuel: 2.0
     MaxFuel: 2
@@ -142,6 +144,7 @@ SiegeEngines:
       - "&ePlace as a block to spawn a Ballista"
     CanMount: false
   SwivelCannon:
+    Health: 15
     ShotAmount: 1
     VelocityPerFuel: 0.975
     MaxFuel: 5
@@ -157,6 +160,7 @@ SiegeEngines:
       - "&ePlace as a block to spawn a Swivel Cannon"
     CanMount: false
   BreachCannon:
+    Health: 25
     ShotAmount: 1
     VelocityPerFuel: 1.0625
     MaxFuel: 4

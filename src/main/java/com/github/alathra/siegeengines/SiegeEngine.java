@@ -48,7 +48,7 @@ public class SiegeEngine implements Cloneable {
     private int maxFuel;
     private double placementOffsetY;
     private float velocityPerFuel;
-	
+	private double baseHealth = 5.0d;
 	// Firing variables
     private int shotAmount;
     private long nextShotTime; // Internal
@@ -469,10 +469,12 @@ public class SiegeEngine implements Cloneable {
         }*/
         for (Entity enti : l.getWorld().getNearbyEntities(l,2.5d,2.5d,2.5d)) {
             if (SiegeEngines.activeSiegeEngines.keySet().contains(enti.getUniqueId())) {
-                ent.damage(20.0d, player);
+                ent.setHealth(0.0d);
                 return false;
             }
         }
+        stand.setMaxHealth(baseHealth);
+        stand.setHealth(baseHealth);
         SiegeEngines.activeSiegeEngines.put(stand.getUniqueId(), this);
         ClickHandler.TakeControl(player,stand);
         if (mount != null && !(mount.isDead())) {
@@ -528,6 +530,14 @@ public class SiegeEngine implements Cloneable {
 
 	public void setWorldName(String worldName) {
 		this.worldName = worldName;
+	}
+
+	public double getHealth() {
+		return baseHealth;
+	}
+
+	public void setHealth(double health) {
+		this.baseHealth = health;
 	}
 
 	public Entity getEntity() {

@@ -597,21 +597,15 @@ public class ClickHandler implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.LOW)
-	public void onEngineDamage(EntityDamageEvent event) {
-		if (event.getEntity() instanceof ArmorStand) {
-			if (event.isCancelled()) return;
-			PlayerHandler.siegeEngineEntityDied(event.getEntity());
-		}
-	}
-
-	@EventHandler(priority = EventPriority.LOW)
 	public void onEngineDamage(EntityDamageByEntityEvent event) {
 		if (event.getEntity() instanceof ArmorStand) {
 			if (event.isCancelled()) return;
 			if (event.getDamager() instanceof Player) {
 				PlayerHandler.siegeEngineEntityDied(event.getEntity());
+				event.setDamage(20);
+			} else {
+				event.setDamage(5);
 			}
-			event.setDamage(20);
 		}
 	}
 
