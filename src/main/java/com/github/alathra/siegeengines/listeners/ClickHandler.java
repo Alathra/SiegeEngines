@@ -699,7 +699,7 @@ public class ClickHandler implements Listener {
 			if (SiegeEngines.siegeEngineEntitiesPerPlayer.get(player.getUniqueId())
 					.size() > Config.maxSiegeEnginesControlled) {
 				if (player instanceof Player) {
-					((Player) player).sendMessage("§eYou are already commanding too many Siege Engines!");
+					((Player) player).sendMessage("§eYou are commanding too many Siege Engines!");
 					PlayerHandler.releasePlayerSiegeEngine(((Player) player),entity);
 				}
 				return;
@@ -843,9 +843,9 @@ public class ClickHandler implements Listener {
 
 	NamespacedKey key = new NamespacedKey(SiegeEngines.getInstance(), "siege_engines");
 
-	@EventHandler(priority = EventPriority.LOW)
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void onSiegeEngineDeathEvent(EntityDeathEvent event) {
-		Boolean removeStands = false;
+		boolean removeStands = false;
 		List<ItemStack> items = event.getDrops();
 		if (event.getEntity() instanceof ArmorStand) {
 			if (event.getEntity().getPersistentDataContainer().has(key, PersistentDataType.STRING)) {
@@ -854,8 +854,6 @@ public class ClickHandler implements Listener {
 				base.remove();
 			}
 			if (SiegeEngines.activeSiegeEngines.containsKey(event.getEntity().getUniqueId())) {
-				PlayerHandler.siegeEngineEntityDied(event.getEntity());
-				SiegeEngines.activeSiegeEngines.remove(event.getEntity().getUniqueId());
 				removeStands = true;
 			} else {
 				for (ItemStack i : items) {
@@ -863,16 +861,12 @@ public class ClickHandler implements Listener {
 							&& i.getItemMeta().hasCustomModelData()) {
 						// If siege engine is default model number
 						if (SiegeEngines.definedSiegeEngines.containsKey(i.getItemMeta().getCustomModelData())) {
-							PlayerHandler.siegeEngineEntityDied(event.getEntity());
-							SiegeEngines.activeSiegeEngines.remove(event.getEntity().getUniqueId());
 							removeStands = true;
 							break;
 						}
 						// If siege engine is some other model number because it was broken in the middle of firing
 						for (SiegeEngine siegeEngine : SiegeEngines.definedSiegeEngines.values()) {
 							if (siegeEngine.getFiringModelNumbers().contains(i.getItemMeta().getCustomModelData())) {
-								PlayerHandler.siegeEngineEntityDied(event.getEntity());
-								SiegeEngines.activeSiegeEngines.remove(event.getEntity().getUniqueId());
 								removeStands = true;
 								break;
 							}
@@ -883,6 +877,8 @@ public class ClickHandler implements Listener {
 			if (removeStands) {
 				for (ItemStack i : items) {
 					if (i.getType() == Material.ARMOR_STAND) {
+						PlayerHandler.siegeEngineEntityDied(event.getEntity());
+						SiegeEngines.activeSiegeEngines.remove(event.getEntity().getUniqueId());
 						i.setAmount(0);
 						return;
 					}

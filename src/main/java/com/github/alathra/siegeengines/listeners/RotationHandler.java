@@ -48,15 +48,20 @@ public class RotationHandler implements Listener {
                             PlayerHandler.releasePlayerSiegeEngine(player, ent);
                             continue;
                         }
+                        if (ent.isDead()) {
+                            PlayerHandler.releasePlayerSiegeEngine(player, ent);
+                            continue;
+                        }
+                        if (!ent.isValid()) {
+                            PlayerHandler.releasePlayerSiegeEngine(player, ent);
+                            continue;
+                        }
                         final double distance = player.getLocation().distance(ent.getLocation());
                         if (distance >= Config.controlDistance) {
                             PlayerHandler.releasePlayerSiegeEngine(player, ent);
                             continue;
                         }
                         if (itemInHand.getType() != Config.controlItem) {
-                            continue;
-                        }
-                        if (ent.isDead()) {
                             continue;
                         }
                         if (distance <= Config.rotateDistance) {
