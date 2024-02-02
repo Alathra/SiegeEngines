@@ -22,6 +22,7 @@ Debug: false
 # Must be a valid material. See https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
 ControlItem: CLOCK
 
+# Allows the disabling of Arrow Damage towards Siege Engines.
 DealArrowDamage: true
 
 # The maxmimum distance the player can be away from the SiegeEngine before total control is terminated
