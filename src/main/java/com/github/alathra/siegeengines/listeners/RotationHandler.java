@@ -40,11 +40,19 @@ public class RotationHandler implements Listener {
                         if (equipment == null) continue;
                         final LivingEntity living = (LivingEntity) ent;
                         if (Config.disabledWorlds.contains(ent.getWorld())) {
-                            PlayerHandler.siegeEngineEntityDied(ent);
                             living.setHealth(0.0d);
+                            PlayerHandler.siegeEngineEntityDied(ent);
                             continue;
                         }
                         if (!(ent.getLocation().getWorld().equals(player.getLocation().getWorld()))) {
+                            PlayerHandler.releasePlayerSiegeEngine(player, ent);
+                            continue;
+                        }
+                        if (ent.isDead()) {
+                            PlayerHandler.releasePlayerSiegeEngine(player, ent);
+                            continue;
+                        }
+                        if (!ent.isValid()) {
                             PlayerHandler.releasePlayerSiegeEngine(player, ent);
                             continue;
                         }
@@ -54,9 +62,6 @@ public class RotationHandler implements Listener {
                             continue;
                         }
                         if (itemInHand.getType() != Config.controlItem) {
-                            continue;
-                        }
-                        if (ent.isDead()) {
                             continue;
                         }
                         if (distance <= Config.rotateDistance) {

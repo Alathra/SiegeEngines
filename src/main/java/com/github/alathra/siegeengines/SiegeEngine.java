@@ -48,7 +48,7 @@ public class SiegeEngine implements Cloneable {
     private int maxFuel;
     private double placementOffsetY;
     private float velocityPerFuel;
-	
+	private double baseHealth = 5.0d;
 	// Firing variables
     private int shotAmount;
     private long nextShotTime; // Internal
@@ -397,17 +397,17 @@ public class SiegeEngine implements Cloneable {
         if (this == null || !this.getEnabled()) {
             return false;
         }
-        for (Entity ent : l.getWorld().getNearbyEntities(l,2.5d,2.5d,2.5d)) {
-            if (SiegeEngines.activeSiegeEngines.keySet().contains(ent.getUniqueId())) {
-                return false;
-            }
-        }
         l.setY(l.getY() + 1);
         l.setDirection(player.getFacing().getDirection());
         ItemStack item = new ItemStack(Material.CARVED_PUMPKIN);
         ItemMeta meta = item.getItemMeta();
         String id = "";
         Entity entity3 = null;
+        for (Entity enti : l.getWorld().getNearbyEntities(l,2.5d,2.5d,2.5d)) {
+            if (SiegeEngines.activeSiegeEngines.keySet().contains(enti.getUniqueId())) {
+                return false;
+            }
+        }
         this.setAmmoHolder(new SiegeEngineAmmoHolder());
         if (this.hasBaseStand) {
 
@@ -472,8 +472,9 @@ public class SiegeEngine implements Cloneable {
             newList.add(entity2);
             SiegeEngines.siegeEngineEntitiesPerPlayer.put(player.getUniqueId(), newList);
         }*/
-        SiegeEngines.activeSiegeEngines.put(entity2.getUniqueId(), this);
-        ClickHandler.TakeControl(player,entity2);
+        stand.setMaxHealth(baseHealth);
+        stand.setHealth(baseHealth);
+        SiegeEngines.activeSiegeEngines.put(stand.getUniqueId(), this);
         if (mount != null && !(mount.isDead())) {
             entity2.setGravity(true);
             mount.addPassenger(entity2);
@@ -527,6 +528,14 @@ public class SiegeEngine implements Cloneable {
 
 	public void setWorldName(String worldName) {
 		this.worldName = worldName;
+	}
+
+	public double getHealth() {
+		return baseHealth;
+	}
+
+	public void setHealth(double health) {
+		this.baseHealth = health;
 	}
 
 	public Entity getEntity() {

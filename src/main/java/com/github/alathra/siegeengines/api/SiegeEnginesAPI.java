@@ -3,10 +3,22 @@ package com.github.alathra.siegeengines.api;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.entity.Entity;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
+import com.github.alathra.siegeengines.SiegeEngine;
 import com.github.alathra.siegeengines.config.Config;
 
 public class SiegeEnginesAPI {
+
+	public static SiegeEngine getSiegeEngineFromEntity(Entity entity) {
+		if (SiegeEngines.activeSiegeEngines.containsKey(entity.getUniqueId())) {
+			return SiegeEngines.activeSiegeEngines.get(entity.getUniqueId());
+		} else {
+			return null;
+		}
+	}
 	
 	public static ItemStack getTrebuchetItem() {
 		ItemStack trebuchetItem = new ItemStack(Material.CARVED_PUMPKIN);
