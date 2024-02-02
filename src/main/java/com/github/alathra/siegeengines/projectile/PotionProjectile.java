@@ -20,24 +20,25 @@ import org.bukkit.util.Vector;
 
 public class PotionProjectile extends SiegeEngineProjectile {
 	
-    public int EntityCount = 3;
-    public Boolean DelayedFire = false;
-    public int DelayTime = 6;
-    public float Inaccuracy = 0.1f;
-    public Particle ParticleType = Particle.EXPLOSION_LARGE;
-    public Sound SoundType = Sound.ENTITY_GENERIC_EXPLODE;
-    
+    public int entityCount = 3;
+    public Boolean delayedFire = false;
+    public int delayTime = 6;
+    public float inaccuracy = 0.1f;
+    public Particle particleType = Particle.EXPLOSION_LARGE;
+    public Sound soundType = Sound.ENTITY_GENERIC_EXPLODE;
+    public float velocityFactor = 1.0f;
+
     public PotionProjectile(ItemStack ammunitionItem) {
 		super(ProjectileType.POTION, ammunitionItem);
 	}
-    
+
     @Override
     public void Shoot(Entity player, Entity entity, Location loc, Float velocity) {
         //TODO Auto-generated method stub
         int baseDelay = 0;
-        for (int i = 0; i < EntityCount; i++) {
-            if (DelayedFire) {
-                baseDelay += DelayTime;
+        for (int i = 0; i < entityCount; i++) {
+            if (delayedFire) {
+                baseDelay += delayTime;
                 Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(SiegeEngines.getInstance(), () -> {
 
                     CreateEntity(entity, loc, velocity);
@@ -52,25 +53,27 @@ public class PotionProjectile extends SiegeEngineProjectile {
         World world = entity.getLocation().getWorld();
 
         Entity arrow = world.spawnEntity(loc, EntityType.SPLASH_POTION);
-        if (Inaccuracy != 0f) {
+        if (inaccuracy != 0f) {
             arrow.setVelocity(loc.getDirection().multiply(velocity).add(Randomise()).subtract(Randomise()));
         } else {
             arrow.setVelocity(loc.getDirection().multiply(velocity));
         }
         arrow.setMetadata("isPotionProj", SiegeEnginesUtil.addMetaDataValue("true"));
         Bukkit.getServer().getPluginManager().callEvent(new org.bukkit.event.entity.ProjectileLaunchEvent(arrow));
-        ItemStack itemStack = new ItemStack(Material.SPLASH_POTION);
+        ItemStack itemStack = this.getAmmuinitionItem();
         PotionMeta potionMeta = (PotionMeta) itemStack.getItemMeta();
-        potionMeta.addCustomEffect(new PotionEffect(PotionEffectType.HARM, 100, 3, true), true);
+        System.out.println(potionMeta.toString());
+        System.out.println(itemStack.toString());
+        potionMeta.getBasePotionData();
         itemStack.setItemMeta(potionMeta);
         ThrownPotion potion = (ThrownPotion) arrow;
         potion.setItem(itemStack);
-        world.playSound(loc, this.SoundType, 20, 2);
-        world.spawnParticle(this.ParticleType, loc.getX(), loc.getY(), loc.getZ(), 0);
+        world.playSound(loc, this.soundType, 20, 2);
+        world.spawnParticle(this.particleType, loc.getX(), loc.getY(), loc.getZ(), 0);
     }
 
     private Vector Randomise() {
-        return new Vector(SiegeEngines.random.nextFloat() * (Inaccuracy - (Inaccuracy * -1)) + (Inaccuracy * -1), SiegeEngines.random.nextFloat() * (Inaccuracy - (Inaccuracy * -1)) + (Inaccuracy * -1), SiegeEngines.random.nextFloat() * (Inaccuracy - (Inaccuracy * -1)) + (Inaccuracy * -1));
+        return new Vector(SiegeEngines.random.nextFloat() * (inaccuracy - (inaccuracy * -1)) + (inaccuracy * -1), SiegeEngines.random.nextFloat() * (inaccuracy - (inaccuracy * -1)) + (inaccuracy * -1), SiegeEngines.random.nextFloat() * (inaccuracy - (inaccuracy * -1)) + (inaccuracy * -1));
     }
 
 	public ProjectileType getProjectileType() {

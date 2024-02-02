@@ -16,6 +16,7 @@ import com.github.alathra.siegeengines.SiegeEnginesUtil;
 import com.github.alathra.siegeengines.SiegeEngine;
 import com.github.alathra.siegeengines.projectile.ExplosiveProjectile;
 import com.github.alathra.siegeengines.projectile.FireworkProjectile;
+import com.github.alathra.siegeengines.projectile.PotionProjectile;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -47,6 +48,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.EulerAngle;
 
@@ -272,7 +274,8 @@ public class ClickHandler implements Listener {
 					return true;
 				}
 				inventoryItem = inventoryItem.clone();
-				if (!(stack.isSimilar(inventoryItem)) && (stack.getType() != Material.FIREWORK_ROCKET))
+				if (!(stack.isSimilar(inventoryItem)) && (stack.getType() != Material.FIREWORK_ROCKET)
+						&& (stack.getType() != Material.SPLASH_POTION))
 					continue;
 				inventoryItem.setAmount(1);
 				if (stack.getType() != Material.FIREWORK_ROCKET && stack.isSimilar(inventoryItem)
@@ -288,6 +291,15 @@ public class ClickHandler implements Listener {
 					siegeEngine.getAmmoHolder().setMaterialName(inventoryItem);
 					state.getInventory().removeItem(inventoryItem);
 					FireworkProjectile proj = FireworkProjectile.getDefaultRocketShot(inventoryItem.clone());
+					siegeEngine.getProjectiles().put(inventoryItem, proj);
+					return true;
+				}
+				if (stack.getType() == Material.SPLASH_POTION && inventoryItem.getType() == stack.getType()
+						&& siegeEngine.getAmmoHolder().getLoadedProjectile() == 0) {
+					siegeEngine.getAmmoHolder().setLoadedProjectile(1);
+					siegeEngine.getAmmoHolder().setMaterialName(inventoryItem);
+					state.getInventory().removeItem(inventoryItem);
+					PotionProjectile proj = new PotionProjectile(inventoryItem);
 					siegeEngine.getProjectiles().put(inventoryItem, proj);
 					return true;
 				}
