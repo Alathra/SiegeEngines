@@ -55,6 +55,7 @@ import org.bukkit.util.EulerAngle;
 public class ClickHandler implements Listener {
 
 	public float MinDelay = 5;
+	public static final ArrayList<ItemStack> items = new ArrayList<>();
 
 	public static HashMap<UUID, ExplosiveProjectile> projectiles = new HashMap<UUID, ExplosiveProjectile>();
 	public static EnumSet<Material> fluidMaterials = EnumSet.of(Material.WATER, Material.LAVA, Material.BUBBLE_COLUMN,
@@ -73,11 +74,25 @@ public class ClickHandler implements Listener {
 
 	@EventHandler
 	public void onHit(ProjectileHitEvent event) {
-		for (Entity entity : event.getEntity().getNearbyEntities(2, 2, 2)) {
-			if (entity instanceof ArmorStand) {
-				ArmorStand stand = (ArmorStand) entity;
-				if (isSiegeEngine(stand,false)) {
-					PlayerHandler.siegeEngineEntityDied(stand);
+		if ((event.getEntity() instanceof Projectile)) {
+			for (Entity entity : event.getEntity().getNearbyEntities(2, 2, 2)) {
+				if (entity instanceof ArmorStand) {
+					ArmorStand stand = (ArmorStand) entity;
+					if (isSiegeEngine(stand,false)) {
+						event.setCancelled(true);
+						SiegeEnginesLogger.debug("HEALTH BEOFRE SHOT : "+stand.getHealth());
+						if (stand.getHealth()-2 > 0) {
+							stand.setHealth(stand.getHealth()-2);
+						} else {
+							EntityDeathEvent death = new EntityDeathEvent(stand,items,0);
+							Bukkit.getServer().getPluginManager().callEvent(death);
+							if (!death.isCancelled()) stand.setHealth(0.0f);
+						}
+						SiegeEnginesLogger.debug("HEALTH AFTER SHOT : "+stand.getHealth());
+						if (stand.isDead()) {
+							PlayerHandler.siegeEngineEntityDied(stand);
+						}
+					}
 				}
 			}
 		}
@@ -606,13 +621,21 @@ public class ClickHandler implements Listener {
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onEngineDamage(EntityDamageByEntityEvent event) {
 		if (event.getEntity() instanceof ArmorStand) {
+			ArmorStand stand = (ArmorStand)event.getEntity();
 			if (event.getDamager() instanceof Player) {
 				PlayerHandler.releasePlayerSiegeEngine((Player)(event.getDamager()),event.getEntity());
-				event.setDamage(2);
-			} else {
-				event.setDamage(4);
 			}
-			PlayerHandler.siegeEngineEntityDied(event.getEntity());
+			SiegeEnginesLogger.debug("HEALTH BEOFRE HIT : "+stand.getHealth());
+			if (stand.getHealth()-2 > 0) {
+				stand.setHealth(stand.getHealth()-2);
+			} else {
+				EntityDeathEvent death = new EntityDeathEvent(stand,items,0);
+				Bukkit.getServer().getPluginManager().callEvent(death);
+				if (death.isCancelled()) return;
+				stand.setHealth(0.0f);
+				PlayerHandler.siegeEngineEntityDied(event.getEntity());
+			}
+			SiegeEnginesLogger.debug("HEALTH AFTER HIT : "+stand.getHealth());
 		}
 	}
 
@@ -1043,7 +1066,10 @@ public class ClickHandler implements Listener {
 					if (!(SiegeEngines.activeSiegeEngines.containsKey(entity.getUniqueId()))) {
 						return;
 					}
-					PlayerHandler.releasePlayerSiegeEngine(player,entity);
+					PlayerHandler.siegeEngineEntityDied(entity,true);
+					if (isSiegeEngine(entity, false)) {
+						PlayerHandler.releasePlayerSiegeEngine(player,entity);
+					}
 					return;
 				}
 			}

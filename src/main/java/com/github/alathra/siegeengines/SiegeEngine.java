@@ -403,6 +403,11 @@ public class SiegeEngine implements Cloneable {
         ItemMeta meta = item.getItemMeta();
         String id = "";
         Entity entity3 = null;
+        for (Entity enti : l.getWorld().getNearbyEntities(l,2.5d,2.5d,2.5d)) {
+            if (SiegeEngines.activeSiegeEngines.keySet().contains(enti.getUniqueId())) {
+                return false;
+            }
+        }
         this.setAmmoHolder(new SiegeEngineAmmoHolder());
         if (this.hasBaseStand) {
 
@@ -467,16 +472,9 @@ public class SiegeEngine implements Cloneable {
             newList.add(entity2);
             SiegeEngines.siegeEngineEntitiesPerPlayer.put(player.getUniqueId(), newList);
         }*/
-        for (Entity enti : l.getWorld().getNearbyEntities(l,2.5d,2.5d,2.5d)) {
-            if (SiegeEngines.activeSiegeEngines.keySet().contains(enti.getUniqueId())) {
-                ent.setHealth(0.0d);
-                return false;
-            }
-        }
         stand.setMaxHealth(baseHealth);
         stand.setHealth(baseHealth);
         SiegeEngines.activeSiegeEngines.put(stand.getUniqueId(), this);
-        ClickHandler.TakeControl(player,stand);
         if (mount != null && !(mount.isDead())) {
             entity2.setGravity(true);
             mount.addPassenger(entity2);
