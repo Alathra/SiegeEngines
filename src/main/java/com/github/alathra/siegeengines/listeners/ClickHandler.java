@@ -80,6 +80,7 @@ public class ClickHandler implements Listener {
 					ArmorStand stand = (ArmorStand) entity;
 					if (isSiegeEngine(stand,false)) {
 						event.setCancelled(true);
+						if (!Config.arrowDamageToggle) continue;
 						SiegeEnginesLogger.debug("HEALTH BEOFRE SHOT : "+stand.getHealth());
 						if (stand.getHealth()-2 > 0) {
 							stand.setHealth(stand.getHealth()-2);

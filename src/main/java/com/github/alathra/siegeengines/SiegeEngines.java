@@ -126,6 +126,7 @@ public class SiegeEngines extends JavaPlugin {
 		trebuchet.setMaxFuel(Config.trebuchetMaxFuel);
 		trebuchet.setFuelItem(new ItemStack(Config.trebuchetFuelItem));
 		trebuchet.setProjectiles(Config.trebuchetProjectiles);
+		trebuchet.setHealth(Config.trebuchetHealth);
 		trebuchet.setXOffset(3);
 		trebuchet.setYOffset(3);
 		trebuchet.setPlacementOffsetY(0.0);
@@ -153,6 +154,7 @@ public class SiegeEngines extends JavaPlugin {
 		ballista.setMaxFuel(Config.ballistaMaxFuel);
 		ballista.setFuelItem(new ItemStack(Config.ballistaFuelItem));
 		ballista.setProjectiles(Config.ballistaProjectiles);
+		ballista.setHealth(Config.ballistaHealth);
 		ballista.setXOffset(1);
 		ballista.setYOffset(1);
 		ballista.setPlacementOffsetY(-0.75);
@@ -179,6 +181,7 @@ public class SiegeEngines extends JavaPlugin {
 		swivelCannon.setMaxFuel(Config.swivelCannonMaxFuel);
 		swivelCannon.setFuelItem(new ItemStack(Config.swivelCannonFuelItem));
 		swivelCannon.setProjectiles(Config.swivelCannonProjectiles);
+		swivelCannon.setHealth(Config.swivelCannonHealth);
 		swivelCannon.setPlacementOffsetY(-1);
 		swivelCannon.setReadyModelNumber(141);
 		swivelCannon.setModelNumberToFireAt(141);
@@ -200,6 +203,7 @@ public class SiegeEngines extends JavaPlugin {
 		breachCannon.setMaxFuel(Config.breachCannonMaxFuel);
 		breachCannon.setFuelItem(new ItemStack(Config.breachCannonFuelItem));
 		breachCannon.setProjectiles(Config.breachCannonProjectiles);
+		breachCannon.setHealth(Config.breachCannonHealth);
 		breachCannon.setPlacementOffsetY(-1);
 		breachCannon.setReadyModelNumber(142);
 		breachCannon.setModelNumberToFireAt(142);

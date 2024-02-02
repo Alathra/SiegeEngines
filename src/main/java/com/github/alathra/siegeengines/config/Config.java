@@ -36,6 +36,7 @@ public class Config {
 	public static int rotateDistance = 32;
 	public static int maxSiegeEnginesControlled = 5;
 	public static boolean autoReload = false;
+	public static boolean arrowDamageToggle = false;
 	public static boolean craftingRecipes = true;
 	public static boolean doDebug = false;
 
@@ -103,6 +104,7 @@ public class Config {
 
 		controlDistance = config.getInt("ControlDistance");
 		rotateDistance = config.getInt("RotateDistance");
+		arrowDamageToggle = config.getBoolean("DealArrowDamage");
 		maxSiegeEnginesControlled = config.getInt("MaxSiegeEnginesControlled");
 		doDebug = config.getBoolean("Debug");
 		autoReload = config.getBoolean("AutoReload");
