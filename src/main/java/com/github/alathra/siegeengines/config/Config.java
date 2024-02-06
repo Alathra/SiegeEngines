@@ -40,6 +40,7 @@ public class Config {
 	public static boolean craftingRecipes = true;
 	public static boolean doDebug = false;
 
+
 	public static HashSet<World> disabledWorlds = new HashSet<>();
 
 	// Siege Engine Options - Defaults
