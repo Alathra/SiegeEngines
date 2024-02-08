@@ -10,6 +10,7 @@ import java.util.UUID;
 
 import com.github.alathra.siegeengines.config.Config;
 import com.github.alathra.siegeengines.SiegeEngineAmmoHolder;
+import com.github.alathra.siegeengines.SiegeEnginesLogger;
 import com.github.alathra.siegeengines.SiegeEngines;
 import com.github.alathra.siegeengines.SiegeEnginesUtil;
 
@@ -39,6 +40,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.SignChangeEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
@@ -55,6 +57,7 @@ import org.bukkit.util.EulerAngle;
 public class ClickHandler implements Listener {
 
 	public float MinDelay = 5;
+	public static final ArrayList<ItemStack> items = new ArrayList<>();
 
 	public static HashMap<UUID, ExplosiveProjectile> projectiles = new HashMap<UUID, ExplosiveProjectile>();
 	public static EnumSet<Material> fluidMaterials = EnumSet.of(Material.WATER, Material.LAVA, Material.BUBBLE_COLUMN,
@@ -73,6 +76,29 @@ public class ClickHandler implements Listener {
 
 	@EventHandler
 	public void onHit(ProjectileHitEvent event) {
+		if ((event.getEntity() instanceof Projectile)) {
+			for (Entity entity : event.getEntity().getNearbyEntities(2, 2, 2)) {
+				if (entity instanceof ArmorStand) {
+					ArmorStand stand = (ArmorStand) entity;
+					if (isSiegeEngine(stand,false)) {
+						event.setCancelled(true);
+						if (!Config.arrowDamageToggle) continue;
+						SiegeEnginesLogger.debug("HEALTH BEOFRE SHOT : "+stand.getHealth());
+						if (stand.getHealth()-2 > 0) {
+							stand.setHealth(stand.getHealth()-2);
+						} else {
+							EntityDeathEvent death = new EntityDeathEvent(stand,items,0);
+							Bukkit.getServer().getPluginManager().callEvent(death);
+							if (!death.isCancelled()) stand.setHealth(0.0f);
+						}
+						SiegeEnginesLogger.debug("HEALTH AFTER SHOT : "+stand.getHealth());
+						if (stand.isDead()) {
+							PlayerHandler.siegeEngineEntityDied(stand);
+						}
+					}
+				}
+			}
+		}
 		if ((event.getEntity() instanceof Projectile)
 				&& projectiles.containsKey(event.getEntity().getUniqueId())) {
 			ExplosiveProjectile proj = projectiles.get(event.getEntity().getUniqueId());
@@ -146,8 +172,8 @@ public class ClickHandler implements Listener {
 						try {
 							siegeEngine = entry.clone();
 						} catch (CloneNotSupportedException e) {
+							break;
 						}
-						break;
 					} else {
 						// if siege engine was broken during one of its firing stages
 						if (entry.getFiringModelNumbers().contains(customModel)) {
@@ -435,7 +461,6 @@ public class ClickHandler implements Listener {
 	@EventHandler
 	public void interact(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
-
 		ItemStack ItemInHand = event.getPlayer().getInventory().getItemInMainHand();
 		if (ItemInHand == null) {
 			return;
@@ -606,15 +631,24 @@ public class ClickHandler implements Listener {
 		}
 
 	}
-
-	@EventHandler
-	public void onProjectileDamage(EntityDamageByEntityEvent event) {
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void onEngineDamage(EntityDamageByEntityEvent event) {
 		if (event.getEntity() instanceof ArmorStand) {
-			if (isSiegeEngine(event.getEntity(),false)) {
-				if (event.getDamager() instanceof Projectile) {
-					event.setDamage(3);
-				}
+			ArmorStand stand = (ArmorStand)event.getEntity();
+			if (event.getDamager() instanceof Player) {
+				PlayerHandler.releasePlayerSiegeEngine((Player)(event.getDamager()),event.getEntity());
 			}
+			SiegeEnginesLogger.debug("HEALTH BEOFRE HIT : "+stand.getHealth());
+			if (stand.getHealth()-2 > 0) {
+				stand.setHealth(stand.getHealth()-2);
+			} else {
+				EntityDeathEvent death = new EntityDeathEvent(stand,items,0);
+				Bukkit.getServer().getPluginManager().callEvent(death);
+				if (death.isCancelled()) return;
+				stand.setHealth(0.0f);
+				PlayerHandler.siegeEngineEntityDied(event.getEntity());
+			}
+			SiegeEnginesLogger.debug("HEALTH AFTER HIT : "+stand.getHealth());
 		}
 	}
 
@@ -634,10 +668,6 @@ public class ClickHandler implements Listener {
 						final List<Entity> entities = new ArrayList<>(
 								SiegeEngines.siegeEngineEntitiesPerPlayer.get(player));
 						numPilots++;
-						if (numPilots > 1) {
-							entities.remove(entity);
-						}
-						SiegeEngines.siegeEngineEntitiesPerPlayer.put(player, entities);
 					}
 				}
 				// Can only have one pilot
@@ -651,6 +681,7 @@ public class ClickHandler implements Listener {
 			stand.addEquipmentLock(EquipmentSlot.FEET, LockType.ADDING_OR_CHANGING);
 			stand.setBasePlate(true);
 
+			SiegeEnginesLogger.debug("ACTIVE ENGINES : " + SiegeEngines.activeSiegeEngines);
 			if (SiegeEngines.activeSiegeEngines.containsKey(entity.getUniqueId())) {
 				equip = SiegeEngines.activeSiegeEngines.get(entity.getUniqueId());
 				if (equip == null || !equip.getEnabled()) {
@@ -671,12 +702,8 @@ public class ClickHandler implements Listener {
 			stand.addEquipmentLock(EquipmentSlot.CHEST, LockType.ADDING_OR_CHANGING);
 			stand.addEquipmentLock(EquipmentSlot.FEET, LockType.ADDING_OR_CHANGING);
 			stand.setBasePlate(true);
-			if (numPilots > 1) {
-				return false;
-			}
-			if (add)
-				SiegeEngines.activeSiegeEngines.put(entity.getUniqueId(), equip);
 			// player.sendMessage("§eNow controlling the equipment.");
+			if (add) SiegeEngines.activeSiegeEngines.put(entity.getUniqueId(),equip);
 			return true;
 		}
 		return false;
@@ -700,16 +727,16 @@ public class ClickHandler implements Listener {
 			numPilots++;
 		}
 		if (numPilots > 1) {
-			if (player instanceof Player)
-				((Player) player).sendMessage("§eOnly one Player may command this Siege Engine!");
+			if (player instanceof Player) ((Player) player).sendMessage("§eOnly one Player may command this Siege Engine!");
 			return;
 		}
 
 		if (SiegeEngines.siegeEngineEntitiesPerPlayer.containsKey(player.getUniqueId())) {
+			SiegeEnginesLogger.debug("CURRENT ENGINES : " + SiegeEngines.siegeEngineEntitiesPerPlayer.get(player.getUniqueId()));
 			if (SiegeEngines.siegeEngineEntitiesPerPlayer.get(player.getUniqueId())
 					.size() > Config.maxSiegeEnginesControlled) {
 				if (player instanceof Player) {
-					((Player) player).sendMessage("§eYou are already commanding too many Siege Engines!");
+					((Player) player).sendMessage("§eYou are commanding too many Siege Engines!");
 					PlayerHandler.releasePlayerSiegeEngine(((Player) player),entity);
 				}
 				return;
@@ -753,12 +780,15 @@ public class ClickHandler implements Listener {
 			if (SiegeEngines.siegeEngineEntitiesPerPlayer.containsKey(player.getUniqueId())) {
 				List<Entity> entities = SiegeEngines.siegeEngineEntitiesPerPlayer.get(player.getUniqueId());
 				entities.add(entity);
+				SiegeEngines.siegeEngineEntitiesPerPlayer.remove(player.getUniqueId());
 				SiegeEngines.siegeEngineEntitiesPerPlayer.put(player.getUniqueId(), entities);
 			} else {
 				List<Entity> newList = new ArrayList<Entity>();
 				newList.add(entity);
+				SiegeEngines.siegeEngineEntitiesPerPlayer.remove(player.getUniqueId());
 				SiegeEngines.siegeEngineEntitiesPerPlayer.put(player.getUniqueId(), newList);
 			}
+			SiegeEnginesLogger.debug("NEW ENGINES : " + SiegeEngines.siegeEngineEntitiesPerPlayer.get(player.getUniqueId()));
 			SiegeEngines.activeSiegeEngines.put(entity.getUniqueId(), equip);
 			// player.sendMessage("§eNow controlling the equipment.");
 			if (player instanceof Player) {
@@ -850,9 +880,9 @@ public class ClickHandler implements Listener {
 
 	NamespacedKey key = new NamespacedKey(SiegeEngines.getInstance(), "siege_engines");
 
-	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void onSiegeEngineDeathEvent(EntityDeathEvent event) {
-		Boolean removeStands = false;
+		boolean removeStands = false;
 		List<ItemStack> items = event.getDrops();
 		if (event.getEntity() instanceof ArmorStand) {
 			if (event.getEntity().getPersistentDataContainer().has(key, PersistentDataType.STRING)) {
@@ -882,9 +912,10 @@ public class ClickHandler implements Listener {
 				}
 			}
 			if (removeStands) {
-				PlayerHandler.siegeEngineEntityDied(event.getEntity());
 				for (ItemStack i : items) {
 					if (i.getType() == Material.ARMOR_STAND) {
+						PlayerHandler.siegeEngineEntityDied(event.getEntity(),false);
+						SiegeEngines.activeSiegeEngines.remove(event.getEntity().getUniqueId());
 						i.setAmount(0);
 						return;
 					}
@@ -939,10 +970,11 @@ public class ClickHandler implements Listener {
 	}
 
 	@SuppressWarnings("deprecation")
-	@EventHandler
+	@EventHandler(priority = EventPriority.LOW)
 	public void onPlayerClickSign(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
-		if (event.getClickedBlock() != null && event.getClickedBlock().getType().toString().contains("SIGN")) {
+		if (event.getClickedBlock() != null && event.getClickedBlock().getType().toString().contains("_SIGN")) {
+			if (event.isCancelled()) return;
 			Sign sign = (Sign) event.getClickedBlock().getState();
 			if (sign.getLine(0).equalsIgnoreCase("[Fire]") && event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 				if (!SiegeEngines.siegeEngineEntitiesPerPlayer.containsKey(player.getUniqueId())) {
@@ -1033,7 +1065,7 @@ public class ClickHandler implements Listener {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
+	@EventHandler(priority = EventPriority.LOW)
 	public void onEntityClick(PlayerInteractAtEntityEvent event) {
 		Player player = event.getPlayer();
 		ItemStack itemInHand = player.getInventory().getItemInMainHand();
@@ -1044,12 +1076,13 @@ public class ClickHandler implements Listener {
 		if (entity.getType() == EntityType.ARMOR_STAND) {
 			if ((itemInHand.getType() == Material.AIR || itemInHand == null))  {
 				if (player.isSneaking()) {
-					if (isSiegeEngine(entity, false)) PlayerHandler.siegeEngineEntityDied(entity);
-					else PlayerHandler.releasePlayerSiegeEngine(player,null);
-					if (SiegeEngines.activeSiegeEngines.containsKey(entity.getUniqueId())) {
-						SiegeEngines.activeSiegeEngines.remove(entity.getUniqueId());
+					if (!(SiegeEngines.activeSiegeEngines.containsKey(entity.getUniqueId()))) {
+						return;
 					}
-					player.sendMessage("§eReleased this SiegeEngine!");
+					PlayerHandler.siegeEngineEntityDied(entity,true);
+					if (isSiegeEngine(entity, false)) {
+						PlayerHandler.releasePlayerSiegeEngine(player,entity);
+					}
 					return;
 				}
 			}

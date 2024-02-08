@@ -37,8 +37,9 @@ public class Config {
 	public static int rotateDistance = 32;
 	public static int maxSiegeEnginesControlled = 5;
 	public static boolean autoReload = false;
+	public static boolean arrowDamageToggle = false;
 	public static boolean craftingRecipes = true;
-
+	public static boolean doDebug = false;
 
 	public static HashSet<World> disabledWorlds = new HashSet<>();
 
@@ -47,6 +48,7 @@ public class Config {
 	public static float trebuchetVelocityPerFuel = 0.3f;
 	public static int trebuchetMaxFuel = 3;
 	public static Material trebuchetFuelItem = Material.STRING;
+	public static double trebuchetHealth = 8d;
 	public static boolean trebuchetCanMount = false;
 	public static HashMap<ItemStack, SiegeEngineProjectile> trebuchetProjectiles = new HashMap<>();
 	public static String trebuchetItemName = "&e&oTrebuchet";
@@ -54,6 +56,7 @@ public class Config {
 
 	public static int ballistaShotAmount = 1;
 	public static float ballistaVelocityPerFuel = 0.925f;
+	public static double ballistaHealth = 5d;
 	public static int ballistaMaxFuel = 4;
 	public static Material ballistaFuelItem = Material.STRING;
 	public static boolean ballistaCanMount = false;
@@ -63,6 +66,7 @@ public class Config {
 
 	public static int swivelCannonShotAmount = 1;
 	public static float swivelCannonVelocityPerFuel = 1.0125f;
+	public static double swivelCannonHealth = 15d;
 	public static int swivelCannonMaxFuel = 5;
 	public static Material swivelCannonFuelItem = Material.GUNPOWDER;
 	public static boolean swivelCannonCanMount = false;
@@ -72,6 +76,7 @@ public class Config {
 
 	public static int breachCannonShotAmount = 1;
 	public static float breachCannonVelocityPerFuel = 1.075f;
+	public static double breachCannonHealth = 25d;
 	public static int breachCannonMaxFuel = 4;
 	public static Material breachCannonFuelItem = Material.GUNPOWDER;
 	public static boolean breachCannonCanMount = false;
@@ -99,7 +104,9 @@ public class Config {
 
 		controlDistance = config.getInt("ControlDistance");
 		rotateDistance = config.getInt("RotateDistance");
+		arrowDamageToggle = config.getBoolean("DealArrowDamage");
 		maxSiegeEnginesControlled = config.getInt("MaxSiegeEnginesControlled");
+		doDebug = config.getBoolean("Debug");
 		autoReload = config.getBoolean("AutoReload");
 		craftingRecipes = config.getBoolean("CraftingRecipes");
 
@@ -109,6 +116,7 @@ public class Config {
 	}
 
 	private static void loadTrebuchetValues() {
+		trebuchetHealth = config.getDouble("SiegeEngines.Trebuchet.Health");
 		trebuchetShotAmount = config.getInt("SiegeEngines.Trebuchet.ShotAmount");
 		trebuchetVelocityPerFuel = (float) config.getDouble("SiegeEngines.Trebuchet.VelocityPerFuel");
 		trebuchetMaxFuel = config.getInt("SiegeEngines.Trebuchet.MaxFuel");
@@ -134,6 +142,7 @@ public class Config {
 	}
 
 	private static void loadBallistaValues() {
+		ballistaHealth = config.getDouble("SiegeEngines.Ballista.Health");
 		ballistaShotAmount = config.getInt("SiegeEngines.Ballista.ShotAmount");
 		ballistaVelocityPerFuel = (float) config.getDouble("SiegeEngines.Ballista.VelocityPerFuel");
 		ballistaMaxFuel = config.getInt("SiegeEngines.Ballista.MaxFuel");
@@ -160,6 +169,7 @@ public class Config {
 	}
 
 	private static void loadSwivelCannonValues() {
+		swivelCannonHealth = config.getDouble("SiegeEngines.SwivelCannon.Health");
 		swivelCannonShotAmount = config.getInt("SiegeEngines.SwivelCannon.ShotAmount");
 		swivelCannonVelocityPerFuel = (float) config.getDouble("SiegeEngines.SwivelCannon.VelocityPerFuel");
 		swivelCannonMaxFuel = config.getInt("SiegeEngines.SwivelCannon.MaxFuel");
@@ -186,6 +196,7 @@ public class Config {
 	}
 
 	private static void loadBreachCannonValues() {
+		breachCannonHealth = config.getDouble("SiegeEngines.BreachCannon.Health");
 		breachCannonShotAmount = config.getInt("SiegeEngines.BreachCannon.ShotAmount");
 		breachCannonVelocityPerFuel = (float) config.getDouble("SiegeEngines.BreachCannon.VelocityPerFuel");
 		breachCannonMaxFuel = config.getInt("SiegeEngines.BreachCannon.MaxFuel");
