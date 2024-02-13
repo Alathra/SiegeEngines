@@ -114,6 +114,14 @@ Projectiles:
     EntityCount: 1
     VelocityFactor: 0.5
     Delay: 5
+  SplashPotionProjectile:
+    ProjectileType: POTION
+    Inaccuracy: 0.0125
+    EntityCount: 1
+    VelocityFactor: 0.5
+    ArrowDamageFactor: 1.0
+    AmmoItem: SPLASH_POTION
+    FireSound: ITEM_CROSSBOW_SHOOT
 
 SiegeEngines:
   Trebuchet:
@@ -142,6 +150,7 @@ SiegeEngines:
       - ScatterShot
       - DragonsBreath
       - FireworkShot
+      - SplashPotionProjectile
     ItemName: "&e&lBallista"
     Lore:
       - "&ePlace as a block to spawn a Ballista"

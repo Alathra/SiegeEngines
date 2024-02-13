@@ -20,6 +20,7 @@ import com.github.alathra.siegeengines.SiegeEnginesUtil;
 import com.github.alathra.siegeengines.projectile.EntityProjectile;
 import com.github.alathra.siegeengines.projectile.ExplosiveProjectile;
 import com.github.alathra.siegeengines.projectile.FireworkProjectile;
+import com.github.alathra.siegeengines.projectile.PotionProjectile;
 import com.github.alathra.siegeengines.projectile.ProjectileType;
 import com.github.alathra.siegeengines.projectile.SiegeEngineProjectile;
 
@@ -306,6 +307,22 @@ public class Config {
 					fireworkProjectile.velocityFactor = (float) config
 							.getDouble("Projectiles." + projectileName + ".VelocityFactor");
 					projectileMap.put(projectileName, fireworkProjectile);
+					break;
+				case POTION:
+					PotionProjectile potionProjectile = new PotionProjectile(new ItemStack(
+							Material.getMaterial(config.getString("Projectiles." + projectileName + ".AmmoItem"))));
+					potionProjectile.inaccuracy = (float) config
+							.getDouble("Projectiles." + projectileName + ".Inaccuracy");
+					potionProjectile.entityCount = config.getInt("Projectiles." + projectileName + ".EntityCount");
+					potionProjectile.delayTime = config.getInt("Projectiles." + projectileName + ".EntityCount");
+					if (potionProjectile.delayTime <= 0) {
+						potionProjectile.delayedFire = false;
+					} else {
+						potionProjectile.delayedFire = true;
+					}
+					potionProjectile.velocityFactor = (float) config
+							.getDouble("Projectiles." + projectileName + ".VelocityFactor");
+					projectileMap.put(projectileName, potionProjectile);
 					break;
 				default:
 					continue;
