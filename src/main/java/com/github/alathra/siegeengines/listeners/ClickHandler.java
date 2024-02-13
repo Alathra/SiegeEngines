@@ -702,6 +702,9 @@ public class ClickHandler implements Listener {
 		if (SiegeEngines.siegeEngineEntitiesPerPlayer.containsKey(player.getUniqueId())) {
 			List<Entity> entities = SiegeEngines.siegeEngineEntitiesPerPlayer.get(player.getUniqueId());
 			if (entities.contains(entity)) {
+				if (player instanceof Player) {
+					((Player) player).sendMessage("§eYou are already commanding this Siege Engine!");
+				}
 				return;
 			}
 		}
@@ -712,7 +715,11 @@ public class ClickHandler implements Listener {
 			if (uuid.equals(player.getUniqueId())) {
 				continue;
 			}
-			numPilots++;
+			if (SiegeEngines.siegeEngineEntitiesPerPlayer.containsKey(uuid)) {
+				if (SiegeEngines.siegeEngineEntitiesPerPlayer.get(uuid).contains(entity)) {
+					numPilots++;
+				}
+			}
 		}
 		if (numPilots > 1) {
 			if (player instanceof Player) ((Player) player).sendMessage("§eOnly one Player may command this Siege Engine!");

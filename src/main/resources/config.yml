@@ -94,9 +94,6 @@ Projectiles:
     FireSound: ITEM_CROSSBOW_SHOOT
   DragonsBreath:
     ProjectileType: ENTITY
-    Inaccuracy: 0.125
-    EntityCount: 1
-    VelocityFactor: 1.0
     Inaccuracy: 0.65
     EntityCount: 3
     VelocityFactor: 1.125
@@ -175,7 +172,6 @@ SiegeEngines:
       - StoneShot
       - RepeatingShot
       - BreachShot
-      - FireShot
       - DragonsBreath
       - FireworkShot
     ItemName: "&e&lBreach Cannon"

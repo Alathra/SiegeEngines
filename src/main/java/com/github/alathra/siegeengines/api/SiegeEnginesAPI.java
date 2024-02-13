@@ -1,8 +1,6 @@
 package com.github.alathra.siegeengines.api;
 
 import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.entity.Entity;
 
 import com.github.alathra.siegeengines.SiegeEngine;
