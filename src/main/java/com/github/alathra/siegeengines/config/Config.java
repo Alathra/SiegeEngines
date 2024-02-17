@@ -17,6 +17,7 @@ import org.bukkit.inventory.ItemStack;
 import com.github.alathra.siegeengines.SiegeEngines;
 import com.github.alathra.siegeengines.SiegeEnginesLogger;
 import com.github.alathra.siegeengines.SiegeEnginesUtil;
+import com.github.alathra.siegeengines.crafting.CraftingRecipes;
 import com.github.alathra.siegeengines.projectile.EntityProjectile;
 import com.github.alathra.siegeengines.projectile.ExplosiveProjectile;
 import com.github.alathra.siegeengines.projectile.FireworkProjectile;
@@ -338,6 +339,17 @@ public class Config {
 		SiegeEngines.getInstance().reloadConfig();
 		SiegeEngines.getInstance().saveDefaultConfig();
 		initConfigVals();
+		
+		// load crafting recipes if enabled in config
+		if (Config.craftingRecipes) {
+			if (!CraftingRecipes.areLoaded()) {
+				CraftingRecipes.loadCraftingRecipes();
+			}
+		} else {
+			if (CraftingRecipes.areLoaded()) {
+				CraftingRecipes.unloadCraftingRecipes();
+			}
+		}
 	}
 
 	public FileConfiguration getConfig() {

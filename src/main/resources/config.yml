@@ -34,8 +34,7 @@ RotateDistance: 16
 # The maximum siege engines a player can control at the same time
 MaxSiegeEnginesControlled: 1
 
-# Whether or not the crafting recipes for siege engines will be enabled
-# Requires a server restart to go into effect
+# Whether or not the crafting recipes for siege engines are enabled
 CraftingRecipes: true
 
 # The auto-reload feature by shift-clicking

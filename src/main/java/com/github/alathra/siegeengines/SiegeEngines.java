@@ -9,7 +9,6 @@ import java.util.UUID;
 
 import com.github.alathra.siegeengines.command.CommandHandler;
 import com.github.alathra.siegeengines.config.Config;
-import com.github.alathra.siegeengines.crafting.CraftingRecipes;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -70,11 +69,6 @@ public class SiegeEngines extends JavaPlugin {
 			}
 		}
 		commandHandler.onEnable();
-		
-		// load crafting recipes if enabled in config
-		if (Config.craftingRecipes) {
-			CraftingRecipes.loadCraftingRecipes();
-		}
 	}
 
 	@SuppressWarnings("deprecation")
