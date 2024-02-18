@@ -138,7 +138,7 @@ public class SiegeEngines extends JavaPlugin {
 
 		// Ballista
 		SiegeEngine ballista = new SiegeEngine("Ballista", Config.ballistaProjectiles, new ItemStack(Material.STRING),
-				145);
+				146);
 		// config options
 		ballista.setType(SiegeEngineType.BALLISTA);
 		ballista.setItemName(Config.ballistaItemName);
@@ -155,10 +155,11 @@ public class SiegeEngines extends JavaPlugin {
 		ballista.setRotateStandHead(true);
 		ballista.setRotateSideways(true);
 		ballista.setSetModelNumberWhenFullyLoaded(true);
-		ballista.setReadyModelNumber(145);
-		ballista.setModelNumberToFireAt(145);
+		ballista.setReadyModelNumber(146);
+		ballista.setModelNumberToFireAt(146);
 		ballista.setPreFireModelNumber(143);
-		ballista.setFiringModelNumbers(new ArrayList<>(Arrays.asList(143, 144, 145)));
+		ballista.setPreLoadModelNumber(144);
+		ballista.setFiringModelNumbers(new ArrayList<>(Arrays.asList(143, 144, 145, 146)));
 		ballista.setCycleThroughModelsWhileFiring(true);
 		ballista.setMountable(Config.ballistaCanMount);
 		definedSiegeEngines.put(ballista.getReadyModelNumber(), ballista);

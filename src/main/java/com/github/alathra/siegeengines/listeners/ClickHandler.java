@@ -1120,13 +1120,17 @@ public class ClickHandler implements Listener {
 							sendSiegeEngineHelpMSG(player, siegeEngine);
 							// If fully loaded && requires change in animation when loaded (i.e. ballista)
 							if (!siegeEngine.canLoadFuel() && siegeEngine.isSetModelNumberWhenFullyLoaded()) {
-								SiegeEnginesUtil.UpdateEntityIdModel(siegeEngine.getEntity(), siegeEngine.getPreFireModelNumber(), siegeEngine.getWorldName());
+								SiegeEnginesUtil.UpdateEntityIdModel(siegeEngine.getEntity(), siegeEngine.getPreLoadModelNumber(), siegeEngine.getWorldName());
 							}
 						}
 					}
 				}
 				if (pulledHeldAmmoFromPlayer(player, siegeEngine)) {
 					player.sendMessage("§eAdded ammunition to this Siege Engine.");
+					// If requires change in animation when loaded with a projectile (i.e. ballista)
+					if (siegeEngine.isSetModelNumberWhenFullyLoaded()) {
+						SiegeEnginesUtil.UpdateEntityIdModel(siegeEngine.getEntity(), siegeEngine.getPreFireModelNumber(), siegeEngine.getWorldName());
+					}
 					return;
 				}
 				if (itemInHand == null || itemInHand.getType() == Material.AIR

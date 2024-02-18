@@ -68,6 +68,7 @@ public class SiegeEngine implements Cloneable {
     private int readyModelNumber;
     private int nextModelNumber; // Internal
     private int preFireModelNumber;
+    private int preLoadModelNumber;
     private SiegeEngineAmmoHolder ammoHolder;
     
     // Optional variables
@@ -111,6 +112,7 @@ public class SiegeEngine implements Cloneable {
         setReadyModelNumber(customModelID);
         setModelNumberToFireAt(customModelID);
         setPreFireModelNumber(customModelID);
+        setPreLoadModelNumber(customModelID);
         setFiringModelNumbers(new ArrayList<Integer>());
         setAmmoHolder(new SiegeEngineAmmoHolder());
         //fuelItem = new ItemStack(Material.GUNPOWDER);
@@ -680,6 +682,14 @@ public class SiegeEngine implements Cloneable {
 
 	public void setPreFireModelNumber(int preFireModelNumber) {
 		this.preFireModelNumber = preFireModelNumber;
+	}
+	
+	public int getPreLoadModelNumber() {
+		return preLoadModelNumber;
+	}
+
+	public void setPreLoadModelNumber(int preLoadModelNumber) {
+		this.preLoadModelNumber = preLoadModelNumber;
 	}
 
 	public SiegeEngineAmmoHolder getAmmoHolder() {
