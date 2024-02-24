@@ -6,10 +6,8 @@
 
     <groupId>com.github.alathra</groupId>
     <artifactId>SiegeEngines</artifactId>
-    <version>0.8.3</version>
-
+    <version>0.8.5</version>
     <packaging>jar</packaging>
-    <name>SiegeEngines</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

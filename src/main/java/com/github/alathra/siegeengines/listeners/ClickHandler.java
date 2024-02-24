@@ -17,6 +17,7 @@ import com.github.alathra.siegeengines.SiegeEnginesUtil;
 import com.github.alathra.siegeengines.SiegeEngine;
 import com.github.alathra.siegeengines.projectile.ExplosiveProjectile;
 import com.github.alathra.siegeengines.projectile.FireworkProjectile;
+import com.github.alathra.siegeengines.projectile.PotionProjectile;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -39,7 +40,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.SignChangeEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
@@ -298,7 +298,8 @@ public class ClickHandler implements Listener {
 					return true;
 				}
 				inventoryItem = inventoryItem.clone();
-				if (!(stack.isSimilar(inventoryItem)) && (stack.getType() != Material.FIREWORK_ROCKET))
+				if (!(stack.isSimilar(inventoryItem)) && (stack.getType() != Material.FIREWORK_ROCKET)
+						&& (stack.getType() != Material.SPLASH_POTION))
 					continue;
 				inventoryItem.setAmount(1);
 				if (stack.getType() != Material.FIREWORK_ROCKET && stack.isSimilar(inventoryItem)
@@ -314,6 +315,15 @@ public class ClickHandler implements Listener {
 					siegeEngine.getAmmoHolder().setMaterialName(inventoryItem);
 					state.getInventory().removeItem(inventoryItem);
 					FireworkProjectile proj = FireworkProjectile.getDefaultRocketShot(inventoryItem.clone());
+					siegeEngine.getProjectiles().put(inventoryItem, proj);
+					return true;
+				}
+				if (stack.getType() == Material.SPLASH_POTION && inventoryItem.getType() == stack.getType()
+						&& siegeEngine.getAmmoHolder().getLoadedProjectile() == 0) {
+					siegeEngine.getAmmoHolder().setLoadedProjectile(1);
+					siegeEngine.getAmmoHolder().setMaterialName(inventoryItem);
+					state.getInventory().removeItem(inventoryItem);
+					PotionProjectile proj = new PotionProjectile(inventoryItem);
 					siegeEngine.getProjectiles().put(inventoryItem, proj);
 					return true;
 				}
@@ -619,10 +629,12 @@ public class ClickHandler implements Listener {
 		}
 
 	}
-	@EventHandler(priority = EventPriority.LOWEST)
+	@EventHandler(priority = EventPriority.NORMAL)
 	public void onEngineDamage(EntityDamageByEntityEvent event) {
 		if (event.getEntity() instanceof ArmorStand) {
 			ArmorStand stand = (ArmorStand)event.getEntity();
+			if (isSiegeEngine(stand,false)) return;
+			if (event.isCancelled()) return;
 			if (event.getDamager() instanceof Player) {
 				PlayerHandler.releasePlayerSiegeEngine((Player)(event.getDamager()),event.getEntity());
 			}
@@ -650,12 +662,14 @@ public class ClickHandler implements Listener {
 			}
 			final List<UUID> keys = new ArrayList<>(SiegeEngines.siegeEngineEntitiesPerPlayer.keySet());
 			int numPilots = 0;
-			for (UUID player : keys) {
-				if (SiegeEngines.siegeEngineEntitiesPerPlayer.get(player) != null) {
-					if (SiegeEngines.siegeEngineEntitiesPerPlayer.get(player).contains(entity)) {
-						final List<Entity> entities = new ArrayList<>(
-								SiegeEngines.siegeEngineEntitiesPerPlayer.get(player));
-						numPilots++;
+			if (add) {
+				for (UUID player : keys) {
+					if (SiegeEngines.siegeEngineEntitiesPerPlayer.get(player) != null) {
+						if (SiegeEngines.siegeEngineEntitiesPerPlayer.get(player).contains(entity)) {
+							final List<Entity> entities = new ArrayList<>(
+									SiegeEngines.siegeEngineEntitiesPerPlayer.get(player));
+							numPilots++;
+						}
 					}
 				}
 				// Can only have one pilot
@@ -1108,13 +1122,17 @@ public class ClickHandler implements Listener {
 							sendSiegeEngineHelpMSG(player, siegeEngine);
 							// If fully loaded && requires change in animation when loaded (i.e. ballista)
 							if (!siegeEngine.canLoadFuel() && siegeEngine.isSetModelNumberWhenFullyLoaded()) {
-								SiegeEnginesUtil.UpdateEntityIdModel(siegeEngine.getEntity(), siegeEngine.getPreFireModelNumber(), siegeEngine.getWorldName());
+								SiegeEnginesUtil.UpdateEntityIdModel(siegeEngine.getEntity(), siegeEngine.getPreLoadModelNumber(), siegeEngine.getWorldName());
 							}
 						}
 					}
 				}
 				if (pulledHeldAmmoFromPlayer(player, siegeEngine)) {
 					player.sendMessage("§eAdded ammunition to this Siege Engine.");
+					// If requires change in animation when loaded with a projectile (i.e. ballista)
+					if (siegeEngine.isSetModelNumberWhenFullyLoaded()) {
+						SiegeEnginesUtil.UpdateEntityIdModel(siegeEngine.getEntity(), siegeEngine.getPreFireModelNumber(), siegeEngine.getWorldName());
+					}
 					return;
 				}
 				if (itemInHand == null || itemInHand.getType() == Material.AIR

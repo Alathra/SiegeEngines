@@ -12,6 +12,8 @@ import com.github.alathra.siegeengines.api.SiegeEnginesAPI;
 
 public class CraftingRecipes {
 	
+	private static boolean areLoaded = false;
+	
 	public static Recipe trebuchetRecipe() {
 		ItemStack trebuchet = SiegeEnginesAPI.getTrebuchetItem();
 		NamespacedKey key = new NamespacedKey(SiegeEngines.getInstance(),
@@ -23,7 +25,6 @@ public class CraftingRecipes {
 		trebuchetRecipe.setIngredient('#', Material.OAK_TRAPDOOR);
 		trebuchetRecipe.setIngredient('$', Material.STRING);
 		trebuchetRecipe.setIngredient('^', Material.BOWL);
-		SiegeEngines.getInstance().getServer().addRecipe(trebuchetRecipe);
 		return trebuchetRecipe;
 	}
 	
@@ -37,7 +38,6 @@ public class CraftingRecipes {
 		ballistaRecipe.setIngredient('%', Material.STICK);
 		ballistaRecipe.setIngredient('#', Material.OAK_PLANKS);
 		ballistaRecipe.setIngredient('$', Material.OAK_LOG);
-		SiegeEngines.getInstance().getServer().addRecipe(ballistaRecipe);
 		return ballistaRecipe;
 	}
 	
@@ -51,7 +51,6 @@ public class CraftingRecipes {
 		swivelCannonRecipe.setIngredient('%', Material.IRON_BLOCK);
 		swivelCannonRecipe.setIngredient('#', Material.CAULDRON);
 		swivelCannonRecipe.setIngredient('$', Material.ANVIL);
-		SiegeEngines.getInstance().getServer().addRecipe(swivelCannonRecipe);
 		return swivelCannonRecipe;
 	}
 	
@@ -65,15 +64,31 @@ public class CraftingRecipes {
 		breachCannonRecipe.setIngredient('%', SiegeEnginesAPI.getSwivelCannonItem());
 		breachCannonRecipe.setIngredient('#', Material.CAULDRON);
 		breachCannonRecipe.setIngredient('$', Material.ANVIL);
-		SiegeEngines.getInstance().getServer().addRecipe(breachCannonRecipe);
 		return breachCannonRecipe;
 	}
 	
 	public static void loadCraftingRecipes() {
-		trebuchetRecipe();
-		ballistaRecipe();
-		swivelCannonRecipe();
-		breachCannonRecipe();
+		SiegeEngines.getInstance().getServer().addRecipe(trebuchetRecipe());
+		SiegeEngines.getInstance().getServer().addRecipe(ballistaRecipe());
+		SiegeEngines.getInstance().getServer().addRecipe(swivelCannonRecipe());
+		SiegeEngines.getInstance().getServer().addRecipe(breachCannonRecipe());
+		areLoaded = true;
+	}
+	
+	public static void unloadCraftingRecipes() {
+		SiegeEngines.getInstance().getServer().removeRecipe(new NamespacedKey(SiegeEngines.getInstance(),
+				SiegeEngines.getInstance().getName() + "trebuchetRecipe"));
+		SiegeEngines.getInstance().getServer().removeRecipe(new NamespacedKey(SiegeEngines.getInstance(),
+				SiegeEngines.getInstance().getName() + "ballistaRecipe"));
+		SiegeEngines.getInstance().getServer().removeRecipe(new NamespacedKey(SiegeEngines.getInstance(),
+				SiegeEngines.getInstance().getName() + "swivelCannonRecipe"));
+		SiegeEngines.getInstance().getServer().removeRecipe(new NamespacedKey(SiegeEngines.getInstance(),
+				SiegeEngines.getInstance().getName() + "breachCannonRecipe"));
+		areLoaded = false;
+	}
+	
+	public static boolean areLoaded() {
+		return areLoaded;
 	}
 	
 }

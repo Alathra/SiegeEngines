@@ -9,7 +9,6 @@ import java.util.UUID;
 
 import com.github.alathra.siegeengines.command.CommandHandler;
 import com.github.alathra.siegeengines.config.Config;
-import com.github.alathra.siegeengines.crafting.CraftingRecipes;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -70,11 +69,6 @@ public class SiegeEngines extends JavaPlugin {
 			}
 		}
 		commandHandler.onEnable();
-		
-		// load crafting recipes if enabled in config
-		if (Config.craftingRecipes) {
-			CraftingRecipes.loadCraftingRecipes();
-		}
 	}
 
 	@SuppressWarnings("deprecation")
@@ -144,7 +138,7 @@ public class SiegeEngines extends JavaPlugin {
 
 		// Ballista
 		SiegeEngine ballista = new SiegeEngine("Ballista", Config.ballistaProjectiles, new ItemStack(Material.STRING),
-				145);
+				146);
 		// config options
 		ballista.setType(SiegeEngineType.BALLISTA);
 		ballista.setItemName(Config.ballistaItemName);
@@ -157,14 +151,15 @@ public class SiegeEngines extends JavaPlugin {
 		ballista.setHealth(Config.ballistaHealth);
 		ballista.setXOffset(1);
 		ballista.setYOffset(1);
-		ballista.setPlacementOffsetY(-0.75);
+		ballista.setPlacementOffsetY(-1.25);
 		ballista.setRotateStandHead(true);
 		ballista.setRotateSideways(true);
 		ballista.setSetModelNumberWhenFullyLoaded(true);
-		ballista.setReadyModelNumber(145);
-		ballista.setModelNumberToFireAt(145);
+		ballista.setReadyModelNumber(146);
+		ballista.setModelNumberToFireAt(146);
 		ballista.setPreFireModelNumber(143);
-		ballista.setFiringModelNumbers(new ArrayList<>(Arrays.asList(143, 144, 145)));
+		ballista.setPreLoadModelNumber(144);
+		ballista.setFiringModelNumbers(new ArrayList<>(Arrays.asList(143, 144, 145, 146)));
 		ballista.setCycleThroughModelsWhileFiring(true);
 		ballista.setMountable(Config.ballistaCanMount);
 		definedSiegeEngines.put(ballista.getReadyModelNumber(), ballista);
@@ -182,6 +177,7 @@ public class SiegeEngines extends JavaPlugin {
 		swivelCannon.setFuelItem(new ItemStack(Config.swivelCannonFuelItem));
 		swivelCannon.setProjectiles(Config.swivelCannonProjectiles);
 		swivelCannon.setHealth(Config.swivelCannonHealth);
+		swivelCannon.setXOffset(1);
 		swivelCannon.setPlacementOffsetY(-1);
 		swivelCannon.setReadyModelNumber(141);
 		swivelCannon.setModelNumberToFireAt(141);
@@ -204,6 +200,7 @@ public class SiegeEngines extends JavaPlugin {
 		breachCannon.setFuelItem(new ItemStack(Config.breachCannonFuelItem));
 		breachCannon.setProjectiles(Config.breachCannonProjectiles);
 		breachCannon.setHealth(Config.breachCannonHealth);
+		breachCannon.setXOffset(1);
 		breachCannon.setPlacementOffsetY(-1);
 		breachCannon.setReadyModelNumber(142);
 		breachCannon.setModelNumberToFireAt(142);
