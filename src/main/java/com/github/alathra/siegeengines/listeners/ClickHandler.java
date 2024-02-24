@@ -72,12 +72,13 @@ public class ClickHandler implements Listener {
 		}
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGH)
 	public void onHit(ProjectileHitEvent event) {
 		if ((event.getEntity() instanceof Projectile)) {
 			for (Entity entity : event.getEntity().getNearbyEntities(2, 2, 2)) {
 				if (entity instanceof ArmorStand) {
 					ArmorStand stand = (ArmorStand) entity;
+					if (event.isCancelled()) return;
 					if (isSiegeEngine(stand,false)) {
 						event.setCancelled(true);
 						if (!Config.arrowDamageToggle) continue;

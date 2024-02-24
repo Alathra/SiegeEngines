@@ -59,7 +59,6 @@ public class SiegeEngines extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(new ClickHandler(), this);
 		getServer().getPluginManager().registerEvents(new PlayerHandler(), this);
 		ClickHandler.items.clear();
-		ClickHandler.items.add(new ItemStack(Material.ARMOR_STAND));
 		addDefaults();
 		for (SiegeEngine i : definedSiegeEngines.values()) {
 			System.out.println("§eEnabled Weapon : " + i.getEngineName());
@@ -68,6 +67,7 @@ public class SiegeEngines extends JavaPlugin {
 				System.out.println("§eWeapon Projectile ItemStacks : " + proj);
 			}
 		}
+		ClickHandler.items.add(new ItemStack(Material.ARMOR_STAND));
 		commandHandler.onEnable();
 	}
 
