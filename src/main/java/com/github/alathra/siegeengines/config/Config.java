@@ -34,8 +34,8 @@ public class Config {
 	public static int configVersion = 1;
 
 	public static Material controlItem = Material.CLOCK;
-	public static int controlDistance = 64;
-	public static int rotateDistance = 32;
+	public static int controlDistance = 10;
+	public static int rotateDistance = 10;
 	public static int maxSiegeEnginesControlled = 5;
 	public static boolean autoReload = false;
 	public static boolean arrowDamageToggle = false;
