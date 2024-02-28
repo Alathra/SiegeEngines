@@ -20,6 +20,7 @@ import com.github.alathra.siegeengines.projectile.FireworkProjectile;
 import com.github.alathra.siegeengines.projectile.PotionProjectile;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -1213,7 +1214,10 @@ public class ClickHandler implements Listener {
 							return;
 						}
 						if (siegeEngine.place(player, entity.getLocation(),entity)) {
-							item.setAmount(item.getAmount() - 1);
+							// If player is in creative mode, don't remove the item from their inventory
+							if (player.getGameMode() != GameMode.CREATIVE) {
+								item.setAmount(item.getAmount() - 1);
+							}
 							player.getInventory().setItemInMainHand(item);
 							player.sendMessage("§eSiege Engine mounted to the "+entity.getType().toString().toLowerCase()+"!");
 						} else {
