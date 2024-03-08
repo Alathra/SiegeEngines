@@ -6,7 +6,7 @@
 
     <groupId>com.github.alathra</groupId>
     <artifactId>SiegeEngines</artifactId>
-    <version>0.8.4</version>
+    <version>0.8.6</version>
     <packaging>jar</packaging>
 
     <properties>

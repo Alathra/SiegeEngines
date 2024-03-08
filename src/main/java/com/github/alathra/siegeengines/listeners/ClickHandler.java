@@ -72,12 +72,13 @@ public class ClickHandler implements Listener {
 		}
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGH)
 	public void onHit(ProjectileHitEvent event) {
 		if ((event.getEntity() instanceof Projectile)) {
 			for (Entity entity : event.getEntity().getNearbyEntities(2, 2, 2)) {
 				if (entity instanceof ArmorStand) {
 					ArmorStand stand = (ArmorStand) entity;
+					if (event.isCancelled()) return;
 					if (isSiegeEngine(stand,false)) {
 						event.setCancelled(true);
 						if (!Config.arrowDamageToggle) continue;
@@ -629,10 +630,12 @@ public class ClickHandler implements Listener {
 		}
 
 	}
-	@EventHandler(priority = EventPriority.LOWEST)
+	@EventHandler(priority = EventPriority.NORMAL)
 	public void onEngineDamage(EntityDamageByEntityEvent event) {
 		if (event.getEntity() instanceof ArmorStand) {
 			ArmorStand stand = (ArmorStand)event.getEntity();
+			if (isSiegeEngine(stand,false)) return;
+			if (event.isCancelled()) return;
 			if (event.getDamager() instanceof Player) {
 				PlayerHandler.releasePlayerSiegeEngine((Player)(event.getDamager()),event.getEntity());
 			}
@@ -660,12 +663,14 @@ public class ClickHandler implements Listener {
 			}
 			final List<UUID> keys = new ArrayList<>(SiegeEngines.siegeEngineEntitiesPerPlayer.keySet());
 			int numPilots = 0;
-			for (UUID player : keys) {
-				if (SiegeEngines.siegeEngineEntitiesPerPlayer.get(player) != null) {
-					if (SiegeEngines.siegeEngineEntitiesPerPlayer.get(player).contains(entity)) {
-						final List<Entity> entities = new ArrayList<>(
-								SiegeEngines.siegeEngineEntitiesPerPlayer.get(player));
-						numPilots++;
+			if (add) {
+				for (UUID player : keys) {
+					if (SiegeEngines.siegeEngineEntitiesPerPlayer.get(player) != null) {
+						if (SiegeEngines.siegeEngineEntitiesPerPlayer.get(player).contains(entity)) {
+							final List<Entity> entities = new ArrayList<>(
+									SiegeEngines.siegeEngineEntitiesPerPlayer.get(player));
+							numPilots++;
+						}
 					}
 				}
 				// Can only have one pilot
