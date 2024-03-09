@@ -22,8 +22,11 @@ Debug: false
 # Must be a valid material. See https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
 ControlItem: CLOCK
 
-# Allows the disabling of Arrow Damage towards Siege Engines.
+# Allows the disabling of Arrow Damage towards SiegeEngines.
 DisableArrowDamage: true
+
+# Determines how close together two or more SiegeEngines can be placed together.
+PlacementDensity: 2.5
 
 # The maxmimum distance the player can be away from the SiegeEngine before total control is terminated
 ControlDistance: 24

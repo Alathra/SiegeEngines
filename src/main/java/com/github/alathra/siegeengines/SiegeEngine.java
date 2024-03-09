@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.HashMap;
 import java.util.UUID;
 
+import com.github.alathra.siegeengines.config.Config;
 import com.github.alathra.siegeengines.projectile.EntityProjectile;
 import com.github.alathra.siegeengines.projectile.FireworkProjectile;
 import com.github.alathra.siegeengines.projectile.SiegeEngineProjectile;
@@ -405,7 +406,7 @@ public class SiegeEngine implements Cloneable {
         ItemMeta meta = item.getItemMeta();
         String id = "";
         Entity entity3 = null;
-        for (Entity enti : l.getWorld().getNearbyEntities(l,2.5d,2.5d,2.5d)) {
+        for (Entity enti : l.getWorld().getNearbyEntities(l,Config.placementDensity,Config.placementDensity,Config.placementDensity)) {
             if (SiegeEngines.activeSiegeEngines.keySet().contains(enti.getUniqueId())) {
                 return false;
             }

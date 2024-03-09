@@ -36,6 +36,7 @@ public class Config {
 	public static Material controlItem = Material.CLOCK;
 	public static int controlDistance = 64;
 	public static int rotateDistance = 32;
+	public static double placementDensity = 2.5d;
 	public static int maxSiegeEnginesControlled = 5;
 	public static boolean autoReload = false;
 	public static boolean arrowDamageToggle = false;
@@ -106,7 +107,8 @@ public class Config {
 
 		controlDistance = config.getInt("ControlDistance");
 		rotateDistance = config.getInt("RotateDistance");
-		arrowDamageToggle = config.getBoolean("DealArrowDamage");
+		placementDensity = config.getDouble("PlacementDensity");
+		arrowDamageToggle = config.getBoolean("DisableArrowDamage");
 		maxSiegeEnginesControlled = config.getInt("MaxSiegeEnginesControlled");
 		doDebug = config.getBoolean("Debug");
 		autoReload = config.getBoolean("AutoReload");

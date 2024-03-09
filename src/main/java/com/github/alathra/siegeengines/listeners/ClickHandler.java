@@ -72,16 +72,18 @@ public class ClickHandler implements Listener {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler(priority = EventPriority.LOW)
 	public void onHit(ProjectileHitEvent event) {
 		if ((event.getEntity() instanceof Projectile)) {
 			for (Entity entity : event.getEntity().getNearbyEntities(2, 2, 2)) {
 				if (entity instanceof ArmorStand) {
 					ArmorStand stand = (ArmorStand) entity;
-					if (event.isCancelled()) return;
 					if (isSiegeEngine(stand,false)) {
 						event.setCancelled(true);
-						if (!Config.arrowDamageToggle) continue;
+						SiegeEnginesLogger.debug("ARROW DAMAGE CANCELLED? : "+Config.arrowDamageToggle);
+						if (Config.arrowDamageToggle) {
+							continue;
+						}
 						SiegeEnginesLogger.debug("HEALTH BEOFRE SHOT : "+stand.getHealth());
 						if (stand.getHealth()-2 > 0) {
 							stand.setHealth(stand.getHealth()-2);
@@ -203,7 +205,55 @@ public class ClickHandler implements Listener {
 						thePlayer.sendMessage("§eSiege Engine placed!");
 					} else {
 						thePlayer.sendMessage(
-								"§eSiege Engine cannot be placed within a 2.5 Block-Radius of other Siege Engines.");
+								"§eSiege Engine cannot be placed within a "+Config.placementDensity+" Block-Radius of other Siege Engines.");
+					}
+					event.setCancelled(true);
+				}
+			}
+		} else if (event.getPlayer().getInventory().getItemInOffHand().getType() == Material.CARVED_PUMPKIN) {
+			ItemStack item = event.getPlayer().getInventory().getItemInOffHand();
+			if (item.getItemMeta() != null && item.getItemMeta().hasCustomModelData()) {
+				int customModel = item.getItemMeta().getCustomModelData();
+				SiegeEngine siegeEngine = null;
+				// Search for match in custom model data value in defined siege engines
+				for (SiegeEngine entry : SiegeEngines.definedSiegeEngines.values()) {
+					if (entry.getCustomModelID() == customModel) {
+						try {
+							siegeEngine = entry.clone();
+						} catch (CloneNotSupportedException e) {
+							break;
+						}
+					} else {
+						// if siege engine was broken during one of its firing stages
+						if (entry.getFiringModelNumbers().contains(customModel)) {
+							try {
+								siegeEngine = entry.clone();
+							} catch (CloneNotSupportedException e) {
+								break;
+							}
+						}
+					}
+				}
+				// If SiegeEngine found, place it
+				if (siegeEngine != null) {
+					if (Config.disabledWorlds.contains(thePlayer.getWorld())) {
+						thePlayer.sendMessage("§eSiege Engines cannot be placed in this World.");
+						event.setCancelled(true);
+					}
+					if (fluidMaterials.contains(replaced)) {
+						thePlayer.sendMessage("§eSiege Engines cannot be placed in Fluid Blocks.");
+						event.setCancelled(true);
+					}
+					if (event.isCancelled()) {
+						return;
+					}
+					if (siegeEngine.place(thePlayer, event.getBlockAgainst().getLocation())) {
+						item.setAmount(item.getAmount() - 1);
+						thePlayer.getInventory().setItemInOffHand(item);
+						thePlayer.sendMessage("§eSiege Engine placed!");
+					} else {
+						thePlayer.sendMessage(
+								"§eSiege Engine cannot be placed within a "+Config.placementDensity+" Block-Radius of other Siege Engines.");
 					}
 					event.setCancelled(true);
 				}
@@ -630,12 +680,17 @@ public class ClickHandler implements Listener {
 		}
 
 	}
-	@EventHandler(priority = EventPriority.NORMAL)
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void onEngineDamage(EntityDamageByEntityEvent event) {
 		if (event.getEntity() instanceof ArmorStand) {
 			ArmorStand stand = (ArmorStand)event.getEntity();
-			if (isSiegeEngine(stand,false)) return;
-			if (event.isCancelled()) return;
+			if (event.getDamager() instanceof Projectile) {
+				SiegeEnginesLogger.debug("ARROW DAMAGE CANCELLED? : "+Config.arrowDamageToggle);
+				if (Config.arrowDamageToggle) {
+					event.setCancelled(true);
+					return;
+				}
+			}
 			if (event.getDamager() instanceof Player) {
 				PlayerHandler.releasePlayerSiegeEngine((Player)(event.getDamager()),event.getEntity());
 			}
@@ -663,14 +718,12 @@ public class ClickHandler implements Listener {
 			}
 			final List<UUID> keys = new ArrayList<>(SiegeEngines.siegeEngineEntitiesPerPlayer.keySet());
 			int numPilots = 0;
-			if (add) {
-				for (UUID player : keys) {
-					if (SiegeEngines.siegeEngineEntitiesPerPlayer.get(player) != null) {
-						if (SiegeEngines.siegeEngineEntitiesPerPlayer.get(player).contains(entity)) {
-							final List<Entity> entities = new ArrayList<>(
-									SiegeEngines.siegeEngineEntitiesPerPlayer.get(player));
-							numPilots++;
-						}
+			for (UUID player : keys) {
+				if (SiegeEngines.siegeEngineEntitiesPerPlayer.get(player) != null) {
+					if (SiegeEngines.siegeEngineEntitiesPerPlayer.get(player).contains(entity)) {
+						final List<Entity> entities = new ArrayList<>(
+								SiegeEngines.siegeEngineEntitiesPerPlayer.get(player));
+						numPilots++;
 					}
 				}
 				// Can only have one pilot
@@ -1218,7 +1271,7 @@ public class ClickHandler implements Listener {
 							player.sendMessage("§eSiege Engine mounted to the "+entity.getType().toString().toLowerCase()+"!");
 						} else {
 							player.sendMessage(
-									"§eSiege Engine cannot be placed within a 2.5 Block-Radius of other Siege Engines.");
+									"§eSiege Engine cannot be placed within a "+Config.placementDensity+" Block-Radius of other Siege Engines.");
 						}
 						event.setCancelled(true);
 					}

@@ -44,11 +44,6 @@ public class RotationHandler implements Listener {
                             PlayerHandler.siegeEngineEntityDied(ent);
                             continue;
                         }
-                        if (ClickHandler.fluidMaterials.contains(living.getLocation().getBlock().getType())) {
-                            living.setHealth(0.0d);
-                            PlayerHandler.siegeEngineEntityDied(ent);
-                            continue;
-                        }
                         if (!(ent.getLocation().getWorld().equals(player.getLocation().getWorld()))) {
                             PlayerHandler.releasePlayerSiegeEngine(player, ent);
                             continue;
