@@ -16,7 +16,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.github.alathra.siegeengines.SiegeEngines;
 import com.github.alathra.siegeengines.SiegeEnginesLogger;
-import com.github.alathra.siegeengines.SiegeEnginesUtil;
+import com.github.alathra.siegeengines.Util.SiegeEnginesUtil;
 import com.github.alathra.siegeengines.crafting.CraftingRecipes;
 import com.github.alathra.siegeengines.projectile.EntityProjectile;
 import com.github.alathra.siegeengines.projectile.ExplosiveProjectile;
