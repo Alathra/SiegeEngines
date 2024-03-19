@@ -33,7 +33,6 @@ public class RotationHandler implements Listener {
             ItemStack itemInHand = player.getInventory().getItemInMainHand();
             if (itemInHand != null) {
                 final List<Entity> list = new ArrayList<>(SiegeEngines.siegeEngineEntitiesPerPlayer.get(player.getUniqueId()));
-                final List<Entity> concurrentFix = new ArrayList<>(list);
                 for (Entity ent : list) {
                     if (ent != null) {
                         SiegeEngine equipment = SiegeEngines.activeSiegeEngines.get(ent.getUniqueId());
@@ -109,11 +108,5 @@ public class RotationHandler implements Listener {
                 }
             }
         }
-    }
-
-    public Vector getDirectionBetweenLocations(Location Start, Location End) {
-        Vector from = Start.toVector();
-        Vector to = End.toVector();
-        return to.subtract(from);
     }
 }
