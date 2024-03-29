@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
@@ -21,12 +22,15 @@ public class SiegeEngineDeathListener implements Listener {
 	
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onSiegeEngineDeathEvent(EntityDeathEvent event) {
+		
 		boolean removeStands = false;
 		List<ItemStack> items = event.getDrops();
 		if (event.getEntity() instanceof ArmorStand) {
-			if (event.getEntity().getPersistentDataContainer().has(SiegeEngines.key, PersistentDataType.STRING)) {
+			// Namespace key
+			NamespacedKey key = new NamespacedKey(SiegeEngines.getInstance(), "siege_engines");
+			if (event.getEntity().getPersistentDataContainer().has(key, PersistentDataType.STRING)) {
 				Entity base = Bukkit.getEntity(UUID.fromString(
-						event.getEntity().getPersistentDataContainer().get(SiegeEngines.key, PersistentDataType.STRING)));
+						event.getEntity().getPersistentDataContainer().get(key, PersistentDataType.STRING)));
 				base.remove();
 			}
 			if (SiegeEngines.activeSiegeEngines.containsKey(event.getEntity().getUniqueId())) {

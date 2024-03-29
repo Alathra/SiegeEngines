@@ -37,8 +37,6 @@ public class SiegeEngines extends JavaPlugin {
 	public static HashMap<UUID, SiegeEngine> activeSiegeEngines = new HashMap<UUID, SiegeEngine>();
 	// Player UUID, SiegeEngine entity
 	public static HashMap<UUID, List<Entity>> siegeEngineEntitiesPerPlayer = new HashMap<UUID, List<Entity>>();
-	// Namespace key
-	public static NamespacedKey key = new NamespacedKey(SiegeEngines.getInstance(), "siege_engines");
 
 	public static SiegeEngines getInstance() {
 		return instance;
