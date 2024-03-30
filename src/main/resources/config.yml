@@ -29,10 +29,10 @@ DisableArrowDamage: true
 PlacementDensity: 2.5
 
 # The maxmimum distance the player can be away from the SiegeEngine before total control is terminated
-ControlDistance: 24
+ControlDistance: 10
 
 # The maximum distance the player can be away from the SiegeEngine before rotation control is terminated
-RotateDistance: 16
+RotateDistance: 10
 
 # The maximum siege engines a player can control at the same time
 MaxSiegeEnginesControlled: 1

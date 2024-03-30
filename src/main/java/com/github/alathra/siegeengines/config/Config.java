@@ -16,7 +16,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.github.alathra.siegeengines.SiegeEngines;
 import com.github.alathra.siegeengines.SiegeEnginesLogger;
-import com.github.alathra.siegeengines.SiegeEnginesUtil;
+import com.github.alathra.siegeengines.Util.SiegeEnginesUtil;
 import com.github.alathra.siegeengines.crafting.CraftingRecipes;
 import com.github.alathra.siegeengines.projectile.EntityProjectile;
 import com.github.alathra.siegeengines.projectile.ExplosiveProjectile;
@@ -34,9 +34,9 @@ public class Config {
 	public static int configVersion = 1;
 
 	public static Material controlItem = Material.CLOCK;
-	public static int controlDistance = 64;
-	public static int rotateDistance = 32;
 	public static double placementDensity = 2.5d;
+	public static int controlDistance = 10;
+	public static int rotateDistance = 10;
 	public static int maxSiegeEnginesControlled = 5;
 	public static boolean autoReload = false;
 	public static boolean arrowDamageToggle = false;
