@@ -183,6 +183,8 @@ SiegeEngines:
       - StoneShot
       - RepeatingShot
       - BreachShot
+      - FireShot
+      - ScatterShot
       - DragonsBreath
       - FireworkShot
     ItemName: "&e&lBreach Cannon"
