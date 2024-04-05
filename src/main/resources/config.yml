@@ -43,6 +43,7 @@ CraftingRecipes: true
 # The auto-reload feature by shift-clicking
 AutoReload: false
 
+# Worlds where all Siege Engine actions will be disabled including placing and firing
 DisabledWorlds:
   - world_nether
   - World-o_nether

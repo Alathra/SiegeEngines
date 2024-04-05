@@ -27,20 +27,21 @@ public class SiegeEngineInteractListener implements Listener {
 			return;
 		}
 		if (entity.getType() == EntityType.ARMOR_STAND) {
-			if ((itemInHand.getType() == Material.AIR || itemInHand == null))  {
+			if ((itemInHand.getType() == Material.AIR || itemInHand == null)) {
 				if (player.isSneaking()) {
 					if (!(SiegeEngines.activeSiegeEngines.containsKey(entity.getUniqueId()))) {
 						return;
 					}
-					PlayerHandler.siegeEngineEntityDied(entity,true);
+					PlayerHandler.siegeEngineEntityDied(entity, true);
 					if (SiegeEnginesUtil.isSiegeEngine(entity, false)) {
-						PlayerHandler.releasePlayerSiegeEngine(player,entity);
+						PlayerHandler.releasePlayerSiegeEngine(player, entity);
 					}
 					return;
 				}
 			}
 			if (!(player.isSneaking()) && itemInHand.getType() == Config.controlItem) {
-				if (SiegeEnginesUtil.isSiegeEngine(entity, true)) SiegeEnginesUtil.takeControl(player, entity);
+				if (SiegeEnginesUtil.isSiegeEngine(entity, true))
+					SiegeEnginesUtil.takeControl(player, entity);
 			}
 			if (SiegeEngines.activeSiegeEngines.containsKey(entity.getUniqueId())) {
 				SiegeEngine siegeEngine = SiegeEngines.activeSiegeEngines.get(entity.getUniqueId());
@@ -48,15 +49,14 @@ public class SiegeEngineInteractListener implements Listener {
 				ItemStack stack = siegeEngine.getFuelItem();
 				if (itemInHand.getType() == stack.getType()) {
 					if (siegeEngine.canLoadFuel()) {
-						if (itemInHand.isSimilar(stack)) {
-							siegeEngine.getAmmoHolder().setLoadedFuel(siegeEngine.getAmmoHolder().getLoadedFuel() + 1);
-							stack.setAmount(1);
-							player.getInventory().removeItem(stack);
-							SiegeEnginesUtil.sendSiegeEngineHelpMSG(player, siegeEngine);
-							// If fully loaded && requires change in animation when loaded (i.e. ballista)
-							if (!siegeEngine.canLoadFuel() && siegeEngine.isSetModelNumberWhenFullyLoaded()) {
-								SiegeEnginesUtil.UpdateEntityIdModel(siegeEngine.getEntity(), siegeEngine.getPreLoadModelNumber(), siegeEngine.getWorldName());
-							}
+						siegeEngine.getAmmoHolder().setLoadedFuel(siegeEngine.getAmmoHolder().getLoadedFuel() + 1);
+						stack.setAmount(1);
+						player.getInventory().removeItem(stack);
+						SiegeEnginesUtil.sendSiegeEngineHelpMSG(player, siegeEngine);
+						// If fully loaded && requires change in animation when loaded (i.e. ballista)
+						if (!siegeEngine.canLoadFuel() && siegeEngine.isSetModelNumberWhenFullyLoaded()) {
+							SiegeEnginesUtil.UpdateEntityIdModel(siegeEngine.getEntity(),
+									siegeEngine.getPreLoadModelNumber(), siegeEngine.getWorldName());
 						}
 					}
 				}
@@ -64,23 +64,27 @@ public class SiegeEngineInteractListener implements Listener {
 					player.sendMessage("§eAdded ammunition to this Siege Engine.");
 					// If requires change in animation when loaded with a projectile (i.e. ballista)
 					if (siegeEngine.isSetModelNumberWhenFullyLoaded()) {
-						SiegeEnginesUtil.UpdateEntityIdModel(siegeEngine.getEntity(), siegeEngine.getPreFireModelNumber(), siegeEngine.getWorldName());
+						SiegeEnginesUtil.UpdateEntityIdModel(siegeEngine.getEntity(),
+								siegeEngine.getPreFireModelNumber(), siegeEngine.getWorldName());
 					}
 					return;
 				}
 				if (itemInHand == null || itemInHand.getType() == Material.AIR
 						|| itemInHand.getType() == Config.controlItem) {
-					if (!SiegeEnginesUtil.pulledPropellantFromContainer(siegeEngine.getEntity().getLocation(), siegeEngine)) {
+					if (!SiegeEnginesUtil.pulledPropellantFromContainer(siegeEngine.getEntity().getLocation(),
+							siegeEngine)) {
 						SiegeEnginesUtil.sendSiegeEngineHelpMSG(player, siegeEngine);
 						return;
 					}
 					if (!SiegeEnginesUtil.pulledPropellantFromContainer(
-							siegeEngine.getEntity().getLocation().getBlock().getRelative(0, -1, 0).getLocation(), siegeEngine)) {
+							siegeEngine.getEntity().getLocation().getBlock().getRelative(0, -1, 0).getLocation(),
+							siegeEngine)) {
 						SiegeEnginesUtil.sendSiegeEngineHelpMSG(player, siegeEngine);
 						return;
 					}
 					if (!SiegeEnginesUtil.pulledPropellantFromContainer(
-							siegeEngine.getEntity().getLocation().getBlock().getRelative(0, 1, 0).getLocation(), siegeEngine)) {
+							siegeEngine.getEntity().getLocation().getBlock().getRelative(0, 1, 0).getLocation(),
+							siegeEngine)) {
 						SiegeEnginesUtil.sendSiegeEngineHelpMSG(player, siegeEngine);
 						return;
 					}
@@ -89,19 +93,22 @@ public class SiegeEngineInteractListener implements Listener {
 						return;
 					}
 					if (SiegeEnginesUtil.pulledAmmoFromContainer(
-							siegeEngine.getEntity().getLocation().getBlock().getRelative(0, -1, 0).getLocation(), siegeEngine)) {
+							siegeEngine.getEntity().getLocation().getBlock().getRelative(0, -1, 0).getLocation(),
+							siegeEngine)) {
 						player.sendMessage("§eAdded ammunition to this Siege Engine.");
 						return;
 					}
 					if (SiegeEnginesUtil.pulledAmmoFromContainer(
-							siegeEngine.getEntity().getLocation().getBlock().getRelative(0, 1, 0).getLocation(), siegeEngine)) {
+							siegeEngine.getEntity().getLocation().getBlock().getRelative(0, 1, 0).getLocation(),
+							siegeEngine)) {
 						player.sendMessage("§eAdded ammunition to this Siege Engine.");
 						return;
 					}
 				}
 			}
 		}
-		if (entity.getType() == EntityType.RAVAGER || entity.getType() == EntityType.HORSE || entity.getType() == EntityType.DONKEY) {
+		if (entity.getType() == EntityType.RAVAGER || entity.getType() == EntityType.HORSE
+				|| entity.getType() == EntityType.DONKEY) {
 			if (player.getInventory().getItemInMainHand().getType() == Material.CARVED_PUMPKIN) {
 				final ItemStack item = player.getInventory().getItemInMainHand();
 				if (item.getItemMeta() != null && item.getItemMeta().hasCustomModelData()) {
@@ -144,16 +151,17 @@ public class SiegeEngineInteractListener implements Listener {
 						if (event.isCancelled()) {
 							return;
 						}
-						if (siegeEngine.place(player, entity.getLocation(),entity)) {
+						if (siegeEngine.place(player, entity.getLocation(), entity)) {
 							// If player is in creative mode, don't remove the item from their inventory
 							if (player.getGameMode() != GameMode.CREATIVE) {
 								item.setAmount(item.getAmount() - 1);
 							}
 							player.getInventory().setItemInMainHand(item);
-							player.sendMessage("§eSiege Engine mounted to the "+entity.getType().toString().toLowerCase()+"!");
-						} else {
 							player.sendMessage(
-									"§eSiege Engine cannot be placed within a "+Config.placementDensity+" Block-Radius of other Siege Engines.");
+									"§eSiege Engine mounted to the " + entity.getType().toString().toLowerCase() + "!");
+						} else {
+							player.sendMessage("§eSiege Engine cannot be placed within a " + Config.placementDensity
+									+ " Block-Radius of other Siege Engines.");
 						}
 						event.setCancelled(true);
 					}
