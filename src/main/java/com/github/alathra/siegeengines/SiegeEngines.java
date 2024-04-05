@@ -9,9 +9,9 @@ import java.util.UUID;
 
 import com.github.alathra.siegeengines.command.CommandHandler;
 import com.github.alathra.siegeengines.config.Config;
+import com.github.alathra.siegeengines.data.SiegeEnginesData;
 
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
@@ -19,9 +19,13 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.metadata.MetadataValueAdapter;
 
-import com.github.alathra.siegeengines.listeners.ClickHandler;
-import com.github.alathra.siegeengines.listeners.RotationHandler;
+import com.github.alathra.siegeengines.listeners.SiegeEngineRotationListener;
 import com.github.alathra.siegeengines.listeners.PlayerHandler;
+import com.github.alathra.siegeengines.listeners.SiegeEngineDamagedListener;
+import com.github.alathra.siegeengines.listeners.SiegeEngineDeathListener;
+import com.github.alathra.siegeengines.listeners.SiegeEngineFireListener;
+import com.github.alathra.siegeengines.listeners.SiegeEngineInteractListener;
+import com.github.alathra.siegeengines.listeners.SiegeEnginePlaceListener;
 
 public class SiegeEngines extends JavaPlugin {
 
@@ -56,11 +60,15 @@ public class SiegeEngines extends JavaPlugin {
 		activeSiegeEngines.clear();
 		siegeEngineEntitiesPerPlayer.clear();
 		definedSiegeEngines.clear();
-		getServer().getPluginManager().registerEvents(new RotationHandler(), this);
-		getServer().getPluginManager().registerEvents(new ClickHandler(), this);
 		getServer().getPluginManager().registerEvents(new PlayerHandler(), this);
-		ClickHandler.items.clear();
-		ClickHandler.items.add(new ItemStack(Material.ARMOR_STAND));
+		getServer().getPluginManager().registerEvents(new SiegeEngineDamagedListener(), this);
+		getServer().getPluginManager().registerEvents(new SiegeEngineDeathListener(), this);
+		getServer().getPluginManager().registerEvents(new SiegeEngineFireListener(), this);
+		getServer().getPluginManager().registerEvents(new SiegeEngineInteractListener(), this);
+		getServer().getPluginManager().registerEvents(new SiegeEnginePlaceListener(), this);
+		getServer().getPluginManager().registerEvents(new SiegeEngineRotationListener(), this);
+		SiegeEnginesData.items.clear();
+		SiegeEnginesData.items.add(new ItemStack(Material.ARMOR_STAND));
 		addDefaults();
 		for (SiegeEngine i : definedSiegeEngines.values()) {
 			System.out.println("§eEnabled Weapon : " + i.getEngineName());

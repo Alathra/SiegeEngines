@@ -18,6 +18,7 @@ import com.github.alathra.siegeengines.SiegeEngines;
 import com.github.alathra.siegeengines.SiegeEnginesLogger;
 import com.github.alathra.siegeengines.Util.SiegeEnginesUtil;
 import com.github.alathra.siegeengines.crafting.CraftingRecipes;
+import com.github.alathra.siegeengines.data.SiegeEnginesData;
 import com.github.alathra.siegeengines.projectile.EntityProjectile;
 import com.github.alathra.siegeengines.projectile.ExplosiveProjectile;
 import com.github.alathra.siegeengines.projectile.FireworkProjectile;
@@ -341,6 +342,9 @@ public class Config {
 		SiegeEngines.getInstance().reloadConfig();
 		SiegeEngines.getInstance().saveDefaultConfig();
 		initConfigVals();
+		
+		// reinstantiate data class
+		SiegeEnginesData.init();
 		
 		// load crafting recipes if enabled in config
 		if (Config.craftingRecipes) {

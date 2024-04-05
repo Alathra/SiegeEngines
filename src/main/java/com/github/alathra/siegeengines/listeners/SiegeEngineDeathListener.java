@@ -5,18 +5,20 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 
 import com.github.alathra.siegeengines.SiegeEngine;
 import com.github.alathra.siegeengines.SiegeEngines;
+import com.github.alathra.siegeengines.Util.SiegeEnginesUtil;
+import com.github.alathra.siegeengines.data.SiegeEnginesData;
 
 public class SiegeEngineDeathListener implements Listener {
 	
@@ -26,11 +28,9 @@ public class SiegeEngineDeathListener implements Listener {
 		boolean removeStands = false;
 		List<ItemStack> items = event.getDrops();
 		if (event.getEntity() instanceof ArmorStand) {
-			// Namespace key
-			NamespacedKey key = new NamespacedKey(SiegeEngines.getInstance(), "siege_engines");
-			if (event.getEntity().getPersistentDataContainer().has(key, PersistentDataType.STRING)) {
+			if (event.getEntity().getPersistentDataContainer().has(SiegeEnginesData.key, PersistentDataType.STRING)) {
 				Entity base = Bukkit.getEntity(UUID.fromString(
-						event.getEntity().getPersistentDataContainer().get(key, PersistentDataType.STRING)));
+						event.getEntity().getPersistentDataContainer().get(SiegeEnginesData.key, PersistentDataType.STRING)));
 				base.remove();
 			}
 			if (SiegeEngines.activeSiegeEngines.containsKey(event.getEntity().getUniqueId())) {
@@ -62,6 +62,20 @@ public class SiegeEngineDeathListener implements Listener {
 						i.setAmount(0);
 						return;
 					}
+				}
+			}
+		}
+	}
+	
+	@EventHandler
+	public void onSiegeEngineExplode(EntityExplodeEvent e) {
+		
+		for (Entity entity : e.getEntity().getNearbyEntities(e.getYield() + 1, e.getYield() + 1, e.getYield() + 1)) {
+			if (entity instanceof ArmorStand) {
+				if (SiegeEnginesUtil.isSiegeEngine(entity, false)) {
+					ArmorStand stand = (ArmorStand) entity;
+					stand.eject();
+					stand.remove();
 				}
 			}
 		}

@@ -2,7 +2,7 @@ package com.github.alathra.siegeengines.projectile;
 
 import com.github.alathra.siegeengines.SiegeEngines;
 import com.github.alathra.siegeengines.Util.SiegeEnginesUtil;
-import com.github.alathra.siegeengines.listeners.ClickHandler;
+import com.github.alathra.siegeengines.data.SiegeEnginesData;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -59,7 +59,7 @@ public class ExplosiveProjectile extends SiegeEngineProjectile {
         org.bukkit.entity.Projectile ball = (org.bukkit.entity.Projectile) tnt;
         if (player instanceof org.bukkit.projectiles.ProjectileSource)
             ball.setShooter((org.bukkit.projectiles.ProjectileSource) player);
-        ClickHandler.projectiles.put(tnt.getUniqueId(), this);
+        SiegeEnginesData.projectiles.put(tnt.getUniqueId(), this);
 
         if (inaccuracy != 0f) {
             tnt.setVelocity(loc.getDirection().multiply(velocity).add(Randomise())
