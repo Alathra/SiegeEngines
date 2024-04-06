@@ -5,7 +5,6 @@ import com.github.alathra.siegeengines.Util.SiegeEnginesUtil;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.World;
@@ -14,13 +13,11 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ThrownPotion;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 public class PotionProjectile extends SiegeEngineProjectile {
 	
-    public int entityCount = 3;
+    public int projectileCount = 3;
     public Boolean delayedFire = false;
     public int delayTime = 6;
     public float inaccuracy = 0.1f;
@@ -36,7 +33,7 @@ public class PotionProjectile extends SiegeEngineProjectile {
     public void Shoot(Entity player, Entity entity, Location loc, Float velocity) {
         //TODO Auto-generated method stub
         int baseDelay = 0;
-        for (int i = 0; i < entityCount; i++) {
+        for (int i = 0; i < projectileCount; i++) {
             if (delayedFire) {
                 baseDelay += delayTime;
                 Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(SiegeEngines.getInstance(), () -> {

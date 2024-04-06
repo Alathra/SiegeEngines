@@ -97,11 +97,13 @@ public class SiegeEnginesCommand {
         definedSiegeEngines.clear();
         addDefaults();
         for (SiegeEngine i : definedSiegeEngines.values()) {
-            sender.sendMessage(ColorParser.of("<yellow>Enabled SiegeEngine : %s".formatted(i.getEngineName())).build());
-            sender.sendMessage(ColorParser.of("<yellow>SiegeEngine Propellant/\"Fuel\" ItemStacks : %s".formatted(i.getFuelItem())).build());
-            for (ItemStack proj : i.getProjectiles().keySet()) {
-                sender.sendMessage(ColorParser.of("<yellow>SiegeEngine Projectile ItemStacks : %s".formatted(proj)).build());
-            }
+        	if (Config.doDebug) {
+        		sender.sendMessage(ColorParser.of("<yellow>Enabled SiegeEngine : %s".formatted(i.getEngineName())).build());
+                sender.sendMessage(ColorParser.of("<yellow>SiegeEngine Propellant/\"Fuel\" ItemStacks : %s".formatted(i.getFuelItem())).build());
+                for (ItemStack proj : i.getProjectiles().keySet()) {
+                    sender.sendMessage(ColorParser.of("<yellow>SiegeEngine Projectile ItemStacks : %s".formatted(proj)).build());
+                }
+        	}
         }
         sender.sendMessage(ColorParser.of("<yellow>SiegeEngine configs reloaded").build());
     }

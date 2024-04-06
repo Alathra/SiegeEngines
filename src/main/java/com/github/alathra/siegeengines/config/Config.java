@@ -284,7 +284,7 @@ public class Config {
 							Material.getMaterial(config.getString("Projectiles." + projectileName + ".AmmoItem"))));
 					entityProjectile.inaccuracy = (float) config
 							.getDouble("Projectiles." + projectileName + ".Inaccuracy");
-					entityProjectile.entityCount = config.getInt("Projectiles." + projectileName + ".EntityCount");
+					entityProjectile.projectileCount = config.getInt("Projectiles." + projectileName + ".EntityCount");
 					entityProjectile.entityType = EntityType
 							.valueOf(config.getString("Projectiles." + projectileName + ".EntityType"));
 					entityProjectile.soundType = Sound
@@ -301,7 +301,7 @@ public class Config {
 					FireworkProjectile fireworkProjectile = new FireworkProjectile(SiegeEnginesUtil.DEFAULT_ROCKET);
 					fireworkProjectile.inaccuracy = (float) config
 							.getDouble("Projectiles." + projectileName + ".Inaccuracy");
-					fireworkProjectile.entityCount = config.getInt("Projectiles." + projectileName + ".EntityCount");
+					fireworkProjectile.projectileCount = config.getInt("Projectiles." + projectileName + ".EntityCount");
 					fireworkProjectile.delayTime = config.getInt("Projectiles." + projectileName + ".EntityCount");
 					if (fireworkProjectile.delayTime <= 0) {
 						fireworkProjectile.delayedFire = false;
@@ -317,7 +317,7 @@ public class Config {
 							Material.getMaterial(config.getString("Projectiles." + projectileName + ".AmmoItem"))));
 					potionProjectile.inaccuracy = (float) config
 							.getDouble("Projectiles." + projectileName + ".Inaccuracy");
-					potionProjectile.entityCount = config.getInt("Projectiles." + projectileName + ".EntityCount");
+					potionProjectile.projectileCount = config.getInt("Projectiles." + projectileName + ".EntityCount");
 					potionProjectile.delayTime = config.getInt("Projectiles." + projectileName + ".EntityCount");
 					if (potionProjectile.delayTime <= 0) {
 						potionProjectile.delayedFire = false;

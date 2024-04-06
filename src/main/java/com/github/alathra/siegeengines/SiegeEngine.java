@@ -135,7 +135,7 @@ public class SiegeEngine implements Cloneable {
         nextShotTime = System.currentTimeMillis();
         // PLACEHOLDER. SHOULD BE WE-WRITTEN
         EntityProjectile defaultProj = new EntityProjectile(new ItemStack(Material.GRASS_BLOCK));
-        defaultProj.entityCount = 2;
+        defaultProj.projectileCount = 2;
         defaultProj.entityType = EntityType.SNOWBALL;
         defaultProj.particleType = Particle.WHITE_ASH;
         defaultProj.soundType = Sound.ENTITY_BLAZE_SHOOT;

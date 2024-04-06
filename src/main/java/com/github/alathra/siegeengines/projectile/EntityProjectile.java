@@ -17,7 +17,7 @@ import org.bukkit.util.Vector;
 public class EntityProjectile extends SiegeEngineProjectile {
 	
 	// Defaults 
-	public int entityCount = 20;
+	public int projectileCount = 20;
     public int arrowOnlyDamage = 6;
     public Boolean delayedFire = false;
     public int delayTime = 6;
@@ -40,7 +40,7 @@ public class EntityProjectile extends SiegeEngineProjectile {
     public void Shoot(Entity player, Entity entity, Location FireLocation, Float velocity) {
         playSound = true;
         int baseDelay = 0;
-        for (int i = 0; i < entityCount; i++) {
+        for (int i = 0; i < projectileCount; i++) {
             if (delayedFire) {
                 baseDelay += delayTime;
                 Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(SiegeEngines.getInstance(), () -> {

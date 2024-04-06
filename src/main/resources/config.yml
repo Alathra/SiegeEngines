@@ -49,8 +49,23 @@ DisabledWorlds:
   - World-o_nether
 
 # ======================================
-# |       SiegeEngine Options          |
+# |            Projectiles             |
 # ======================================
+
+# You can define as many projectiles as you want for use in Siege Engines
+
+# === Notes on projectile config options ===
+# ProjectileType: ENTITY, EXPLOSIVE, FIRWORK or POTION
+# ExplodePower: Only used in "EXPLOSIVE" projectile types, defines explosion power
+# Inaccuracy: A factor of ramdomness (spread) applied to the aimed vector
+# ProjectileCount: How many individual projectile entities will be fired
+# VelocityFactor: How fast the projectile(s) will move through the air
+# AmmoType: The item that must be loaded into the Siege Engine to produce the projectile
+# https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
+# FireSound: What sound the Siege Engine makes when the projectile is fired
+# https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html
+# ArrowDamageFactor: A factor of arrow damage, only applies to ENTITY projectiles of type ARROW
+
 
 Projectiles:
   StoneShot:
@@ -80,7 +95,7 @@ Projectiles:
   ScatterShot:
     ProjectileType: ENTITY
     Inaccuracy: 0.365
-    EntityCount: 24
+    ProjectileCount: 24
     VelocityFactor: 1.0
     EntityType: ARROW
     ArrowDamageFactor: 1.0
@@ -89,7 +104,7 @@ Projectiles:
   BallistaBoltShot:
     ProjectileType: ENTITY
     Inaccuracy: 0.0125
-    EntityCount: 1
+    ProjectileCount: 1
     VelocityFactor: 0.5
     EntityType: ARROW
     ArrowDamageFactor: 1.0
@@ -98,7 +113,7 @@ Projectiles:
   DragonsBreath:
     ProjectileType: ENTITY
     Inaccuracy: 0.65
-    EntityCount: 3
+    ProjectileCount: 3
     VelocityFactor: 1.125
     EntityType: DRAGON_FIREBALL
     AmmoItem: DRAGON_BREATH
@@ -106,7 +121,7 @@ Projectiles:
   FireShot:
     ProjectileType: ENTITY
     Inaccuracy: 0.475
-    EntityCount: 8
+    ProjectileCount: 8
     VelocityFactor: 1.0
     EntityType: SMALL_FIREBALL
     AmmoItem: MAGMA_BLOCK
@@ -114,17 +129,20 @@ Projectiles:
   FireworkShot:
     ProjectileType: FIREWORK
     Inaccuracy: 0.125
-    EntityCount: 1
+    ProjectileCount: 1
     VelocityFactor: 0.5
     Delay: 5
   SplashPotionProjectile:
     ProjectileType: POTION
     Inaccuracy: 0.0125
-    EntityCount: 1
+    ProjectileCount: 1
     VelocityFactor: 0.5
-    ArrowDamageFactor: 1.0
     AmmoItem: SPLASH_POTION
     FireSound: ITEM_CROSSBOW_SHOOT
+
+# ======================================
+# |            Siege Engines           |
+# ======================================
 
 SiegeEngines:
   Trebuchet:
