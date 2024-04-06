@@ -26,6 +26,7 @@ A plugin which allows you to create cannons, trebuchets or ballistas using custo
 ## Installation
 
 SiegeEngines is a standalone plugin and does not rely on any other plugins to function.
+The releases also include "SiegeEngines-Resourcepack.zip" which is required to see the models.
 
 ---
 
