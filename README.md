@@ -11,7 +11,7 @@
 
 ## Description
 
-A plugin which allows you to create cannons, trebuchets or turrets using custom models that shoot configurable projectiles. 
+A plugin which allows you to create cannons, trebuchets or ballistas using custom models that shoot configurable projectiles. 
 
 ---
 
