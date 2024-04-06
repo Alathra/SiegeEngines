@@ -144,6 +144,17 @@ Projectiles:
 # |            Siege Engines           |
 # ======================================
 
+# At this time you cannot add new Siege Engines via the config
+# You can edit the existing Siege Engines with the various options below
+
+# Health: How many hearts of health the Siege Engine has before it is destroyed
+# Shot Amount: How many projectiles the Siege Engine will fire
+# VelocityPerFuel: How much each fuel item increases the velocity of fired projectiles
+# MaxFuel: The maximum amount of fuel that can be loaded into each Siege Engine
+# ItemName: The default item name for the Siege Engine item
+# Lore: The default lore for the Siege Engine item
+# CanMount (EXPERIMENTAL): Whether or not the Siege Engine can be placed on a mountable mob
+
 SiegeEngines:
   Trebuchet:
     Health: 8
