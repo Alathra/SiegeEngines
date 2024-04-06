@@ -19,6 +19,7 @@ A plugin which allows you to create cannons, trebuchets or turrets using custom 
 
 * **Releases** - [Link](https://github.com/Alathra/SiegeEngines/releases)
 * **Wiki** - [Link](https://github.com/Alathra/SiegeEngines/wiki)
+* **Youtube Showcase** - [Link](https://www.youtube.com/watch?v=BusLXEYwX28)
 
 ---
 
@@ -42,4 +43,4 @@ Please follow our instructions [here](https://github.com/Alathra/SiegeEngines/bl
 
 ## Credits
 
-* **CrunchSiegeEquipment** - *SiegeEngines is a hard fork of CrunchSiegeEquipment. Original author [TheCrunchy](https://github.com/TheCrunchy).* - [GitHub](https://github.com/TheCrunchy/CrunchSiegeEquipment).
+* **CrunchSiegeEquipment** - *SiegeEngines is a hard fork of CrunchSiegeEquipment, developed by ShermansWorld and C_Corp2002. Original author [TheCrunchy](https://github.com/TheCrunchy).* - [GitHub](https://github.com/TheCrunchy/CrunchSiegeEquipment).
