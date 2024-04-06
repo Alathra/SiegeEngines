@@ -70,11 +70,13 @@ public class SiegeEngines extends JavaPlugin {
 		SiegeEnginesData.items.clear();
 		SiegeEnginesData.items.add(new ItemStack(Material.ARMOR_STAND));
 		addDefaults();
-		for (SiegeEngine i : definedSiegeEngines.values()) {
-			System.out.println("§eEnabled Weapon : " + i.getEngineName());
-			System.out.println("§eWeapon Propellant/\"Fuel\" ItemStacks : " + i.getFuelItem());
-			for (ItemStack proj : i.getProjectiles().keySet()) {
-				System.out.println("§eWeapon Projectile ItemStacks : " + proj);
+		if (Config.doDebug) {
+			for (SiegeEngine i : definedSiegeEngines.values()) {
+				SiegeEnginesLogger.info("Enabled Weapon : " + i.getEngineName());
+				SiegeEnginesLogger.info("Weapon Propellant/\"Fuel\" ItemStacks : " + i.getFuelItem());
+				for (ItemStack proj : i.getProjectiles().keySet()) {
+					SiegeEnginesLogger.info("Weapon Projectile ItemStacks : " + proj);
+				}
 			}
 		}
 		commandHandler.onEnable();
@@ -90,23 +92,23 @@ public class SiegeEngines extends JavaPlugin {
 				ItemMeta meta = item.getItemMeta();
 				siegeEngine.setAmmoHolder(new SiegeEngineAmmoHolder());
 				meta.setCustomModelData(siegeEngine.getReadyModelNumber());
-				switch(siegeEngine.getType()) {
-					case TREBUCHET:
-						meta.setDisplayName(Config.trebuchetItemName);
-						meta.setLore(Config.trebuchetItemLore);
-						break;
-					case BALLISTA:
-						meta.setDisplayName(Config.ballistaItemName);
-						meta.setLore(Config.ballistaItemLore);
-						break;
-					case SWIVEL_CANNON:
-						meta.setDisplayName(Config.swivelCannonItemName);
-						meta.setLore(Config.swivelCannonItemLore);
-						break;
-					case BREACH_CANNON:
-						meta.setDisplayName(Config.breachCannonItemName);
-						meta.setLore(Config.ballistaItemLore);
-						break;
+				switch (siegeEngine.getType()) {
+				case TREBUCHET:
+					meta.setDisplayName(Config.trebuchetItemName);
+					meta.setLore(Config.trebuchetItemLore);
+					break;
+				case BALLISTA:
+					meta.setDisplayName(Config.ballistaItemName);
+					meta.setLore(Config.ballistaItemLore);
+					break;
+				case SWIVEL_CANNON:
+					meta.setDisplayName(Config.swivelCannonItemName);
+					meta.setLore(Config.swivelCannonItemLore);
+					break;
+				case BREACH_CANNON:
+					meta.setDisplayName(Config.breachCannonItemName);
+					meta.setLore(Config.ballistaItemLore);
+					break;
 				}
 				item.setItemMeta(meta);
 

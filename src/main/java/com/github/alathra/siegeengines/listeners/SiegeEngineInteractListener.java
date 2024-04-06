@@ -1,6 +1,8 @@
 package com.github.alathra.siegeengines.listeners;
 
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -8,7 +10,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
 import com.github.alathra.siegeengines.SiegeEngine;
@@ -18,6 +22,7 @@ import com.github.alathra.siegeengines.config.Config;
 import com.github.alathra.siegeengines.data.SiegeEnginesData;
 
 public class SiegeEngineInteractListener implements Listener {
+	
 	@EventHandler(priority = EventPriority.LOW)
 	public void onSiegeEngineClick(PlayerInteractAtEntityEvent event) {
 		Player player = event.getPlayer();
@@ -169,5 +174,56 @@ public class SiegeEngineInteractListener implements Listener {
 			}
 			return;
 		}
+	}
+	
+	@EventHandler(priority = EventPriority.LOW)
+	public void onSiegeEngineNearClick(PlayerInteractEvent event) {
+		
+		Player player = event.getPlayer();
+		Location eventLocation;
+		if (event.getAction() == Action.RIGHT_CLICK_AIR) {
+			eventLocation = player.getLocation(); 
+		} else if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+			eventLocation = event.getClickedBlock().getLocation();
+		} else {
+			return;
+		}
+		
+		// If the clicked location is near a siege engine and is a fuel item, load the siege engine
+		ItemStack itemInHand = player.getInventory().getItemInMainHand();
+		for (SiegeEngine siegeEngine : SiegeEngines.activeSiegeEngines.values()) {
+			if (siegeEngine.getEntity() == null) {
+				continue;
+			}
+			Location siegeEngineLocation = siegeEngine.getEntity().getLocation();
+			ItemStack stack = siegeEngine.getFuelItem();
+			// If location is less than 2 blocks away
+			if (eventLocation.distance(siegeEngineLocation) < 2.0) {
+				if (itemInHand.getType() == stack.getType()) {
+					if (siegeEngine.canLoadFuel()) {
+						siegeEngine.getAmmoHolder().setLoadedFuel(siegeEngine.getAmmoHolder().getLoadedFuel() + 1);
+						stack.setAmount(1);
+						player.getInventory().removeItem(stack);
+						SiegeEnginesUtil.sendSiegeEngineHelpMSG(player, siegeEngine);
+						// If fully loaded && requires change in animation when loaded (i.e. ballista)
+						if (!siegeEngine.canLoadFuel() && siegeEngine.isSetModelNumberWhenFullyLoaded()) {
+							SiegeEnginesUtil.UpdateEntityIdModel(siegeEngine.getEntity(),
+									siegeEngine.getPreLoadModelNumber(), siegeEngine.getWorldName());
+						}
+					}
+					event.setCancelled(true);
+				}
+				if (SiegeEnginesUtil.pulledHeldAmmoFromPlayer(player, siegeEngine)) {
+					player.sendMessage("§eAdded ammunition to this Siege Engine.");
+					// If requires change in animation when loaded with a projectile (i.e. ballista)
+					if (siegeEngine.isSetModelNumberWhenFullyLoaded()) {
+						SiegeEnginesUtil.UpdateEntityIdModel(siegeEngine.getEntity(),
+								siegeEngine.getPreFireModelNumber(), siegeEngine.getWorldName());
+					}
+					event.setCancelled(true);
+				}
+			}
+		}
+		
 	}
 }
