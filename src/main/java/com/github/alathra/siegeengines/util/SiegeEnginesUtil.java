@@ -1,4 +1,4 @@
-package com.github.alathra.siegeengines.Util;
+package com.github.alathra.siegeengines.util;
 
 import java.util.ArrayList;
 import java.util.HashSet;

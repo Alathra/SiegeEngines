@@ -1,7 +1,7 @@
 package com.github.alathra.siegeengines.projectile;
 
 import com.github.alathra.siegeengines.SiegeEngines;
-import com.github.alathra.siegeengines.Util.SiegeEnginesUtil;
+import com.github.alathra.siegeengines.util.SiegeEnginesUtil;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

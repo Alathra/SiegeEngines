@@ -12,8 +12,8 @@ import org.bukkit.inventory.ItemStack;
 
 import com.github.alathra.siegeengines.SiegeEngine;
 import com.github.alathra.siegeengines.SiegeEngines;
-import com.github.alathra.siegeengines.Util.SiegeEnginesUtil;
 import com.github.alathra.siegeengines.config.Config;
+import com.github.alathra.siegeengines.util.SiegeEnginesUtil;
 
 public class SiegeEngineFireListener implements Listener {
 	

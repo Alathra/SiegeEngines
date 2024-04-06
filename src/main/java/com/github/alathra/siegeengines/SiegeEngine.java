@@ -6,10 +6,10 @@ import java.util.HashMap;
 import java.util.UUID;
 
 import com.github.alathra.siegeengines.config.Config;
-import com.github.alathra.siegeengines.Util.SiegeEnginesUtil;
 import com.github.alathra.siegeengines.projectile.EntityProjectile;
 import com.github.alathra.siegeengines.projectile.FireworkProjectile;
 import com.github.alathra.siegeengines.projectile.SiegeEngineProjectile;
+import com.github.alathra.siegeengines.util.SiegeEnginesUtil;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

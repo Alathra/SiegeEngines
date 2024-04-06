@@ -16,7 +16,6 @@ import org.bukkit.inventory.ItemStack;
 
 import com.github.alathra.siegeengines.SiegeEngines;
 import com.github.alathra.siegeengines.SiegeEnginesLogger;
-import com.github.alathra.siegeengines.Util.SiegeEnginesUtil;
 import com.github.alathra.siegeengines.crafting.CraftingRecipes;
 import com.github.alathra.siegeengines.data.SiegeEnginesData;
 import com.github.alathra.siegeengines.projectile.EntityProjectile;
@@ -25,6 +24,7 @@ import com.github.alathra.siegeengines.projectile.FireworkProjectile;
 import com.github.alathra.siegeengines.projectile.PotionProjectile;
 import com.github.alathra.siegeengines.projectile.ProjectileType;
 import com.github.alathra.siegeengines.projectile.SiegeEngineProjectile;
+import com.github.alathra.siegeengines.util.SiegeEnginesUtil;
 
 @SuppressWarnings("deprecation")
 public class Config {

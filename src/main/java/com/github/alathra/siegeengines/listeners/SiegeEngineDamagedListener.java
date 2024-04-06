@@ -19,11 +19,11 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 
 import com.github.alathra.siegeengines.SiegeEnginesLogger;
-import com.github.alathra.siegeengines.Util.GeneralUtil;
-import com.github.alathra.siegeengines.Util.SiegeEnginesUtil;
 import com.github.alathra.siegeengines.config.Config;
 import com.github.alathra.siegeengines.data.SiegeEnginesData;
 import com.github.alathra.siegeengines.projectile.ExplosiveProjectile;
+import com.github.alathra.siegeengines.util.GeneralUtil;
+import com.github.alathra.siegeengines.util.SiegeEnginesUtil;
 
 public class SiegeEngineDamagedListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGH)

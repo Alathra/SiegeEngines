@@ -17,8 +17,8 @@ import org.bukkit.persistence.PersistentDataType;
 
 import com.github.alathra.siegeengines.SiegeEngine;
 import com.github.alathra.siegeengines.SiegeEngines;
-import com.github.alathra.siegeengines.Util.SiegeEnginesUtil;
 import com.github.alathra.siegeengines.data.SiegeEnginesData;
+import com.github.alathra.siegeengines.util.SiegeEnginesUtil;
 
 public class SiegeEngineDeathListener implements Listener {
 	
