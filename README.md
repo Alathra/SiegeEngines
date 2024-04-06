@@ -18,20 +18,27 @@ A plugin which allows you to create cannons, trebuchets or turrets using custom 
 ## Useful Links
 
 * **Releases** - [Link](https://github.com/Alathra/SiegeEngines/releases)
-* **Wiki** - [Link](https://github.com/Alathra/SiegeEngines/wiki)
-* **Youtube Showcase** - [Link](https://www.youtube.com/watch?v=BusLXEYwX28)
-
----
-
-## Examples
-
-**TODO pictures showing this :)**
+* **Wiki (WIP)** - [Link](https://github.com/Alathra/SiegeEngines/wiki)
+* **Youtube Showcase (Outdated Models)** - [Link](https://www.youtube.com/watch?v=BusLXEYwX28)
 
 ---
 
 ## Installation
 
 SiegeEngines is a standalone plugin and does not rely on any other plugins to function.
+
+---
+
+## Configuration
+
+Configuration options and explanations of what they can do can be found in the [configuration file](https://github.com/Alathra/SiegeEngines/blob/main/src/main/resources/config.yml).
+
+---
+
+## Commands
+
+* /siegeengines getall - Add all the siege engines to your inventory
+* /siegeengines reload - Reload configuration options
 
 ---
 
@@ -43,4 +50,6 @@ Please follow our instructions [here](https://github.com/Alathra/SiegeEngines/bl
 
 ## Credits
 
-* **CrunchSiegeEquipment** - *SiegeEngines is a hard fork of CrunchSiegeEquipment, developed by ShermansWorld and C_Corp2002. Original author [TheCrunchy](https://github.com/TheCrunchy).* - [GitHub](https://github.com/TheCrunchy/CrunchSiegeEquipment).
+* **CrunchSiegeEquipment** - *SiegeEngines is a hard fork of [CrunchSiegeEquipment](https://github.com/TheCrunchy/CrunchSiegeEquipment) - Original author [TheCrunchy](https://github.com/TheCrunchy).*
+* **SiegeEngines** - Developed by ShermansWorld and C_Corp2002 for the Alathra Minecraft Server
+
