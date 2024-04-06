@@ -43,6 +43,13 @@ Configuration options and explanations of what they can do can be found in the [
 
 ---
 
+## Permission Nodes
+
+* siegeengines.command.getAll
+* siegeengines.command.reload
+
+---
+
 ## Contributing
 
 Please follow our instructions [here](https://github.com/Alathra/SiegeEngines/blob/main/CONTRIBUTING.md) if you are interested in contributing to the project.
