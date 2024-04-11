@@ -35,6 +35,7 @@ public class Config {
 	public static int configVersion = 1;
 
 	public static Material controlItem = Material.CLOCK;
+	public static Material fireItem = Material.FLINT;
 	public static double placementDensity = 2.5d;
 	public static int controlDistance = 10;
 	public static int rotateDistance = 10;
@@ -104,6 +105,14 @@ public class Config {
 			controlItem = Material.CLOCK;
 			SiegeEnginesLogger
 					.warn("Control item material could not be found, defaulting to " + controlItem.toString() + " !");
+		}
+		
+		try {
+			fireItem = Material.getMaterial(config.getString("FireItem"));
+		} catch (Exception e) {
+			controlItem = Material.FLINT;
+			SiegeEnginesLogger
+					.warn("Control item material could not be found, defaulting to " + fireItem.toString() + " !");
 		}
 
 		controlDistance = config.getInt("ControlDistance");

@@ -9,7 +9,7 @@
 
 
 # DO NOT CHANGE
-config-version: 1
+config-version: 2
 
 # =====================================
 # |         GENERAL SETTINGS          |
@@ -21,6 +21,10 @@ Debug: false
 # The item used to aim and fire siege engines
 # Must be a valid material. See https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
 ControlItem: CLOCK
+
+# The item used to only fire siege engines, an alternative to using the control item
+# Must be a valid material. See https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
+FireItem: FLINT
 
 # Allows the disabling of Arrow Damage towards SiegeEngines.
 DisableArrowDamage: true
