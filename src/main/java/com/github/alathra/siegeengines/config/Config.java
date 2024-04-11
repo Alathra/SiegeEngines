@@ -284,7 +284,7 @@ public class Config {
 							Material.getMaterial(config.getString("Projectiles." + projectileName + ".AmmoItem"))));
 					entityProjectile.inaccuracy = (float) config
 							.getDouble("Projectiles." + projectileName + ".Inaccuracy");
-					entityProjectile.projectileCount = config.getInt("Projectiles." + projectileName + ".EntityCount");
+					entityProjectile.projectileCount = config.getInt("Projectiles." + projectileName + ".ProjectileCount");
 					entityProjectile.entityType = EntityType
 							.valueOf(config.getString("Projectiles." + projectileName + ".EntityType"));
 					entityProjectile.soundType = Sound
@@ -301,8 +301,8 @@ public class Config {
 					FireworkProjectile fireworkProjectile = new FireworkProjectile(SiegeEnginesUtil.DEFAULT_ROCKET);
 					fireworkProjectile.inaccuracy = (float) config
 							.getDouble("Projectiles." + projectileName + ".Inaccuracy");
-					fireworkProjectile.projectileCount = config.getInt("Projectiles." + projectileName + ".EntityCount");
-					fireworkProjectile.delayTime = config.getInt("Projectiles." + projectileName + ".EntityCount");
+					fireworkProjectile.projectileCount = config.getInt("Projectiles." + projectileName + ".ProjectileCount");
+					fireworkProjectile.delayTime = config.getInt("Projectiles." + projectileName + ".ProjectileCount");
 					if (fireworkProjectile.delayTime <= 0) {
 						fireworkProjectile.delayedFire = false;
 					} else {
@@ -317,8 +317,8 @@ public class Config {
 							Material.getMaterial(config.getString("Projectiles." + projectileName + ".AmmoItem"))));
 					potionProjectile.inaccuracy = (float) config
 							.getDouble("Projectiles." + projectileName + ".Inaccuracy");
-					potionProjectile.projectileCount = config.getInt("Projectiles." + projectileName + ".EntityCount");
-					potionProjectile.delayTime = config.getInt("Projectiles." + projectileName + ".EntityCount");
+					potionProjectile.projectileCount = config.getInt("Projectiles." + projectileName + ".ProjectileCount");
+					potionProjectile.delayTime = config.getInt("Projectiles." + projectileName + ".ProjectileCount");
 					if (potionProjectile.delayTime <= 0) {
 						potionProjectile.delayedFire = false;
 					} else {

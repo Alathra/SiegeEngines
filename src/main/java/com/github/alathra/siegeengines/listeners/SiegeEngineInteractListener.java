@@ -195,10 +195,13 @@ public class SiegeEngineInteractListener implements Listener {
 			if (siegeEngine.getEntity() == null) {
 				continue;
 			}
+			if (siegeEngine.getEntity().getWorld() != player.getWorld()) {
+				continue;
+			}
 			Location siegeEngineLocation = siegeEngine.getEntity().getLocation();
 			ItemStack stack = siegeEngine.getFuelItem();
-			// If location is less than 2 blocks away
-			if (eventLocation.distance(siegeEngineLocation) < 2.0) {
+			// If location is less than 2.5 blocks away
+			if (eventLocation.distance(siegeEngineLocation) < 2.5) {
 				if (itemInHand.getType() == stack.getType()) {
 					if (siegeEngine.canLoadFuel()) {
 						siegeEngine.getAmmoHolder().setLoadedFuel(siegeEngine.getAmmoHolder().getLoadedFuel() + 1);
