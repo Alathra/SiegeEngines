@@ -1,0 +1,38 @@
+name: Test
+
+on:
+  workflow_call:
+    inputs:
+      os:
+        description: "The os the workflow shold use"
+        required: false
+        type: string
+        default: ubuntu-latest
+      java:
+        description: "The Java version the workflow should use"
+        required: false
+        type: number
+        default: 17
+
+permissions:
+  checks: write
+  contents: write
+
+jobs:
+  test-build:
+    name: "Run Tests"
+    runs-on: ${{ inputs.os }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup JDK
+        uses: ./.github/actions/jdk
+        with:
+          java-version: ${{ inputs.java }}
+
+      - name: Setup Gradle
+        uses: ./.github/actions/gradle
+
+      - name: Test with Gradle
+        run: ./gradlew build --info
