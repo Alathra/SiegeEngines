@@ -3,7 +3,7 @@
 <p align="center">
     <a href="https://github.com/Alathra/SiegeEngines/wiki"><img src="https://img.shields.io/badge/Wiki-900C3F?style=flat-square" alt="wiki"/></a>
     <img src="https://img.shields.io/github/license/Alathra/SiegeEngines?color=blue&style=flat-square" alt="license"/>
-    <img alt="GitHub Workflow Status (with event)" src="https://img.shields.io/github/actions/workflow/status/Alathra/SiegeEngines/release.yml?style=flat-square">
+    <img alt="GitHub Workflow Status (with event)" src="https://img.shields.io/github/actions/workflow/status/Alathra/SiegeEngines/ci.yml?style=flat-square">
     <img alt="GitHub issues" src="https://img.shields.io/github/issues/Alathra/SiegeEngines?style=flat-square">
 </p>
 
