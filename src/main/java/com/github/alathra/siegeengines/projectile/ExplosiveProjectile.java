@@ -3,13 +3,7 @@ package com.github.alathra.siegeengines.projectile;
 import com.github.alathra.siegeengines.SiegeEngines;
 import com.github.alathra.siegeengines.data.SiegeEnginesData;
 import com.github.alathra.siegeengines.util.SiegeEnginesUtil;
-
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Particle;
-import org.bukkit.Sound;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
@@ -17,8 +11,8 @@ import org.bukkit.util.Vector;
 
 public class ExplosiveProjectile extends SiegeEngineProjectile {
 
-	
-	// Defaults
+
+    // Defaults
     public Boolean placeBlocks = false;
     public Material blockToPlace = Material.COBWEB; // TO-DO
     public int blocksToPlaceAmount = 3; // TO-DO
@@ -31,13 +25,13 @@ public class ExplosiveProjectile extends SiegeEngineProjectile {
     public Sound soundType = Sound.ENTITY_GENERIC_EXPLODE;
     public Boolean alertOnLanding = false;
     public float velocityFactor = 1.0f;
-    
+
     private boolean playSound = true;
-    
+
     public ExplosiveProjectile(ItemStack ammunitionItem) {
-		super(ProjectileType.EXPLOSIVE, ammunitionItem);
-	}
-    
+        super(ProjectileType.EXPLOSIVE, ammunitionItem);
+    }
+
     @Override
     public void Shoot(Entity player, Entity entity, Location loc, Float velocity) {
         playSound = true;
@@ -46,10 +40,10 @@ public class ExplosiveProjectile extends SiegeEngineProjectile {
             if (delayedFire) {
                 baseDelay += delayTime;
                 Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(SiegeEngines.getInstance(), () -> {
-                    CreateEntity(entity, loc, velocity*velocityFactor, player);
-                }, (long) baseDelay);
+                    CreateEntity(entity, loc, velocity * velocityFactor, player);
+                }, baseDelay);
             } else {
-                CreateEntity(entity, loc, velocity*velocityFactor, player);
+                CreateEntity(entity, loc, velocity * velocityFactor, player);
             }
         }
     }
@@ -85,9 +79,9 @@ public class ExplosiveProjectile extends SiegeEngineProjectile {
         return new Vector(SiegeEngines.random.nextFloat() * (inaccuracy - (inaccuracy * -1)) + (inaccuracy * -1), SiegeEngines.random.nextFloat() * (inaccuracy - (inaccuracy * -1)) + (inaccuracy * -1), SiegeEngines.random.nextFloat() * (inaccuracy - (inaccuracy * -1)) + (inaccuracy * -1));
     }
 
-	public ProjectileType getProjectileType() {
-		return projectileType;
-	}
+    public ProjectileType getProjectileType() {
+        return projectileType;
+    }
 }
 
 

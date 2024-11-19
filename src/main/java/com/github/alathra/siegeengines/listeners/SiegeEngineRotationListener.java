@@ -1,10 +1,8 @@
 package com.github.alathra.siegeengines.listeners;
 
-import java.util.UUID;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.github.alathra.siegeengines.SiegeEngine;
 import com.github.alathra.siegeengines.SiegeEngines;
+import com.github.alathra.siegeengines.config.Config;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
@@ -20,8 +18,9 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
 
-import com.github.alathra.siegeengines.SiegeEngine;
-import com.github.alathra.siegeengines.config.Config;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public class SiegeEngineRotationListener implements Listener {
 
@@ -74,7 +73,7 @@ public class SiegeEngineRotationListener implements Listener {
                                     Entity base = Bukkit.getEntity(UUID.fromString(ent.getPersistentDataContainer().get(key, PersistentDataType.STRING)));
                                     Location baseloc = base.getLocation();
                                     baseloc.setDirection(dirBetweenLocations);
-                                    base.teleport(baseloc,io.papermc.paper.entity.TeleportFlag.EntityState.values());
+                                    base.teleport(baseloc, io.papermc.paper.entity.TeleportFlag.EntityState.values());
                                 }
                                 loc.setDirection(dirBetweenLocations);
                             }
@@ -96,7 +95,7 @@ public class SiegeEngineRotationListener implements Listener {
                             }
 
 
-                            living.teleport(loc,io.papermc.paper.entity.TeleportFlag.EntityState.values());
+                            living.teleport(loc, io.papermc.paper.entity.TeleportFlag.EntityState.values());
                             equipment.ShowFireLocation(player);
                         }
                     }

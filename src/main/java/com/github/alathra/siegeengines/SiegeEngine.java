@@ -1,28 +1,12 @@
 package com.github.alathra.siegeengines;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.HashMap;
-import java.util.UUID;
-
 import com.github.alathra.siegeengines.config.Config;
 import com.github.alathra.siegeengines.projectile.EntityProjectile;
 import com.github.alathra.siegeengines.projectile.FireworkProjectile;
 import com.github.alathra.siegeengines.projectile.SiegeEngineProjectile;
 import com.github.alathra.siegeengines.util.SiegeEnginesUtil;
-
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.Particle;
-import org.bukkit.Sound;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.*;
+import org.bukkit.entity.*;
 import org.bukkit.entity.ArmorStand.LockType;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -31,17 +15,22 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
+
 
 public class SiegeEngine implements Cloneable {
 
-	// Core variables
-	private SiegeEngineType type;
-	private Boolean enabled;
-	private String id;
-	private String itemName;
-	private List<String> itemLore;
-	private String worldName;
-	private UUID entityId;
+    // Core variables
+    private SiegeEngineType type;
+    private Boolean enabled;
+    private String id;
+    private String itemName;
+    private List<String> itemLore;
+    private String worldName;
+    private UUID entityId;
     private Entity entity;
     private int yOffset;
     private int xOffset;
@@ -49,8 +38,8 @@ public class SiegeEngine implements Cloneable {
     private int maxFuel;
     private double placementOffsetY;
     private float velocityPerFuel;
-	private double baseHealth = 5.0d;
-	// Firing variables
+    private double baseHealth = 5.0d;
+    // Firing variables
     private int shotAmount;
     private long nextShotTime; // Internal
     private int millisecondsBetweenFiringStages;
@@ -71,34 +60,34 @@ public class SiegeEngine implements Cloneable {
     private int preFireModelNumber;
     private int preLoadModelNumber;
     private SiegeEngineAmmoHolder ammoHolder;
-    
+
     // Optional variables
     private boolean allowInvisibleStand; // Internal
-    private boolean hasBaseStand; // Internal
-    private double baseStandOffset; // Internal
-    private int baseStandModelNumber; // Internal
+    private final boolean hasBaseStand; // Internal
+    private final double baseStandOffset; // Internal
+    private final int baseStandModelNumber; // Internal
     private boolean mountable = false;
-    
+
     // Passed parameters
     private String engineName = "Unnammed SiegeEngine";
     private ItemStack fuelItem = new ItemStack(Material.GUNPOWDER);
     private HashMap<ItemStack, SiegeEngineProjectile> projectiles = new HashMap<>();
-	
+
     private int customModelID = 150;
-    
+
     @Override
     public SiegeEngine clone() throws CloneNotSupportedException {
         return (SiegeEngine) super.clone();
     }
-    
+
     public SiegeEngine(@NotNull String name, @NotNull HashMap<ItemStack, SiegeEngineProjectile> projectiles, @NotNull ItemStack fuelItem, int customModelID) {
-        
+
         // Default custom model data id if it is passes as null
         if (customModelID == 0) {
             customModelID = 150;
         }
-        
-    	// Set Default values
+
+        // Set Default values
         setType(SiegeEngineType.UNKNOWN);
         setItemName(ChatColor.translateAlternateColorCodes('&', "&eUnknown Siege Engine"));
         setItemLore(new ArrayList<String>());
@@ -139,17 +128,17 @@ public class SiegeEngine implements Cloneable {
         defaultProj.entityType = EntityType.SNOWBALL;
         defaultProj.particleType = Particle.WHITE_ASH;
         defaultProj.soundType = Sound.ENTITY_BLAZE_SHOOT;
-        
+
         // set passed parameters as object variables
         this.setEngineName(name);
-    	this.setFuelItem(fuelItem);
-    	this.setCustomModelID(customModelID);
-    	
+        this.setFuelItem(fuelItem);
+        this.setCustomModelID(customModelID);
+
         // set projectiles
         if (this.getProjectiles() == null || this.getProjectiles().isEmpty()) {
-        	this.getProjectiles().put(new ItemStack(Material.GUNPOWDER), defaultProj);
+            this.getProjectiles().put(new ItemStack(Material.GUNPOWDER), defaultProj);
         } else {
-        	this.setProjectiles(projectiles);
+            this.setProjectiles(projectiles);
         }
     }
 
@@ -160,13 +149,13 @@ public class SiegeEngine implements Cloneable {
     public boolean isLoaded() {
         return hasPropellant() && hasAmmunition();
     }
-    
+
     public boolean hasPropellant() {
-    	return getAmmoHolder().getLoadedFuel() > 0;
+        return getAmmoHolder().getLoadedFuel() > 0;
     }
-    
+
     public boolean hasAmmunition() {
-    	return getAmmoHolder().getLoadedProjectile() >= 1;
+        return getAmmoHolder().getLoadedProjectile() >= 1;
     }
 
     public boolean canLoadFuel() {
@@ -186,7 +175,7 @@ public class SiegeEngine implements Cloneable {
                 this.getAmmoHolder().setLoadedFuel(this.getAmmoHolder().getLoadedFuel() + 1);
                 //SaveState();
                 ((Player) player).getInventory().removeItem(getFuelItem());
-                ((Player) player).sendMessage("§eLoaded " + getAmmoHolder().getLoadedFuel() + "/" + getMaxFuel());
+                player.sendMessage("§eLoaded " + getAmmoHolder().getLoadedFuel() + "/" + getMaxFuel());
                 return true;
             } else {
                 return false;
@@ -208,10 +197,10 @@ public class SiegeEngine implements Cloneable {
             return true;
         }
         for (ItemStack im : getProjectiles().keySet()) {
-            if(im.getType().equals(itemInHand.getType()) && getAmmoHolder().getLoadedProjectile() == 0) {
+            if (im.getType().equals(itemInHand.getType()) && getAmmoHolder().getLoadedProjectile() == 0) {
                 getAmmoHolder().setLoadedProjectile(1);
                 getAmmoHolder().setMaterialName(itemInHand);
-                ((Player) player).sendMessage("§eAdding Ammunition to Weapon");
+                player.sendMessage("§eAdding Ammunition to Weapon");
                 itemInHand.setAmount(itemInHand.getAmount() - 1);
                 return true;
             }
@@ -266,21 +255,21 @@ public class SiegeEngine implements Cloneable {
         if (living == null || living.getEquipment() == null || living.getEquipment().getHelmet() == null || living.getEquipment().getHelmet().getItemMeta() == null) {
             return;
         }
-        
+
         if (living.getEquipment().getHelmet().getItemMeta().getCustomModelData() != getReadyModelNumber() || getAmmoHolder().getLoadedProjectile() == 0) {
-        	if (!isSetModelNumberWhenFullyLoaded()) {
-        		if (player instanceof Player) {
-                    ((Player) player).sendMessage("§eCannot fire yet!");
+            if (!isSetModelNumberWhenFullyLoaded()) {
+                if (player instanceof Player) {
+                    player.sendMessage("§eCannot fire yet!");
                 }
-        		 return;
-        	} else {
-        		if (isSetModelNumberWhenFullyLoaded() && living.getEquipment().getHelmet().getItemMeta().getCustomModelData() != getPreFireModelNumber()) {
-        			if (player instanceof Player) {
-                        ((Player) player).sendMessage("§eCannot fire yet!");
+                return;
+            } else {
+                if (isSetModelNumberWhenFullyLoaded() && living.getEquipment().getHelmet().getItemMeta().getCustomModelData() != getPreFireModelNumber()) {
+                    if (player instanceof Player) {
+                        player.sendMessage("§eCannot fire yet!");
                     }
-            		 return;
-        		}
-        	}
+                    return;
+                }
+            }
         }
         getAmmoHolder().setLoadedFuel(0);
         getAmmoHolder().setLoadedProjectile(0);
@@ -290,111 +279,112 @@ public class SiegeEngine implements Cloneable {
         setWorldName(getEntity().getWorld().getName());
         nextShotTime = System.currentTimeMillis() + 1000;
         //for (int i = 0; i <= this.shotAmount /* range */; i += 1) {
-            if (living == null || living.isDead()) {
-                return;
-            }
-            if (isCycleThroughModelsWhileFiring()) {
-
-                this.taskNumber = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(SiegeEngines.getInstance(), () -> {
-                    if (living == null || living.isDead()) {
-                        Bukkit.getServer().getScheduler().cancelTask(taskNumber);
-                        return;
-                    }
-
-                    if (hasFired) {
-                        Bukkit.getServer().getScheduler().cancelTask(taskNumber);
-                        taskNumber = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(SiegeEngines.getInstance(), () -> {
-                            if (living == null || living.isDead()) {
-                                Bukkit.getServer().getScheduler().cancelTask(taskNumber);
-                                return;
-                            }
-                            //	player.sendMessage("§etask");
-                            if (hasReloaded) {
-                                Bukkit.getServer().getScheduler().cancelTask(taskNumber);
-                                hasReloaded = false;
-                                hasFired = false;
-                                nextModelNumber = 0;
-                                SiegeEnginesUtil.UpdateEntityIdModel(getEntity(), getReadyModelNumber(), getWorldName());
-                                taskNumber = 0;
-                            } else {
-                                //firing stages
-                            	if (isSetModelNumberWhenFullyLoaded()) {
-                            		hasReloaded = true;
-                            	} else {
-                            		if (nextModelNumber - 1 <= getFiringModelNumbers().size() && nextModelNumber - 1 >= 0) {
-                                        int modelData = getFiringModelNumbers().get(nextModelNumber - 1);
-                                        SiegeEnginesUtil.UpdateEntityIdModel(getEntity(), modelData, getWorldName());
-                                        nextModelNumber -= 1;
-
-                                    } else {
-                                        hasReloaded = true;
-                                    }
-                            	}
-                            }
-                        }, 0, getMillisecondsBetweenReloadingStages());
-
-                    } else {
-                        //firing stages
-                        if (nextModelNumber < getFiringModelNumbers().size()) {
-
-                            int modelData = getFiringModelNumbers().get(nextModelNumber);
-                            //	player.sendMessage("§e" + modelData);
-                            SiegeEnginesUtil.UpdateEntityIdModel(getEntity(), modelData, getWorldName());
-                            if (modelData == getModelNumberToFireAt()) {
-                                //	player.sendMessage("§efiring" + modelData);
-                                SiegeEngineProjectile projType = null;
-                                if (LoadedProjectile == null) return;
-                                if (LoadedProjectile.getType() == Material.AIR) return;
-                                if (LoadedProjectile.getType() == Material.FIREWORK_ROCKET) {
-                                    projType = FireworkProjectile.getDefaultRocketShot(LoadedProjectile);
-                                } else {
-                                    projType = getProjectiles().get(LoadedProjectile);
-                                }
-                                if (projType == null) return;
-                                projType.Shoot(player, getEntity(), this.GetFireLocation(living), loadedFuel * getVelocityPerFuel());
-                            }
-                            nextModelNumber += 1;
-                        } else {
-                            hasFired = true;
-
-                        }
-                    }
-                }, 0, getMillisecondsBetweenFiringStages());
-            } else {
-                taskNumber = Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(SiegeEngines.getInstance(), () -> {
-                    //player.sendMessage("§etask");
-                    if (living == null || living.isDead()) {
-                        Bukkit.getServer().getScheduler().cancelTask(taskNumber);
-                        return;
-                    }
-
-                    Location loc = living.getEyeLocation();
-                    Vector direction = getEntity().getLocation().getDirection().multiply(getXOffset());
-
-                    loc.add(direction);
-
-                    nextModelNumber = 0;
-                    SiegeEngineProjectile projType = null;
-                    if (LoadedProjectile == null) return;
-                    if (LoadedProjectile.getType() == Material.AIR) return;
-                    if (LoadedProjectile.getType() == Material.FIREWORK_ROCKET) {
-                        projType = FireworkProjectile.getDefaultRocketShot(LoadedProjectile);
-                    } else {
-                        projType = getProjectiles().get(LoadedProjectile);
-                    }
-                    if (projType == null) return;
-                    projType.Shoot(player, getEntity(), this.GetFireLocation(living), loadedFuel * getVelocityPerFuel());
-                }, (long) delay);
-
-            }
+        if (living == null || living.isDead()) {
+            return;
         }
-    @SuppressWarnings("deprecation")
-	public boolean place(Entity player, Location l) {
-        return place(player,l,null);
+        if (isCycleThroughModelsWhileFiring()) {
+
+            this.taskNumber = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(SiegeEngines.getInstance(), () -> {
+                if (living == null || living.isDead()) {
+                    Bukkit.getServer().getScheduler().cancelTask(taskNumber);
+                    return;
+                }
+
+                if (hasFired) {
+                    Bukkit.getServer().getScheduler().cancelTask(taskNumber);
+                    taskNumber = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(SiegeEngines.getInstance(), () -> {
+                        if (living == null || living.isDead()) {
+                            Bukkit.getServer().getScheduler().cancelTask(taskNumber);
+                            return;
+                        }
+                        //	player.sendMessage("§etask");
+                        if (hasReloaded) {
+                            Bukkit.getServer().getScheduler().cancelTask(taskNumber);
+                            hasReloaded = false;
+                            hasFired = false;
+                            nextModelNumber = 0;
+                            SiegeEnginesUtil.UpdateEntityIdModel(getEntity(), getReadyModelNumber(), getWorldName());
+                            taskNumber = 0;
+                        } else {
+                            //firing stages
+                            if (isSetModelNumberWhenFullyLoaded()) {
+                                hasReloaded = true;
+                            } else {
+                                if (nextModelNumber - 1 <= getFiringModelNumbers().size() && nextModelNumber - 1 >= 0) {
+                                    int modelData = getFiringModelNumbers().get(nextModelNumber - 1);
+                                    SiegeEnginesUtil.UpdateEntityIdModel(getEntity(), modelData, getWorldName());
+                                    nextModelNumber -= 1;
+
+                                } else {
+                                    hasReloaded = true;
+                                }
+                            }
+                        }
+                    }, 0, getMillisecondsBetweenReloadingStages());
+
+                } else {
+                    //firing stages
+                    if (nextModelNumber < getFiringModelNumbers().size()) {
+
+                        int modelData = getFiringModelNumbers().get(nextModelNumber);
+                        //	player.sendMessage("§e" + modelData);
+                        SiegeEnginesUtil.UpdateEntityIdModel(getEntity(), modelData, getWorldName());
+                        if (modelData == getModelNumberToFireAt()) {
+                            //	player.sendMessage("§efiring" + modelData);
+                            SiegeEngineProjectile projType = null;
+                            if (LoadedProjectile == null) return;
+                            if (LoadedProjectile.getType() == Material.AIR) return;
+                            if (LoadedProjectile.getType() == Material.FIREWORK_ROCKET) {
+                                projType = FireworkProjectile.getDefaultRocketShot(LoadedProjectile);
+                            } else {
+                                projType = getProjectiles().get(LoadedProjectile);
+                            }
+                            if (projType == null) return;
+                            projType.Shoot(player, getEntity(), this.GetFireLocation(living), loadedFuel * getVelocityPerFuel());
+                        }
+                        nextModelNumber += 1;
+                    } else {
+                        hasFired = true;
+
+                    }
+                }
+            }, 0, getMillisecondsBetweenFiringStages());
+        } else {
+            taskNumber = Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(SiegeEngines.getInstance(), () -> {
+                //player.sendMessage("§etask");
+                if (living == null || living.isDead()) {
+                    Bukkit.getServer().getScheduler().cancelTask(taskNumber);
+                    return;
+                }
+
+                Location loc = living.getEyeLocation();
+                Vector direction = getEntity().getLocation().getDirection().multiply(getXOffset());
+
+                loc.add(direction);
+
+                nextModelNumber = 0;
+                SiegeEngineProjectile projType = null;
+                if (LoadedProjectile == null) return;
+                if (LoadedProjectile.getType() == Material.AIR) return;
+                if (LoadedProjectile.getType() == Material.FIREWORK_ROCKET) {
+                    projType = FireworkProjectile.getDefaultRocketShot(LoadedProjectile);
+                } else {
+                    projType = getProjectiles().get(LoadedProjectile);
+                }
+                if (projType == null) return;
+                projType.Shoot(player, getEntity(), this.GetFireLocation(living), loadedFuel * getVelocityPerFuel());
+            }, (long) delay);
+
+        }
     }
-    
+
     @SuppressWarnings("deprecation")
-	public boolean place(Entity player, Location l, Entity mount) {
+    public boolean place(Entity player, Location l) {
+        return place(player, l, null);
+    }
+
+    @SuppressWarnings("deprecation")
+    public boolean place(Entity player, Location l, Entity mount) {
         l.add(0.5, 0, 0.5);
         NamespacedKey key = new NamespacedKey(SiegeEngines.getInstance(), "siege_engines");
         if (this == null || !this.getEnabled()) {
@@ -406,8 +396,8 @@ public class SiegeEngine implements Cloneable {
         ItemMeta meta = item.getItemMeta();
         String id = "";
         Entity entity3 = null;
-        for (Entity enti : l.getWorld().getNearbyEntities(l,Config.placementDensity,Config.placementDensity,Config.placementDensity)) {
-            if (SiegeEngines.activeSiegeEngines.keySet().contains(enti.getUniqueId())) {
+        for (Entity enti : l.getWorld().getNearbyEntities(l, Config.placementDensity, Config.placementDensity, Config.placementDensity)) {
+            if (SiegeEngines.activeSiegeEngines.containsKey(enti.getUniqueId())) {
                 return false;
             }
         }
@@ -485,267 +475,267 @@ public class SiegeEngine implements Cloneable {
         return true;
     }
 
-	public UUID getEntityId() {
-		return entityId;
-	}
+    public UUID getEntityId() {
+        return entityId;
+    }
 
-	public void setEntityId(UUID entityId) {
-		this.entityId = entityId;
-	}
+    public void setEntityId(UUID entityId) {
+        this.entityId = entityId;
+    }
 
-	public SiegeEngineType getType() {
-		return type;
-	}
+    public SiegeEngineType getType() {
+        return type;
+    }
 
-	public void setType(SiegeEngineType type) {
-		this.type = type;
-	}
+    public void setType(SiegeEngineType type) {
+        this.type = type;
+    }
 
-	public Boolean getEnabled() {
-		return enabled;
-	}
+    public Boolean getEnabled() {
+        return enabled;
+    }
 
-	public void setEnabled(Boolean enabled) {
-		this.enabled = enabled;
-	}
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
+    }
 
-	public String getItemName() {
-		return itemName;
-	}
+    public String getItemName() {
+        return itemName;
+    }
 
-	public void setItemName(String itemName) {
-		this.itemName = itemName;
-	}
+    public void setItemName(String itemName) {
+        this.itemName = itemName;
+    }
 
-	public List<String> getItemLore() {
-		return itemLore;
-	}
+    public List<String> getItemLore() {
+        return itemLore;
+    }
 
-	public void setItemLore(List<String> itemLore) {
-		this.itemLore = itemLore;
-	}
+    public void setItemLore(List<String> itemLore) {
+        this.itemLore = itemLore;
+    }
 
-	public String getWorldName() {
-		return worldName;
-	}
+    public String getWorldName() {
+        return worldName;
+    }
 
-	public void setWorldName(String worldName) {
-		this.worldName = worldName;
-	}
+    public void setWorldName(String worldName) {
+        this.worldName = worldName;
+    }
 
-	public double getHealth() {
-		return baseHealth;
-	}
+    public double getHealth() {
+        return baseHealth;
+    }
 
-	public void setHealth(double health) {
-		this.baseHealth = health;
-	}
+    public void setHealth(double health) {
+        this.baseHealth = health;
+    }
 
-	public Entity getEntity() {
-		return entity;
-	}
+    public Entity getEntity() {
+        return entity;
+    }
 
-	public void setEntity(Entity entity) {
-		this.entity = entity;
-	}
+    public void setEntity(Entity entity) {
+        this.entity = entity;
+    }
 
-	public int getYOffset() {
-		return yOffset;
-	}
+    public int getYOffset() {
+        return yOffset;
+    }
 
-	public void setYOffset(int yOffset) {
-		this.yOffset = yOffset;
-	}
+    public void setYOffset(int yOffset) {
+        this.yOffset = yOffset;
+    }
 
-	public int getXOffset() {
-		return xOffset;
-	}
+    public int getXOffset() {
+        return xOffset;
+    }
 
-	public void setXOffset(int xOffset) {
-		this.xOffset = xOffset;
-	}
+    public void setXOffset(int xOffset) {
+        this.xOffset = xOffset;
+    }
 
-	public int getMaxFuel() {
-		return maxFuel;
-	}
+    public int getMaxFuel() {
+        return maxFuel;
+    }
 
-	public void setMaxFuel(int maxFuel) {
-		this.maxFuel = maxFuel;
-	}
+    public void setMaxFuel(int maxFuel) {
+        this.maxFuel = maxFuel;
+    }
 
-	public double getPlacementOffsetY() {
-		return placementOffsetY;
-	}
+    public double getPlacementOffsetY() {
+        return placementOffsetY;
+    }
 
-	public void setPlacementOffsetY(double placementOffsetY) {
-		this.placementOffsetY = placementOffsetY;
-	}
+    public void setPlacementOffsetY(double placementOffsetY) {
+        this.placementOffsetY = placementOffsetY;
+    }
 
-	public float getVelocityPerFuel() {
-		return velocityPerFuel;
-	}
+    public float getVelocityPerFuel() {
+        return velocityPerFuel;
+    }
 
-	public void setVelocityPerFuel(float velocityPerFuel) {
-		this.velocityPerFuel = velocityPerFuel;
-	}
+    public void setVelocityPerFuel(float velocityPerFuel) {
+        this.velocityPerFuel = velocityPerFuel;
+    }
 
-	public int getShotAmount() {
-		return shotAmount;
-	}
+    public int getShotAmount() {
+        return shotAmount;
+    }
 
-	public void setShotAmount(int shotAmount) {
-		this.shotAmount = shotAmount;
-	}
+    public void setShotAmount(int shotAmount) {
+        this.shotAmount = shotAmount;
+    }
 
-	public int getMillisecondsBetweenFiringStages() {
-		return millisecondsBetweenFiringStages;
-	}
+    public int getMillisecondsBetweenFiringStages() {
+        return millisecondsBetweenFiringStages;
+    }
 
-	public void setMillisecondsBetweenFiringStages(int millisecondsBetweenFiringStages) {
-		this.millisecondsBetweenFiringStages = millisecondsBetweenFiringStages;
-	}
+    public void setMillisecondsBetweenFiringStages(int millisecondsBetweenFiringStages) {
+        this.millisecondsBetweenFiringStages = millisecondsBetweenFiringStages;
+    }
 
-	public int getMillisecondsBetweenReloadingStages() {
-		return millisecondsBetweenReloadingStages;
-	}
+    public int getMillisecondsBetweenReloadingStages() {
+        return millisecondsBetweenReloadingStages;
+    }
 
-	public void setMillisecondsBetweenReloadingStages(int millisecondsBetweenReloadingStages) {
-		this.millisecondsBetweenReloadingStages = millisecondsBetweenReloadingStages;
-	}
+    public void setMillisecondsBetweenReloadingStages(int millisecondsBetweenReloadingStages) {
+        this.millisecondsBetweenReloadingStages = millisecondsBetweenReloadingStages;
+    }
 
-	public int getModelNumberToFireAt() {
-		return modelNumberToFireAt;
-	}
+    public int getModelNumberToFireAt() {
+        return modelNumberToFireAt;
+    }
 
-	public void setModelNumberToFireAt(int modelNumberToFireAt) {
-		this.modelNumberToFireAt = modelNumberToFireAt;
-	}
+    public void setModelNumberToFireAt(int modelNumberToFireAt) {
+        this.modelNumberToFireAt = modelNumberToFireAt;
+    }
 
-	public boolean isCycleThroughModelsWhileFiring() {
-		return cycleThroughModelsWhileFiring;
-	}
+    public boolean isCycleThroughModelsWhileFiring() {
+        return cycleThroughModelsWhileFiring;
+    }
 
-	public void setCycleThroughModelsWhileFiring(boolean cycleThroughModelsWhileFiring) {
-		this.cycleThroughModelsWhileFiring = cycleThroughModelsWhileFiring;
-	}
+    public void setCycleThroughModelsWhileFiring(boolean cycleThroughModelsWhileFiring) {
+        this.cycleThroughModelsWhileFiring = cycleThroughModelsWhileFiring;
+    }
 
-	public boolean isSetModelNumberWhenFullyLoaded() {
-		return setModelNumberWhenFullyLoaded;
-	}
+    public boolean isSetModelNumberWhenFullyLoaded() {
+        return setModelNumberWhenFullyLoaded;
+    }
 
-	public void setSetModelNumberWhenFullyLoaded(boolean setModelNumberWhenFullyLoaded) {
-		this.setModelNumberWhenFullyLoaded = setModelNumberWhenFullyLoaded;
-	}
+    public void setSetModelNumberWhenFullyLoaded(boolean setModelNumberWhenFullyLoaded) {
+        this.setModelNumberWhenFullyLoaded = setModelNumberWhenFullyLoaded;
+    }
 
-	public boolean isRotateSideways() {
-		return rotateSideways;
-	}
+    public boolean isRotateSideways() {
+        return rotateSideways;
+    }
 
-	public void setRotateSideways(boolean rotateSideways) {
-		this.rotateSideways = rotateSideways;
-	}
+    public void setRotateSideways(boolean rotateSideways) {
+        this.rotateSideways = rotateSideways;
+    }
 
-	public boolean isRotateUpDown() {
-		return rotateUpDown;
-	}
+    public boolean isRotateUpDown() {
+        return rotateUpDown;
+    }
 
-	public void setRotateUpDown(boolean rotateUpDown) {
-		this.rotateUpDown = rotateUpDown;
-	}
+    public void setRotateUpDown(boolean rotateUpDown) {
+        this.rotateUpDown = rotateUpDown;
+    }
 
-	public boolean isRotateStandHead() {
-		return rotateStandHead;
-	}
+    public boolean isRotateStandHead() {
+        return rotateStandHead;
+    }
 
-	public void setRotateStandHead(boolean rotateStandHead) {
-		this.rotateStandHead = rotateStandHead;
-	}
+    public void setRotateStandHead(boolean rotateStandHead) {
+        this.rotateStandHead = rotateStandHead;
+    }
 
-	public List<Integer> getFiringModelNumbers() {
-		return firingModelNumbers;
-	}
+    public List<Integer> getFiringModelNumbers() {
+        return firingModelNumbers;
+    }
 
-	public void setFiringModelNumbers(List<Integer> firingModelNumbers) {
-		this.firingModelNumbers = firingModelNumbers;
-	}
+    public void setFiringModelNumbers(List<Integer> firingModelNumbers) {
+        this.firingModelNumbers = firingModelNumbers;
+    }
 
-	public int getReadyModelNumber() {
-		return readyModelNumber;
-	}
+    public int getReadyModelNumber() {
+        return readyModelNumber;
+    }
 
-	public void setReadyModelNumber(int readyModelNumber) {
-		this.readyModelNumber = readyModelNumber;
-	}
+    public void setReadyModelNumber(int readyModelNumber) {
+        this.readyModelNumber = readyModelNumber;
+    }
 
-	public int getPreFireModelNumber() {
-		return preFireModelNumber;
-	}
+    public int getPreFireModelNumber() {
+        return preFireModelNumber;
+    }
 
-	public void setPreFireModelNumber(int preFireModelNumber) {
-		this.preFireModelNumber = preFireModelNumber;
-	}
-	
-	public int getPreLoadModelNumber() {
-		return preLoadModelNumber;
-	}
+    public void setPreFireModelNumber(int preFireModelNumber) {
+        this.preFireModelNumber = preFireModelNumber;
+    }
 
-	public void setPreLoadModelNumber(int preLoadModelNumber) {
-		this.preLoadModelNumber = preLoadModelNumber;
-	}
+    public int getPreLoadModelNumber() {
+        return preLoadModelNumber;
+    }
 
-	public SiegeEngineAmmoHolder getAmmoHolder() {
-		return ammoHolder;
-	}
+    public void setPreLoadModelNumber(int preLoadModelNumber) {
+        this.preLoadModelNumber = preLoadModelNumber;
+    }
 
-	public void setAmmoHolder(SiegeEngineAmmoHolder ammoHolder) {
-		this.ammoHolder = ammoHolder;
-	}
+    public SiegeEngineAmmoHolder getAmmoHolder() {
+        return ammoHolder;
+    }
 
-	public boolean isMountable() {
-		return mountable;
-	}
+    public void setAmmoHolder(SiegeEngineAmmoHolder ammoHolder) {
+        this.ammoHolder = ammoHolder;
+    }
 
-	public void setMountable(boolean canMount) {
-		this.mountable = canMount;
-	}
+    public boolean isMountable() {
+        return mountable;
+    }
 
-	public String getEngineName() {
-		return engineName;
-	}
+    public void setMountable(boolean canMount) {
+        this.mountable = canMount;
+    }
 
-	public void setEngineName(String engineName) {
-		this.engineName = engineName;
-	}
+    public String getEngineName() {
+        return engineName;
+    }
 
-	public ItemStack getFuelItem() {
-		return fuelItem;
-	}
+    public void setEngineName(String engineName) {
+        this.engineName = engineName;
+    }
 
-	public void setFuelItem(ItemStack fuelItem) {
-		this.fuelItem = fuelItem;
-	}
+    public ItemStack getFuelItem() {
+        return fuelItem;
+    }
 
-	public HashMap<ItemStack, SiegeEngineProjectile> getProjectiles() {
-		return projectiles;
-	}
+    public void setFuelItem(ItemStack fuelItem) {
+        this.fuelItem = fuelItem;
+    }
 
-	public void setProjectiles(HashMap<ItemStack, SiegeEngineProjectile> projectiles) {
-		this.projectiles = projectiles;
-	}
+    public HashMap<ItemStack, SiegeEngineProjectile> getProjectiles() {
+        return projectiles;
+    }
 
-	public int getCustomModelID() {
-		return customModelID;
-	}
+    public void setProjectiles(HashMap<ItemStack, SiegeEngineProjectile> projectiles) {
+        this.projectiles = projectiles;
+    }
 
-	public void setCustomModelID(int customModelID) {
-		this.customModelID = customModelID;
-	}
-	
-	public String getId() {
-		return this.id;
-	}
-	
-	public void setId(String id) {
-		this.id = id;
-	}
+    public int getCustomModelID() {
+        return customModelID;
+    }
+
+    public void setCustomModelID(int customModelID) {
+        this.customModelID = customModelID;
+    }
+
+    public String getId() {
+        return this.id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 }
