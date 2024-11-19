@@ -26,11 +26,8 @@ public class SiegeEngineInteractListener implements Listener {
         Player player = event.getPlayer();
         ItemStack itemInHand = player.getInventory().getItemInMainHand();
         Entity entity = event.getRightClicked();
-        if (entity == null) {
-            return;
-        }
         if (entity.getType() == EntityType.ARMOR_STAND) {
-            if ((itemInHand.getType() == Material.AIR || itemInHand == null)) {
+            if (itemInHand.getType() == Material.AIR) {
                 if (player.isSneaking()) {
                     if (!(SiegeEngines.activeSiegeEngines.containsKey(entity.getUniqueId()))) {
                         return;
@@ -72,8 +69,7 @@ public class SiegeEngineInteractListener implements Listener {
                     }
                     return;
                 }
-                if (itemInHand == null || itemInHand.getType() == Material.AIR
-                    || itemInHand.getType() == Config.controlItem) {
+                if (itemInHand.getType() == Material.AIR || itemInHand.getType() == Config.controlItem) {
                     if (!SiegeEnginesUtil.pulledPropellantFromContainer(siegeEngine.getEntity().getLocation(),
                         siegeEngine)) {
                         SiegeEnginesUtil.sendSiegeEngineHelpMSG(player, siegeEngine);
@@ -180,7 +176,7 @@ public class SiegeEngineInteractListener implements Listener {
         Location eventLocation;
         if (event.getAction() == Action.RIGHT_CLICK_AIR) {
             eventLocation = player.getLocation();
-        } else if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+        } else if (event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getClickedBlock() != null) {
             eventLocation = event.getClickedBlock().getLocation();
         } else {
             return;

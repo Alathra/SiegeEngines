@@ -7,8 +7,8 @@ import org.jetbrains.annotations.NotNull;
 
 public abstract class SiegeEngineProjectile {
 
-    protected ProjectileType projectileType;
-    protected ItemStack ammunitionItem;
+    protected final ProjectileType projectileType;
+    protected final ItemStack ammunitionItem;
 
     public SiegeEngineProjectile(ProjectileType projectileType, @NotNull ItemStack ammunitionItem) {
         this.projectileType = projectileType;

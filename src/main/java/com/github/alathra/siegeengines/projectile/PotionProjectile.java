@@ -16,8 +16,8 @@ public class PotionProjectile extends SiegeEngineProjectile {
     public Boolean delayedFire = false;
     public int delayTime = 6;
     public float inaccuracy = 0.1f;
-    public Particle particleType = Particle.EXPLOSION_LARGE;
-    public Sound soundType = Sound.ENTITY_GENERIC_EXPLODE;
+    public final Particle particleType = Particle.EXPLOSION_LARGE;
+    public final Sound soundType = Sound.ENTITY_GENERIC_EXPLODE;
     public float velocityFactor = 1.0f;
 
     public PotionProjectile(ItemStack ammunitionItem) {
@@ -31,10 +31,7 @@ public class PotionProjectile extends SiegeEngineProjectile {
         for (int i = 0; i < projectileCount; i++) {
             if (delayedFire) {
                 baseDelay += delayTime;
-                Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(SiegeEngines.getInstance(), () -> {
-
-                    CreateEntity(entity, loc, velocity);
-                }, baseDelay);
+                Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(SiegeEngines.getInstance(), () -> CreateEntity(entity, loc, velocity), baseDelay);
             } else {
                 CreateEntity(entity, loc, velocity);
             }

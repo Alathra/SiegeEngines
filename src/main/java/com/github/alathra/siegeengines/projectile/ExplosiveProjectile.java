@@ -13,15 +13,15 @@ public class ExplosiveProjectile extends SiegeEngineProjectile {
 
 
     // Defaults
-    public Boolean placeBlocks = false;
-    public Material blockToPlace = Material.COBWEB; // TO-DO
-    public int blocksToPlaceAmount = 3; // TO-DO
+    public final Boolean placeBlocks = false;
+    public final Material blockToPlace = Material.COBWEB; // TO-DO
+    public final int blocksToPlaceAmount = 3; // TO-DO
     public float explodePower = 2.0f;
     public float inaccuracy = 0.3f;
     public int projectilesCount = 1;
-    public Boolean delayedFire = false;
-    public int delayTime = 6;
-    public Particle particleType = Particle.EXPLOSION_LARGE;
+    public final Boolean delayedFire = false;
+    public final int delayTime = 6;
+    public final Particle particleType = Particle.EXPLOSION_LARGE;
     public Sound soundType = Sound.ENTITY_GENERIC_EXPLODE;
     public Boolean alertOnLanding = false;
     public float velocityFactor = 1.0f;
@@ -39,9 +39,7 @@ public class ExplosiveProjectile extends SiegeEngineProjectile {
         for (int i = 0; i < projectilesCount; i++) {
             if (delayedFire) {
                 baseDelay += delayTime;
-                Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(SiegeEngines.getInstance(), () -> {
-                    CreateEntity(entity, loc, velocity * velocityFactor, player);
-                }, baseDelay);
+                Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(SiegeEngines.getInstance(), () -> CreateEntity(entity, loc, velocity * velocityFactor, player), baseDelay);
             } else {
                 CreateEntity(entity, loc, velocity * velocityFactor, player);
             }

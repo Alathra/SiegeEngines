@@ -46,9 +46,7 @@ public class FireworkProjectile extends SiegeEngineProjectile {
         for (int i = 0; i < projectileCount; i++) {
             if (delayedFire) {
                 baseDelay += delayTime;
-                Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(SiegeEngines.getInstance(), () -> {
-                    CreateEntity(entity, FireLocation, velocity * velocityFactor, player);
-                }, baseDelay);
+                Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(SiegeEngines.getInstance(), () -> CreateEntity(entity, FireLocation, velocity * velocityFactor, player), baseDelay);
             } else {
                 CreateEntity(entity, FireLocation, velocity * velocityFactor, player);
             }
@@ -80,10 +78,10 @@ public class FireworkProjectile extends SiegeEngineProjectile {
                 if (rocketItem.getItemMeta() instanceof FireworkMeta) {
                     firework.setFireworkMeta((FireworkMeta) rocketItem.getItemMeta());
                 }
-                int fuse = firework.getMaxLife();
+                int fuse = firework.getTicksToDetonate();
                 int itemPower = 1 + firework.getFireworkMeta().getPower();
                 fuse = fuse + (5 * itemPower);
-                firework.setMaxLife(fuse);
+                firework.setTicksToDetonate(fuse);
             }
         }
         if (playSound) {

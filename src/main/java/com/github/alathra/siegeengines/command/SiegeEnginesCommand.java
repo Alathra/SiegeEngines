@@ -44,7 +44,7 @@ public class SiegeEnginesCommand {
                 new StringArgument("equipmentid")
                     .replaceSuggestions(
                         ArgumentSuggestions.strings(
-                            definedSiegeEngines.values().stream().map(SiegeEquipment -> SiegeEquipment.getId()).toList()
+                            definedSiegeEngines.values().stream().map(SiegeEngine::getId).toList()
                         )
                     ),
                 new PlayerArgument("target")

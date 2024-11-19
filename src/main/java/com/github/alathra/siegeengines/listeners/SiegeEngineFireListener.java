@@ -20,9 +20,6 @@ public class SiegeEngineFireListener implements Listener {
     public void onSiegeEngineFire(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         ItemStack itemInHand = event.getPlayer().getInventory().getItemInMainHand();
-        if (itemInHand == null) {
-            return;
-        }
 
         if (event.getAction() == Action.RIGHT_CLICK_AIR && itemInHand.getType() == Config.controlItem) {
             // If player is not sneaking, fire SiegeEngine

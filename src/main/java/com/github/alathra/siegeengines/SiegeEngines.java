@@ -7,6 +7,7 @@ import com.github.alathra.siegeengines.listeners.*;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.MetadataValueAdapter;
@@ -20,14 +21,14 @@ public class SiegeEngines extends JavaPlugin {
 
     public static SiegeEngines instance;
     public static MetadataValueAdapter metadata;
-    public static Random random = new Random();
+    public static final Random random = new Random();
 
     // model id, defined seige engine types
-    public static HashMap<Integer, SiegeEngine> definedSiegeEngines = new HashMap<Integer, SiegeEngine>();
+    public static final HashMap<Integer, SiegeEngine> definedSiegeEngines = new HashMap<>();
     // SiegeEngine entity, SiegeEngine object
-    public static HashMap<UUID, SiegeEngine> activeSiegeEngines = new HashMap<UUID, SiegeEngine>();
+    public static final HashMap<UUID, SiegeEngine> activeSiegeEngines = new HashMap<>();
     // Player UUID, SiegeEngine entity
-    public static HashMap<UUID, List<Entity>> siegeEngineEntitiesPerPlayer = new HashMap<UUID, List<Entity>>();
+    public static final HashMap<UUID, List<Entity>> siegeEngineEntitiesPerPlayer = new HashMap<>();
 
     public static SiegeEngines getInstance() {
         return instance;
@@ -99,7 +100,10 @@ public class SiegeEngines extends JavaPlugin {
                 }
                 item.setItemMeta(meta);
 
-                ((LivingEntity) siegeEngine.getEntity()).getEquipment().setHelmet(item);
+                final EntityEquipment entityEquipment = ((LivingEntity) siegeEngine.getEntity()).getEquipment();
+                if (entityEquipment == null)
+                    continue;
+                entityEquipment.setHelmet(item);
             }
         }
     }
@@ -179,7 +183,7 @@ public class SiegeEngines extends JavaPlugin {
         swivelCannon.setPlacementOffsetY(-1);
         swivelCannon.setReadyModelNumber(141);
         swivelCannon.setModelNumberToFireAt(141);
-        swivelCannon.setFiringModelNumbers(new ArrayList<Integer>());
+        swivelCannon.setFiringModelNumbers(new ArrayList<>());
         swivelCannon.setRotateStandHead(true);
         swivelCannon.setRotateSideways(true);
         swivelCannon.setMountable(Config.swivelCannonCanMount);
@@ -202,7 +206,7 @@ public class SiegeEngines extends JavaPlugin {
         breachCannon.setPlacementOffsetY(-1);
         breachCannon.setReadyModelNumber(142);
         breachCannon.setModelNumberToFireAt(142);
-        breachCannon.setFiringModelNumbers(new ArrayList<Integer>());
+        breachCannon.setFiringModelNumbers(new ArrayList<>());
         breachCannon.setRotateStandHead(true);
         breachCannon.setRotateSideways(false);
         breachCannon.setMountable(Config.breachCannonCanMount);

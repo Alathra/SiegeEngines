@@ -28,8 +28,12 @@ public class SiegeEngineDeathListener implements Listener {
         List<ItemStack> items = event.getDrops();
         if (event.getEntity() instanceof ArmorStand) {
             if (event.getEntity().getPersistentDataContainer().has(SiegeEnginesData.key, PersistentDataType.STRING)) {
-                Entity base = Bukkit.getEntity(UUID.fromString(
-                    event.getEntity().getPersistentDataContainer().get(SiegeEnginesData.key, PersistentDataType.STRING)));
+                final String uuidString = event.getEntity().getPersistentDataContainer().get(SiegeEnginesData.key, PersistentDataType.STRING);
+                if (uuidString == null)
+                    return;
+                final Entity base = Bukkit.getEntity(UUID.fromString(uuidString));
+                if (base == null)
+                    return;
                 base.remove();
             }
             if (SiegeEngines.activeSiegeEngines.containsKey(event.getEntity().getUniqueId())) {

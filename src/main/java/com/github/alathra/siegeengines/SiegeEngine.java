@@ -90,7 +90,7 @@ public class SiegeEngine implements Cloneable {
         // Set Default values
         setType(SiegeEngineType.UNKNOWN);
         setItemName(ChatColor.translateAlternateColorCodes('&', "&eUnknown Siege Engine"));
-        setItemLore(new ArrayList<String>());
+        setItemLore(new ArrayList<>());
         setXOffset(0);
         setYOffset(0);
         setMaxFuel(5);
@@ -103,7 +103,7 @@ public class SiegeEngine implements Cloneable {
         setModelNumberToFireAt(customModelID);
         setPreFireModelNumber(customModelID);
         setPreLoadModelNumber(customModelID);
-        setFiringModelNumbers(new ArrayList<Integer>());
+        setFiringModelNumbers(new ArrayList<>());
         setAmmoHolder(new SiegeEngineAmmoHolder());
         //fuelItem = new ItemStack(Material.GUNPOWDER);
         setCycleThroughModelsWhileFiring(false);
@@ -251,8 +251,10 @@ public class SiegeEngine implements Cloneable {
         float loadedFuel = getAmmoHolder().getLoadedFuel();
         ItemStack LoadedProjectile = getAmmoHolder().getMaterialName();
 
-        LivingEntity living = (LivingEntity) getEntity();
-        if (living == null || living.getEquipment() == null || living.getEquipment().getHelmet() == null || living.getEquipment().getHelmet().getItemMeta() == null) {
+        if (!(getEntity() instanceof LivingEntity living))
+            return;
+
+        if (living.getEquipment() == null || living.getEquipment().getHelmet() == null || living.getEquipment().getHelmet().getItemMeta() == null) {
             return;
         }
 
@@ -279,13 +281,13 @@ public class SiegeEngine implements Cloneable {
         setWorldName(getEntity().getWorld().getName());
         nextShotTime = System.currentTimeMillis() + 1000;
         //for (int i = 0; i <= this.shotAmount /* range */; i += 1) {
-        if (living == null || living.isDead()) {
+        if (living.isDead()) {
             return;
         }
         if (isCycleThroughModelsWhileFiring()) {
 
             this.taskNumber = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(SiegeEngines.getInstance(), () -> {
-                if (living == null || living.isDead()) {
+                if (!(getEntity() instanceof LivingEntity livingEntity) || livingEntity.isDead()) {
                     Bukkit.getServer().getScheduler().cancelTask(taskNumber);
                     return;
                 }
@@ -293,7 +295,7 @@ public class SiegeEngine implements Cloneable {
                 if (hasFired) {
                     Bukkit.getServer().getScheduler().cancelTask(taskNumber);
                     taskNumber = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(SiegeEngines.getInstance(), () -> {
-                        if (living == null || living.isDead()) {
+                        if (livingEntity.isDead()) {
                             Bukkit.getServer().getScheduler().cancelTask(taskNumber);
                             return;
                         }
@@ -331,7 +333,7 @@ public class SiegeEngine implements Cloneable {
                         SiegeEnginesUtil.UpdateEntityIdModel(getEntity(), modelData, getWorldName());
                         if (modelData == getModelNumberToFireAt()) {
                             //	player.sendMessage("§efiring" + modelData);
-                            SiegeEngineProjectile projType = null;
+                            SiegeEngineProjectile projType;
                             if (LoadedProjectile == null) return;
                             if (LoadedProjectile.getType() == Material.AIR) return;
                             if (LoadedProjectile.getType() == Material.FIREWORK_ROCKET) {
@@ -340,7 +342,7 @@ public class SiegeEngine implements Cloneable {
                                 projType = getProjectiles().get(LoadedProjectile);
                             }
                             if (projType == null) return;
-                            projType.Shoot(player, getEntity(), this.GetFireLocation(living), loadedFuel * getVelocityPerFuel());
+                            projType.Shoot(player, getEntity(), this.GetFireLocation(livingEntity), loadedFuel * getVelocityPerFuel());
                         }
                         nextModelNumber += 1;
                     } else {
@@ -351,19 +353,18 @@ public class SiegeEngine implements Cloneable {
             }, 0, getMillisecondsBetweenFiringStages());
         } else {
             taskNumber = Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(SiegeEngines.getInstance(), () -> {
-                //player.sendMessage("§etask");
-                if (living == null || living.isDead()) {
+                if (!(getEntity() instanceof LivingEntity livingEntity) || livingEntity.isDead()) {
                     Bukkit.getServer().getScheduler().cancelTask(taskNumber);
                     return;
                 }
 
-                Location loc = living.getEyeLocation();
+                Location loc = livingEntity.getEyeLocation();
                 Vector direction = getEntity().getLocation().getDirection().multiply(getXOffset());
 
                 loc.add(direction);
 
                 nextModelNumber = 0;
-                SiegeEngineProjectile projType = null;
+                SiegeEngineProjectile projType;
                 if (LoadedProjectile == null) return;
                 if (LoadedProjectile.getType() == Material.AIR) return;
                 if (LoadedProjectile.getType() == Material.FIREWORK_ROCKET) {
@@ -372,13 +373,12 @@ public class SiegeEngine implements Cloneable {
                     projType = getProjectiles().get(LoadedProjectile);
                 }
                 if (projType == null) return;
-                projType.Shoot(player, getEntity(), this.GetFireLocation(living), loadedFuel * getVelocityPerFuel());
+                projType.Shoot(player, getEntity(), this.GetFireLocation(livingEntity), loadedFuel * getVelocityPerFuel());
             }, (long) delay);
 
         }
     }
 
-    @SuppressWarnings("deprecation")
     public boolean place(Entity player, Location l) {
         return place(player, l, null);
     }
@@ -387,7 +387,7 @@ public class SiegeEngine implements Cloneable {
     public boolean place(Entity player, Location l, Entity mount) {
         l.add(0.5, 0, 0.5);
         NamespacedKey key = new NamespacedKey(SiegeEngines.getInstance(), "siege_engines");
-        if (this == null || !this.getEnabled()) {
+        if (!this.getEnabled()) {
             return false;
         }
         l.setY(l.getY() + 1);
@@ -395,7 +395,7 @@ public class SiegeEngine implements Cloneable {
         ItemStack item = new ItemStack(Material.CARVED_PUMPKIN);
         ItemMeta meta = item.getItemMeta();
         String id = "";
-        Entity entity3 = null;
+        Entity entity3;
         for (Entity enti : l.getWorld().getNearbyEntities(l, Config.placementDensity, Config.placementDensity, Config.placementDensity)) {
             if (SiegeEngines.activeSiegeEngines.containsKey(enti.getUniqueId())) {
                 return false;
@@ -404,8 +404,7 @@ public class SiegeEngine implements Cloneable {
         this.setAmmoHolder(new SiegeEngineAmmoHolder());
         if (this.hasBaseStand) {
 
-            Location l2 = l;
-            l2.setY(l.getY() + this.baseStandOffset);
+            l.setY(l.getY() + this.baseStandOffset);
             entity3 = player.getWorld().spawnEntity(l, EntityType.ARMOR_STAND);
 
             LivingEntity ent = (LivingEntity) entity3;
@@ -429,7 +428,7 @@ public class SiegeEngine implements Cloneable {
         }
         l.setY(l.getY() + this.getPlacementOffsetY());
         Entity entity2 = player.getWorld().spawnEntity(l, EntityType.ARMOR_STAND);
-        if (id != "") {
+        if (!id.isEmpty()) {
             entity2.getPersistentDataContainer().set(key, PersistentDataType.STRING, id);
         }
         meta.setCustomModelData(this.getReadyModelNumber());
@@ -456,15 +455,6 @@ public class SiegeEngine implements Cloneable {
 
         stand.setGravity(false);
         ent.getEquipment().setHelmet(item);
-        /*if (SiegeEngines.siegeEngineEntitiesPerPlayer.containsKey(player.getUniqueId())) {
-            List<Entity> entities = SiegeEngines.siegeEngineEntitiesPerPlayer.get(player.getUniqueId());
-            entities.add(entity2);
-            SiegeEngines.siegeEngineEntitiesPerPlayer.put(player.getUniqueId(), entities);
-        } else {
-            List<Entity> newList = new ArrayList<Entity>();
-            newList.add(entity2);
-            SiegeEngines.siegeEngineEntitiesPerPlayer.put(player.getUniqueId(), newList);
-        }*/
         stand.setMaxHealth(baseHealth);
         stand.setHealth(baseHealth);
         SiegeEngines.activeSiegeEngines.put(stand.getUniqueId(), this);

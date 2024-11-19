@@ -18,7 +18,7 @@ public class SiegeEnginesData {
     public static ArrayList<ItemStack> items;
 
     public static void init() {
-        projectiles = new HashMap<UUID, ExplosiveProjectile>();
+        projectiles = new HashMap<>();
         fluidMaterials = EnumSet.of(Material.WATER, Material.LAVA, Material.BUBBLE_COLUMN,
             Material.SEAGRASS, Material.TALL_SEAGRASS, Material.KELP, Material.KELP_PLANT, Material.SEA_PICKLE);
         key = new NamespacedKey(SiegeEngines.getInstance(), "siege_engines");

@@ -11,11 +11,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 public class SiegeEnginesAPI {
 
     public static SiegeEngine getSiegeEngineFromEntity(Entity entity) {
-        if (SiegeEngines.activeSiegeEngines.containsKey(entity.getUniqueId())) {
-            return SiegeEngines.activeSiegeEngines.get(entity.getUniqueId());
-        } else {
-            return null;
-        }
+        return SiegeEngines.activeSiegeEngines.getOrDefault(entity.getUniqueId(), null);
     }
 
     public static ItemStack getTrebuchetItem() {

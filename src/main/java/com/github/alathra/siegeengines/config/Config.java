@@ -140,9 +140,7 @@ public class Config {
         trebuchetItemName = ChatColor.translateAlternateColorCodes('&',
             config.getString("SiegeEngines.Trebuchet.ItemName"));
         trebuchetItemLore = config.getStringList("SiegeEngines.Trebuchet.Lore");
-        for (int i = 0; i < trebuchetItemLore.size(); i++) {
-            trebuchetItemLore.set(i, ChatColor.translateAlternateColorCodes('&', trebuchetItemLore.get(i)));
-        }
+        trebuchetItemLore.replaceAll(textToTranslate -> ChatColor.translateAlternateColorCodes('&', textToTranslate));
     }
 
     private static void loadBallistaValues() {
@@ -167,9 +165,7 @@ public class Config {
         ballistaItemName = ChatColor.translateAlternateColorCodes('&',
             config.getString("SiegeEngines.Ballista.ItemName"));
         ballistaItemLore = config.getStringList("SiegeEngines.Ballista.Lore");
-        for (int i = 0; i < ballistaItemLore.size(); i++) {
-            ballistaItemLore.set(i, ChatColor.translateAlternateColorCodes('&', ballistaItemLore.get(i)));
-        }
+        ballistaItemLore.replaceAll(textToTranslate -> ChatColor.translateAlternateColorCodes('&', textToTranslate));
     }
 
     private static void loadSwivelCannonValues() {
@@ -194,9 +190,7 @@ public class Config {
         swivelCannonItemName = ChatColor.translateAlternateColorCodes('&',
             config.getString("SiegeEngines.SwivelCannon.ItemName"));
         swivelCannonItemLore = config.getStringList("SiegeEngines.SwivelCannon.Lore");
-        for (int i = 0; i < swivelCannonItemLore.size(); i++) {
-            swivelCannonItemLore.set(i, ChatColor.translateAlternateColorCodes('&', swivelCannonItemLore.get(i)));
-        }
+        swivelCannonItemLore.replaceAll(textToTranslate -> ChatColor.translateAlternateColorCodes('&', textToTranslate));
     }
 
     private static void loadBreachCannonValues() {
@@ -221,9 +215,7 @@ public class Config {
         breachCannonItemName = ChatColor.translateAlternateColorCodes('&',
             config.getString("SiegeEngines.BreachCannon.ItemName"));
         breachCannonItemLore = config.getStringList("SiegeEngines.BreachCannon.Lore");
-        for (int i = 0; i < breachCannonItemLore.size(); i++) {
-            breachCannonItemLore.set(i, ChatColor.translateAlternateColorCodes('&', breachCannonItemLore.get(i)));
-        }
+        breachCannonItemLore.replaceAll(textToTranslate -> ChatColor.translateAlternateColorCodes('&', textToTranslate));
     }
 
     private static void loadSiegeEngineConfig() {
@@ -251,7 +243,7 @@ public class Config {
 
         for (String projectileName : config.getConfigurationSection("Projectiles").getKeys(false)) {
 
-            ProjectileType projectileType = null;
+            ProjectileType projectileType;
             try {
                 projectileType = ProjectileType
                     .valueOf(config.getString("Projectiles." + projectileName + ".ProjectileType"));
@@ -323,7 +315,7 @@ public class Config {
                         continue;
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                SiegeEnginesLogger.severe(e.toString());
             }
         }
     }

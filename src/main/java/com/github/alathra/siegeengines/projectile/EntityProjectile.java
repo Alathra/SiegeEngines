@@ -14,8 +14,8 @@ public class EntityProjectile extends SiegeEngineProjectile {
     // Defaults
     public int projectileCount = 20;
     public int arrowOnlyDamage = 6;
-    public Boolean delayedFire = false;
-    public int delayTime = 6;
+    public final Boolean delayedFire = false;
+    public final int delayTime = 6;
     public EntityType entityType = EntityType.ARROW;
     public float inaccuracy = 0.2f;
     public Particle particleType = Particle.CAMPFIRE_SIGNAL_SMOKE;
@@ -38,9 +38,7 @@ public class EntityProjectile extends SiegeEngineProjectile {
         for (int i = 0; i < projectileCount; i++) {
             if (delayedFire) {
                 baseDelay += delayTime;
-                Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(SiegeEngines.getInstance(), () -> {
-                    CreateEntity(entity, FireLocation, velocity * velocityFactor, player);
-                }, baseDelay);
+                Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(SiegeEngines.getInstance(), () -> CreateEntity(entity, FireLocation, velocity * velocityFactor, player), baseDelay);
             } else {
                 CreateEntity(entity, FireLocation, velocity * velocityFactor, player);
             }

@@ -18,17 +18,14 @@ import org.bukkit.entity.ArmorStand.LockType;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.EulerAngle;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class SiegeEnginesUtil {
@@ -37,18 +34,22 @@ public class SiegeEnginesUtil {
 
     public static void UpdateEntityIdModel(Entity ent, int modelNumber, String WorldName) {
         if (ent instanceof LivingEntity liv) {
-            ItemStack Helmet = liv.getEquipment().getHelmet();
-            if (Helmet != null) {
-                ItemMeta meta = Helmet.getItemMeta();
+            final EntityEquipment equipment = liv.getEquipment();
+            if (equipment == null)
+                return;
+
+            final ItemStack helmet = equipment.getHelmet();
+            if (helmet != null) {
+                ItemMeta meta = helmet.getItemMeta();
                 meta.setCustomModelData(modelNumber);
-                Helmet.setItemMeta(meta);
-                liv.getEquipment().setHelmet(Helmet);
+                helmet.setItemMeta(meta);
+                equipment.setHelmet(helmet);
             }
         }
     }
 
     public static FixedMetadataValue addMetaDataValue(Object value) {
-        return new FixedMetadataValue(Bukkit.getServer().getPluginManager().getPlugin("SiegeEngines"), value);
+        return new FixedMetadataValue(Objects.requireNonNull(Bukkit.getServer().getPluginManager().getPlugin("SiegeEngines")), value);
     }
 
     public static String convertTime(long time) {
@@ -59,8 +60,7 @@ public class SiegeEnginesUtil {
         long minutes = TimeUnit.MILLISECONDS.toMinutes(time);
         time -= TimeUnit.MINUTES.toMillis(minutes);
         long seconds = TimeUnit.MILLISECONDS.toSeconds(time);
-        String timeLeftFormatted = String.format("§e" + minutes + " Minutes " + seconds + " Seconds§f");
-        return timeLeftFormatted;
+        return String.format("§e" + minutes + " Minutes " + seconds + " Seconds§f");
     }
 
     public static SiegeEngine createCloneFromCustomModelData(Integer ModelId) {
@@ -74,10 +74,13 @@ public class SiegeEnginesUtil {
 
     public static boolean isSiegeEngine(Entity entity, boolean add) {
         LivingEntity living = (LivingEntity) entity;
-        if (living.getEquipment().getHelmet() != null
-            && living.getEquipment().getHelmet().getType() == Material.CARVED_PUMPKIN) {
-            if (living.getEquipment() == null || living.getEquipment().getHelmet() == null
-                || living.getEquipment().getHelmet().getItemMeta() == null) {
+
+        final EntityEquipment equipment = living.getEquipment();
+        if (equipment == null)
+            return false;
+
+        if (equipment.getHelmet() != null && equipment.getHelmet().getType() == Material.CARVED_PUMPKIN) {
+            if (equipment.getHelmet() == null || equipment.getHelmet().getItemMeta() == null) {
                 return false;
             }
 
@@ -160,7 +163,9 @@ public class SiegeEnginesUtil {
                 SiegeEngines.siegeEngineEntitiesPerPlayer.get(player.getUniqueId()).remove(ent);
                 continue;
             }
-            if (((LivingEntity) ent).getEquipment().getHelmet().getType() != Material.CARVED_PUMPKIN) {
+
+            final EntityEquipment equipment = ((LivingEntity) ent).getEquipment();
+            if (equipment != null && equipment.getHelmet().getType() != Material.CARVED_PUMPKIN) {
                 SiegeEngines.siegeEngineEntitiesPerPlayer.get(player.getUniqueId()).remove(ent);
                 continue;
             }
@@ -172,7 +177,7 @@ public class SiegeEnginesUtil {
             SiegeEngine siege = SiegeEngines.activeSiegeEngines.get(ent.getUniqueId());
             if (counter > 4)
                 return;
-            if (ent == null || ent.isDead()) {
+            if (ent.isDead()) {
                 SiegeEngines.siegeEngineEntitiesPerPlayer.get(player.getUniqueId()).remove(ent);
                 continue;
             }
@@ -184,11 +189,7 @@ public class SiegeEnginesUtil {
                     siege.Fire(player, 15, 1);
                 }
                 counter++;
-            } else {
-                if (player instanceof Player) {
-                }
             }
-
         }
     }
 
@@ -233,10 +234,12 @@ public class SiegeEnginesUtil {
                 return;
             }
         }
-        if (living.getEquipment().getHelmet() != null
-            && living.getEquipment().getHelmet().getType() == Material.CARVED_PUMPKIN) {
-            if (living.getEquipment() == null || living.getEquipment().getHelmet() == null
-                || living.getEquipment().getHelmet().getItemMeta() == null) {
+        final EntityEquipment equipment = living.getEquipment();
+        if (equipment == null)
+            return;
+
+        if (equipment.getHelmet() != null && equipment.getHelmet().getType() == Material.CARVED_PUMPKIN) {
+            if (equipment.getHelmet() == null || equipment.getHelmet().getItemMeta() == null) {
                 return;
             }
 
@@ -274,7 +277,7 @@ public class SiegeEnginesUtil {
                 SiegeEngines.siegeEngineEntitiesPerPlayer.remove(player.getUniqueId());
                 SiegeEngines.siegeEngineEntitiesPerPlayer.put(player.getUniqueId(), entities);
             } else {
-                List<Entity> newList = new ArrayList<Entity>();
+                List<Entity> newList = new ArrayList<>();
                 newList.add(entity);
                 SiegeEngines.siegeEngineEntitiesPerPlayer.remove(player.getUniqueId());
                 SiegeEngines.siegeEngineEntitiesPerPlayer.put(player.getUniqueId(), newList);
@@ -375,13 +378,11 @@ public class SiegeEnginesUtil {
         if (siegeEngine.hasAmmunition() || !siegeEngine.hasPropellant()) {
             return false;
         }
-        if (inventoryItem == null || inventoryItem.getType() == Material.AIR || !siegeEngine.hasPropellant()) {
+        if (inventoryItem.getType() == Material.AIR || !siegeEngine.hasPropellant()) {
             sendSiegeEngineHelpMSG(state, siegeEngine);
             return false;
         } else {
             for (ItemStack stack : siegeEngine.getProjectiles().keySet()) {
-                if (inventoryItem == null)
-                    continue;
                 if (siegeEngine.hasAmmunition()) {
                     return true;
                 }
@@ -596,6 +597,9 @@ public class SiegeEnginesUtil {
                     // Old Non-Firework Compatible
                     // event.getPlayer().getInventory().getContents()
                     for (ItemStack inventoryItem : player.getInventory().getContents()) {
+                        if (inventoryItem == null)
+                            continue;
+
                         for (ItemStack stack : siegeEngine.getProjectiles().keySet()) {
                             if (siegeEngine.hasAmmunition()) {
                                 continue;
@@ -663,7 +667,7 @@ public class SiegeEnginesUtil {
     }
 
     public static void saveSiegeEngine(Player player, Block block) {
-        List<String> Ids = new ArrayList<String>();
+        List<String> Ids = new ArrayList<>();
         if (!SiegeEngines.siegeEngineEntitiesPerPlayer.containsKey(player.getUniqueId())) {
             return;
         }
@@ -680,6 +684,4 @@ public class SiegeEnginesUtil {
             SiegeEnginesUtil.doAimUp(ent, 0, player);
         }
     }
-
-
 }
