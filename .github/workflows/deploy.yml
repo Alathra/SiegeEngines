@@ -24,6 +24,13 @@ jobs:
           run-id: ${{ github.event.workflow_run.id }}
           path: "${{ github.workspace }}/tmp/"
 
+      - name: Download Snapshot Resourcepack
+        uses: actions/download-artifact@v4
+        with:
+          name: Release-Resourcepack
+          run-id: ${{ github.event.workflow_run.id }}
+          path: "${{ github.workspace }}/tmp/"
+
       # Generate changelog
       - name: Generate Changelog
         uses: ardalanamini/auto-changelog@v4

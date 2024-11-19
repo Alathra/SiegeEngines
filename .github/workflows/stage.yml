@@ -120,5 +120,12 @@ jobs:
           name: Release
           path: |
             ${{ github.workspace }}/build/libs/
+          retention-days: 7
+
+      - name: Upload Snapshot Resourcepack
+        uses: actions/upload-artifact@v4
+        with:
+          name: Release-Resourcepack
+          path: |
             ${{ github.workspace }}/SiegeEngines-ResourcePack.zip
           retention-days: 7
