@@ -2,12 +2,7 @@ package com.github.alathra.siegeengines.projectile;
 
 import com.github.alathra.siegeengines.SiegeEngines;
 import com.github.alathra.siegeengines.util.SiegeEnginesUtil;
-
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Particle;
-import org.bukkit.Sound;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ThrownPotion;
@@ -16,18 +11,18 @@ import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.util.Vector;
 
 public class PotionProjectile extends SiegeEngineProjectile {
-	
+
     public int projectileCount = 3;
     public Boolean delayedFire = false;
     public int delayTime = 6;
     public float inaccuracy = 0.1f;
-    public Particle particleType = Particle.EXPLOSION_LARGE;
-    public Sound soundType = Sound.ENTITY_GENERIC_EXPLODE;
+    public final Particle particleType = Particle.EXPLOSION_LARGE;
+    public final Sound soundType = Sound.ENTITY_GENERIC_EXPLODE;
     public float velocityFactor = 1.0f;
 
     public PotionProjectile(ItemStack ammunitionItem) {
-		super(ProjectileType.POTION, ammunitionItem);
-	}
+        super(ProjectileType.POTION, ammunitionItem);
+    }
 
     @Override
     public void Shoot(Entity player, Entity entity, Location loc, Float velocity) {
@@ -36,10 +31,7 @@ public class PotionProjectile extends SiegeEngineProjectile {
         for (int i = 0; i < projectileCount; i++) {
             if (delayedFire) {
                 baseDelay += delayTime;
-                Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(SiegeEngines.getInstance(), () -> {
-
-                    CreateEntity(entity, loc, velocity);
-                }, (long) baseDelay);
+                Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(SiegeEngines.getInstance(), () -> CreateEntity(entity, loc, velocity), baseDelay);
             } else {
                 CreateEntity(entity, loc, velocity);
             }
@@ -60,7 +52,7 @@ public class PotionProjectile extends SiegeEngineProjectile {
         ItemStack itemStack = this.getAmmuinitionItem();
         PotionMeta potionMeta = (PotionMeta) itemStack.getItemMeta();
         System.out.println(potionMeta.toString());
-        System.out.println(itemStack.toString());
+        System.out.println(itemStack);
         potionMeta.getBasePotionData();
         itemStack.setItemMeta(potionMeta);
         ThrownPotion potion = (ThrownPotion) arrow;
@@ -73,7 +65,7 @@ public class PotionProjectile extends SiegeEngineProjectile {
         return new Vector(SiegeEngines.random.nextFloat() * (inaccuracy - (inaccuracy * -1)) + (inaccuracy * -1), SiegeEngines.random.nextFloat() * (inaccuracy - (inaccuracy * -1)) + (inaccuracy * -1), SiegeEngines.random.nextFloat() * (inaccuracy - (inaccuracy * -1)) + (inaccuracy * -1));
     }
 
-	public ProjectileType getProjectileType() {
-		return projectileType;
-	}
+    public ProjectileType getProjectileType() {
+        return projectileType;
+    }
 }
