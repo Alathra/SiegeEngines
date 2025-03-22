@@ -16,7 +16,7 @@ public class FireworkProjectile extends SiegeEngineProjectile {
     public int projectileCount = 1;
     public Boolean delayedFire = true;
     public int delayTime = 6;
-    public EntityType entityType = EntityType.FIREWORK;
+    public EntityType entityType = EntityType.FIREWORK_ROCKET;
     public float inaccuracy = 0.125f;
     public Particle particleType = Particle.FLASH;
     public Sound soundType = Sound.ENTITY_FIREWORK_ROCKET_BLAST_FAR;
@@ -32,7 +32,7 @@ public class FireworkProjectile extends SiegeEngineProjectile {
     public static FireworkProjectile getDefaultRocketShot(ItemStack rocketItem) {
         FireworkProjectile fireProj = new FireworkProjectile(rocketItem);
         fireProj.projectileCount = 1;
-        fireProj.entityType = EntityType.FIREWORK;
+        fireProj.entityType = EntityType.FIREWORK_ROCKET;
         fireProj.particleType = Particle.WHITE_ASH;
         fireProj.soundType = Sound.ENTITY_FIREWORK_ROCKET_BLAST_FAR;
         fireProj.inaccuracy = 0.125f;

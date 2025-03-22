@@ -23,7 +23,7 @@ public class SiegeEngines extends JavaPlugin {
     public static MetadataValueAdapter metadata;
     public static final Random random = new Random();
 
-    // model id, defined seige engine types
+    // model id, defined siege engine types
     public static final HashMap<Integer, SiegeEngine> definedSiegeEngines = new HashMap<>();
     // SiegeEngine entity, SiegeEngine object
     public static final HashMap<UUID, SiegeEngine> activeSiegeEngines = new HashMap<>();

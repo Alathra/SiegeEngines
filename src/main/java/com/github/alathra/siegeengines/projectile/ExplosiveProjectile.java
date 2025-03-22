@@ -21,7 +21,7 @@ public class ExplosiveProjectile extends SiegeEngineProjectile {
     public int projectilesCount = 1;
     public final Boolean delayedFire = false;
     public final int delayTime = 6;
-    public final Particle particleType = Particle.EXPLOSION_LARGE;
+    public final Particle particleType = Particle.EXPLOSION;
     public Sound soundType = Sound.ENTITY_GENERIC_EXPLODE;
     public Boolean alertOnLanding = false;
     public float velocityFactor = 1.0f;

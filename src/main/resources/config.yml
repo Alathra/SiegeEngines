@@ -41,7 +41,7 @@ RotateDistance: 10
 # The maximum siege engines a player can control at the same time
 MaxSiegeEnginesControlled: 1
 
-# Whether or not the crafting recipes for siege engines are enabled
+# Whether the crafting recipes for siege engines are enabled
 CraftingRecipes: true
 
 # The auto-reload feature by shift-clicking
@@ -50,7 +50,7 @@ AutoReload: false
 # Worlds where all Siege Engine actions will be disabled including placing and firing
 DisabledWorlds:
   - world_nether
-  - World-o_nether
+  - world_the_end
 
 # ======================================
 # |            Projectiles             |
@@ -157,7 +157,7 @@ Projectiles:
 # MaxFuel: The maximum amount of fuel that can be loaded into each Siege Engine
 # ItemName: The default item name for the Siege Engine item
 # Lore: The default lore for the Siege Engine item
-# CanMount (EXPERIMENTAL): Whether or not the Siege Engine can be placed on a mountable mob
+# CanMount (EXPERIMENTAL): Whether the Siege Engine can be placed on a mountable mob
 
 SiegeEngines:
   Trebuchet:

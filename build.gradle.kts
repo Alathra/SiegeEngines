@@ -15,7 +15,7 @@ val mainPackage = "${project.group}.${project.name.lowercase()}"
 applyCustomVersion()
 
 java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(17)) // Configure the java toolchain. This allows gradle to auto-provision JDK 21 on systems that only have JDK 8 installed for example.
+    toolchain.languageVersion.set(JavaLanguageVersion.of(21)) // Configure the java toolchain. This allows gradle to auto-provision JDK 21 on systems that only have JDK 8 installed for example.
     withJavadocJar()
     withSourcesJar()
 }
@@ -49,7 +49,7 @@ tasks {
 
     compileJava {
         options.encoding = Charsets.UTF_8.name()
-        options.release.set(17)
+        options.release.set(21)
         options.compilerArgs.addAll(arrayListOf("-Xlint:all", "-Xlint:-processing", "-Xdiags:verbose"))
     }
 
@@ -110,9 +110,9 @@ bukkit { // Options: https://github.com/Minecrell/plugin-yml#bukkit
     prefix = project.name
     version = "${project.version}"
     description = "${project.description}"
-    authors = listOf("ShermansWorld", "C_Corp2002", "TheCrunchy")
+    authors = listOf("ShermansWorld", "C_Corp2002")
     contributors = listOf("darksaid98")
-    apiVersion = "1.20"
+    apiVersion = "1.21"
 
     // Misc properties
     load = net.minecrell.pluginyml.bukkit.BukkitPluginDescription.PluginLoadOrder.POSTWORLD // STARTUP or POSTWORLD

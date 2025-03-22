@@ -16,7 +16,7 @@ public class PotionProjectile extends SiegeEngineProjectile {
     public Boolean delayedFire = false;
     public int delayTime = 6;
     public float inaccuracy = 0.1f;
-    public final Particle particleType = Particle.EXPLOSION_LARGE;
+    public final Particle particleType = Particle.EXPLOSION;
     public final Sound soundType = Sound.ENTITY_GENERIC_EXPLODE;
     public float velocityFactor = 1.0f;
 
@@ -41,7 +41,7 @@ public class PotionProjectile extends SiegeEngineProjectile {
     private void CreateEntity(Entity entity, Location loc, Float velocity) {
         World world = entity.getLocation().getWorld();
 
-        Entity arrow = world.spawnEntity(loc, EntityType.SPLASH_POTION);
+        Entity arrow = world.spawnEntity(loc, EntityType.POTION);
         if (inaccuracy != 0f) {
             arrow.setVelocity(loc.getDirection().multiply(velocity).add(Randomise()).subtract(Randomise()));
         } else {
@@ -51,9 +51,6 @@ public class PotionProjectile extends SiegeEngineProjectile {
         Bukkit.getServer().getPluginManager().callEvent(new org.bukkit.event.entity.ProjectileLaunchEvent(arrow));
         ItemStack itemStack = this.getAmmuinitionItem();
         PotionMeta potionMeta = (PotionMeta) itemStack.getItemMeta();
-        System.out.println(potionMeta.toString());
-        System.out.println(itemStack);
-        potionMeta.getBasePotionData();
         itemStack.setItemMeta(potionMeta);
         ThrownPotion potion = (ThrownPotion) arrow;
         potion.setItem(itemStack);

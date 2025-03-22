@@ -1,5 +1,6 @@
 package com.github.alathra.siegeengines.listeners;
 
+import com.github.alathra.siegeengines.SiegeEnginesDamageSource;
 import com.github.alathra.siegeengines.SiegeEnginesLogger;
 import com.github.alathra.siegeengines.config.Config;
 import com.github.alathra.siegeengines.data.SiegeEnginesData;
@@ -35,7 +36,7 @@ public class SiegeEngineDamagedListener implements Listener {
                     if (stand.getHealth() - 2 > 0) {
                         stand.setHealth(stand.getHealth() - 2);
                     } else {
-                        EntityDeathEvent death = new EntityDeathEvent(stand, SiegeEnginesData.items, 0);
+                        EntityDeathEvent death = new EntityDeathEvent(stand, new SiegeEnginesDamageSource(stand, event.getHitEntity(), stand), SiegeEnginesData.items);
                         Bukkit.getServer().getPluginManager().callEvent(death);
                         if (!death.isCancelled()) stand.setHealth(0.0f);
                     }
@@ -52,10 +53,10 @@ public class SiegeEngineDamagedListener implements Listener {
             Entity player = (Entity) snowball.getShooter();
             if (player instanceof Player) {
                 player.sendMessage("§eDistance to impact: "
-                    + String.format("%.2f", player.getLocation().distance(snowball.getLocation())));
+                        + String.format("%.2f", player.getLocation().distance(snowball.getLocation())));
             }
             Location loc = snowball.getLocation();
-            Entity tnt = event.getEntity().getWorld().spawnEntity(loc, EntityType.PRIMED_TNT);
+            Entity tnt = event.getEntity().getWorld().spawnEntity(loc, EntityType.TNT);
 
             SiegeEnginesData.projectiles.remove(event.getEntity().getUniqueId());
 
@@ -90,7 +91,7 @@ public class SiegeEngineDamagedListener implements Listener {
             if (stand.getHealth() - 2 > 0) {
                 stand.setHealth(stand.getHealth() - 2);
             } else {
-                EntityDeathEvent death = new EntityDeathEvent(stand, SiegeEnginesData.items, 0);
+                EntityDeathEvent death = new EntityDeathEvent(stand, event.getDamageSource(), SiegeEnginesData.items);
                 Bukkit.getServer().getPluginManager().callEvent(death);
                 if (death.isCancelled()) return;
                 stand.setHealth(0.0f);
@@ -100,3 +101,4 @@ public class SiegeEngineDamagedListener implements Listener {
         }
     }
 }
+
