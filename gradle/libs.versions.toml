@@ -3,11 +3,11 @@
 [libraries]
 # Core dependencies
 annotations = "org.jetbrains:annotations:26.0.1"
-paper-api = "io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT"
+paper-api = "io.papermc.paper:paper-api:1.21.5-R0.1-SNAPSHOT"
 
 # API dependencies
 colorparser = "com.github.milkdrinkers:colorparser:2.0.3"
-commandapi-shade = "dev.jorel:commandapi-bukkit-shade:9.7.0"
+commandapi-shade = "dev.jorel:commandapi-bukkit-shade:10.0.1"
 
 [bundles]
 

@@ -41,7 +41,7 @@ public class PotionProjectile extends SiegeEngineProjectile {
     private void CreateEntity(Entity entity, Location loc, Float velocity) {
         World world = entity.getLocation().getWorld();
 
-        Entity arrow = world.spawnEntity(loc, EntityType.POTION);
+        Entity arrow = world.spawnEntity(loc, EntityType.SPLASH_POTION);
         if (inaccuracy != 0f) {
             arrow.setVelocity(loc.getDirection().multiply(velocity).add(Randomise()).subtract(Randomise()));
         } else {
