@@ -1,221 +1,174 @@
 # =================================================================
-# |          SiegeEngines by C_CORP2002 & ShermansWorld           |
+# |                SiegeEngines2 by ShermansWorld                 |
 # |    ** Forked from CrunchSiegeEquipment by TheRealCrunch **    |
 # =================================================================
 
-# =====================================
-# |         PERMISSION NODES          |
-# =====================================
+# Update Checker Settings
+update-checker:
+  enable: true
+  console: true # Post message to console
+  op: true # Send update notification to opped players on join
 
+# Language, specify the language file to use, for example `en_US` which will load `/lang/en_US.json`
+language: "en_US"
 
-# DO NOT CHANGE
-config-version: 2
+ItemSettings:
+  # Options include: VANILLA, ITEMSADDER, ORAXEN, NEXO and MMOITEMS
+  # An item provider plugin is recommended such as Nexo !!
+  item-provider: "VANILLA"
 
-# =====================================
-# |         GENERAL SETTINGS          |
-# =====================================
+  # The following onlyss applies if the "item-provider" is NOT "VANILLA", using an item plugin
+  control-item-id: "siegeengines_control_item"
+  fire-item-id: "siegeengines_fire_item"
 
-# Enable/Disable Debug logging.
-Debug: false
+  default-control-item:
+    material: CLOCK
+    model-id: "siegeengines:item/control_item"
+    display-name: "<yellow>Calibrator"
 
-# The item used to aim and fire siege engines
-# Must be a valid material. See https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
-ControlItem: CLOCK
+  default-fire-item:
+    material: FLINT
+    model-id: "siegeengines:item/fire_item"
+    display-name: "<yellow>Match"
 
-# The item used to only fire siege engines, an alternative to using the control item
-# Must be a valid material. See https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
-FireItem: FLINT
+SiegeEngineSettings:
+  trebuchet:
+    health: 8
+    velocity-per-propellant: 0.75
+    max-propellant: 3
+    propellant-type: STRING
+    allowed-shots:
+      - StoneShot
+      - IncendiaryShot
+      - SplashPotionShot
+      - LingeringPotionShot
 
-# Allows the disabling of Arrow Damage towards SiegeEngines.
-DisableArrowDamage: true
+  ballista:
+    health: 5
+    velocity-per-propellant: 0.5
+    max-propellant: 2
+    propellant-type: STRING
+    allowed-shots:
+      - BallistaBoltShot
+      - ArrowScatterShot
+      - FireworkShot
+      - SplashPotionShot
+      - LingeringPotionShot
+      - DragonsBreathShot
 
-# Determines how close together two or more SiegeEngines can be placed together.
-PlacementDensity: 2.5
+  swivel-cannon:
+    health: 8
+    velocity-per-propellant: 0.75
+    max-propellant: 3
+    propellant-type: STRING
+    allowed-shots:
+      - StoneShot
+      - IncendiaryShot
+      - CannonballShot
+      - GrapeShot
+      - ExplosiveShot
 
-# The maxmimum distance the player can be away from the SiegeEngine before total control is terminated
-ControlDistance: 10
+  breach-cannon:
+    health: 8
+    velocity-per-propellant: 0.75
+    max-propellant: 3
+    propellant-type: STRING
+    allowed-shots:
+      - StoneShot
+      - IncendiaryShot
+      - CannonballShot
+      - GrapeShot
+      - ExplosiveShot
+      - BreachShot
 
-# The maximum distance the player can be away from the SiegeEngine before rotation control is terminated
-RotateDistance: 10
+#projectile fields:
 
-# The maximum siege engines a player can control at the same time
-MaxSiegeEnginesControlled: 1
-
-# Whether the crafting recipes for siege engines are enabled
-CraftingRecipes: true
-
-# Worlds where all Siege Engine actions will be disabled including placing and firing
-DisabledWorlds:
-  - world_nether
-  - world_the_end
-
-# ======================================
-# |            Projectiles             |
-# ======================================
-
-# You can define as many projectiles as you want for use in Siege Engines
-
-# === Notes on projectile config options ===
-# ProjectileType: ENTITY, EXPLOSIVE, FIRWORK or POTION
-# ExplodePower: Only used in "EXPLOSIVE" projectile types, defines explosion power
-# Inaccuracy: A factor of ramdomness (spread) applied to the aimed vector
-# ProjectileCount: How many individual projectile entities will be fired
-# VelocityFactor: How fast the projectile(s) will move through the air
-# AmmoType: The item that must be loaded into the Siege Engine to produce the projectile
-# https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
-# FireSound: What sound the Siege Engine makes when the projectile is fired
-# https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html
-# ArrowDamageFactor: A factor of arrow damage, only applies to ENTITY projectiles of type ARROW
-
-
-Projectiles:
+Shots:
   StoneShot:
     ProjectileType: EXPLOSIVE
-    ExplodePower: 3.25
+    ExplodePower: 2.5
     Inaccuracy: 0.125
     ProjectileCount: 1
     VelocityFactor: 1.0
     AmmoItem: COBBLESTONE
     FireSound: ENTITY_GENERIC_EXPLODE
+  CannonShot:
+      ProjectileType: EXPLOSIVE
+      ExplodePower: 3.0
+      Inaccuracy: 0.125
+      ProjectileCount: 1
+      VelocityFactor: 1.0
+      AmmoItem: IRON_INGOT
+      FireSound: ENTITY_GENERIC_EXPLODE
   BreachShot:
-    ProjectileType: EXPLOSIVE
-    ExplodePower: 5.25
-    Inaccuracy: 0.375
-    ProjectileCount: 1
-    VelocityFactor: 1.0
-    AmmoItem: IRON_BLOCK
-    FireSound: ENTITY_GENERIC_EXPLODE
+      ProjectileType: EXPLOSIVE
+      ExplodePower: 4.0
+      Inaccuracy: 0.185
+      ProjectileCount: 1
+      VelocityFactor: 1.25
+      AmmoItem: IRON_BLOCK
+      FireSound: ENTITY_GENERIC_EXPLODE
   RepeatingShot:
-    ProjectileType: EXPLOSIVE
-    ExplodePower: 1.75
-    Inaccuracy: 0.525
-    ProjectileCount: 6
-    VelocityFactor: 1.0
-    AmmoItem: TNT
-    FireSound: ENTITY_GENERIC_EXPLODE
-  ScatterShot:
-    ProjectileType: ENTITY
-    Inaccuracy: 0.365
-    ProjectileCount: 24
-    VelocityFactor: 1.0
-    EntityType: ARROW
-    ArrowDamageFactor: 1.0
-    AmmoItem: GRAVEL
-    FireSound: ITEM_CROSSBOW_SHOOT
+      ProjectileType: EXPLOSIVE
+      ExplodePower: 2.0
+      Inaccuracy: 0.275
+      ProjectileCount: 3
+      VelocityFactor: 1.3
+      AmmoItem: TNT
+      FireSound: ENTITY_GENERIC_EXPLODE
+  BallistaScatterShot:
+      ProjectileType: ENTITY
+      Inaccuracy: 0.125
+      ProjectileCount: 30
+      VelocityFactor: 3.0
+      EntityType: ARROW
+      ArrowDamageFactor: 0.75
+      AmmoItem: GRAVEL
+      FireSound: ITEM_CROSSBOW_SHOOT
+  GrapeShot:
+      ProjectileType: ENTITY
+      Inaccuracy: 0.125
+      ProjectileCount: 30
+      VelocityFactor: 1.0
+      EntityType: ARROW
+      ArrowDamageFactor: 0.75
+      AmmoItem: GRAVEL
+      FireSound: ENTITY_GENERIC_EXPLODE
   BallistaBoltShot:
-    ProjectileType: ENTITY
-    Inaccuracy: 0.0125
-    ProjectileCount: 1
-    VelocityFactor: 0.5
-    EntityType: ARROW
-    ArrowDamageFactor: 1.0
-    AmmoItem: ARROW
-    FireSound: ITEM_CROSSBOW_SHOOT
+      ProjectileType: ENTITY
+      Inaccuracy: 0.0125
+      ProjectileCount: 1
+      VelocityFactor: 5.0
+      EntityType: ARROW
+      ArrowDamageFactor: 0.75
+      AmmoItem: ARROW
+      FireSound: ITEM_CROSSBOW_SHOOT
   DragonsBreath:
-    ProjectileType: ENTITY
-    Inaccuracy: 0.65
-    ProjectileCount: 3
-    VelocityFactor: 1.125
-    EntityType: DRAGON_FIREBALL
-    AmmoItem: DRAGON_BREATH
-    FireSound: ENTITY_GENERIC_EXPLODE
+      ProjectileType: ENTITY
+      Inaccuracy: 0.65
+      ProjectileCount: 3
+      VelocityFactor: 1.125
+      EntityType: DRAGON_FIREBALL
+      AmmoItem: DRAGON_BREATH
+      FireSound: ENTITY_GENERIC_EXPLODE
   FireShot:
-    ProjectileType: ENTITY
-    Inaccuracy: 0.475
-    ProjectileCount: 8
-    VelocityFactor: 1.0
-    EntityType: SMALL_FIREBALL
-    AmmoItem: MAGMA_BLOCK
-    FireSound: ENTITY_GENERIC_EXPLODE
+      ProjectileType: ENTITY
+      Inaccuracy: 0.225
+      ProjectileCount: 32
+      VelocityFactor: 1.0
+      EntityType: SMALL_FIREBALL
+      AmmoItem: MAGMA_BLOCK
+      FireSound: ENTITY_GENERIC_EXPLODE
   FireworkShot:
-    ProjectileType: FIREWORK
-    Inaccuracy: 0.125
-    ProjectileCount: 1
-    VelocityFactor: 0.5
-    Delay: 5
+      ProjectileType: FIREWORK
+      Inaccuracy: 0.125
+      ProjectileCount: 1
+      VelocityFactor: 0.001
+      Delay: 5
   SplashPotionProjectile:
-    ProjectileType: POTION
-    Inaccuracy: 0.0125
-    ProjectileCount: 1
-    VelocityFactor: 0.5
-    AmmoItem: SPLASH_POTION
-    FireSound: ITEM_CROSSBOW_SHOOT
-
-# ======================================
-# |            Siege Engines           |
-# ======================================
-
-# At this time you cannot add new Siege Engines via the config
-# You can edit the existing Siege Engines with the various options below
-
-# Health: How many hearts of health the Siege Engine has before it is destroyed
-# Shot Amount: How many projectiles the Siege Engine will fire
-# VelocityPerFuel: How much each fuel item increases the velocity of fired projectiles
-# MaxFuel: The maximum amount of fuel that can be loaded into each Siege Engine
-# ItemName: The default item name for the Siege Engine item
-# Lore: The default lore for the Siege Engine item
-# CanMount (EXPERIMENTAL): Whether the Siege Engine can be placed on a mountable mob
-
-SiegeEngines:
-  Trebuchet:
-    Health: 8
-    ShotAmount: 1
-    VelocityPerFuel: 0.75
-    MaxFuel: 3
-    FuelItem: STRING
-    Projectiles:
-      - StoneShot
-      - BreachShot
-      - FireShot
-      - RepeatingShot
-    ItemName: "&e&lTrebuchet"
-    Lore:
-      - "&ePlace as a block to spawn a Trebuchet"
-  Ballista:
-    Health: 5
-    ShotAmount: 1
-    VelocityPerFuel: 2.0
-    MaxFuel: 2
-    FuelItem: STRING
-    Projectiles:
-      - BallistaBoltShot
-      - ScatterShot
-      - DragonsBreath
-      - FireworkShot
-      - SplashPotionProjectile
-    ItemName: "&e&lBallista"
-    Lore:
-      - "&ePlace as a block to spawn a Ballista"
-    CanMount: false
-  SwivelCannon:
-    Health: 15
-    ShotAmount: 1
-    VelocityPerFuel: 0.975
-    MaxFuel: 5
-    FuelItem: GUNPOWDER
-    Projectiles:
-      - StoneShot
-      - RepeatingShot
-      - ScatterShot
-      - FireShot
-      - FireworkShot
-    ItemName: "&e&lSwivel Cannon"
-    Lore:
-      - "&ePlace as a block to spawn a Swivel Cannon"
-  BreachCannon:
-    Health: 25
-    ShotAmount: 1
-    VelocityPerFuel: 1.0625
-    MaxFuel: 4
-    FuelItem: GUNPOWDER
-    Projectiles:
-      - StoneShot
-      - RepeatingShot
-      - BreachShot
-      - FireShot
-      - ScatterShot
-      - DragonsBreath
-      - FireworkShot
-    ItemName: "&e&lBreach Cannon"
-    Lore:
-      - "&ePlace as a block to spawn a Breach Cannon"
+      ProjectileType: POTION
+      Inaccuracy: 0.0125
+      ProjectileCount: 2
+      VelocityFactor: 8.0
+      AmmoItem: SPLASH_POTION
+      FireSound: ITEM_CROSSBOW_SHOOT

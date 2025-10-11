@@ -1,17 +1,37 @@
 [versions]
+crate = "4.0.0-RC.4"
+commandapi = "10.1.2"
 
 [libraries]
 # Core dependencies
-annotations = "org.jetbrains:annotations:26.0.1"
+annotations = "org.jetbrains:annotations:26.0.2-1"
 paper-api = "io.papermc.paper:paper-api:1.21.8-R0.1-SNAPSHOT"
 
 # API dependencies
-colorparser = "io.github.milkdrinkers:colorparser:3.0.1"
-commandapi-shade = "dev.jorel:commandapi-bukkit-shade:10.1.2"
+javasemver = "io.github.milkdrinkers:javasemver:1.0.2"
+versionwatch = "io.github.milkdrinkers:versionwatch:1.0.2"
+wordweaver = "io.github.milkdrinkers:wordweaver:0.0.7"
+crate-api = { module = "io.github.milkdrinkers:crate-api", version.ref = "crate" }
+crate-yaml = { module = "io.github.milkdrinkers:crate-yaml", version.ref = "crate" }
+colorparser = "io.github.milkdrinkers:colorparser-paper:4.0.0-RC.1"
+threadutil-bukkit = "io.github.milkdrinkers:threadutil-bukkit:1.2.0"
+commandapi-shade = { module = "dev.jorel:commandapi-bukkit-shade", version.ref = "commandapi" }
+commandapi-annotations = { module = "dev.jorel:commandapi-annotations", version.ref = "commandapi" }
+triumph-gui = "dev.triumphteam:triumph-gui:3.1.12"
+
+# Plugin dependencies
+vault = "com.github.MilkBowl:VaultAPI:1.7.1"
+packetevents = "com.github.retrooper:packetevents-spigot:2.9.5"
+placeholderapi = "me.clip:placeholderapi:2.11.6"
+
+# Testing
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter" }
+junit-platform = { module = "org.junit.platform:junit-platform-launcher" }
 
 [bundles]
+junit = ["junit-jupiter", "junit-platform"]
 
 [plugins]
-shadow = "com.gradleup.shadow:8.3.8"
+shadow = "com.gradleup.shadow:9.2.2"
 run-paper = "xyz.jpenilla.run-paper:2.3.1"
 plugin-yml = "de.eldoria.plugin-yml.bukkit:0.7.1"
